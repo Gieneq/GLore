@@ -7,4 +7,5 @@
 - [x] add command to quit,
 
 ## Iteration 1
-- [ ] add NPC,
+- [x] add NPC,
+- [ ] add some room,
