@@ -1,0 +1,106 @@
+[
+    {
+        "id": 1,
+        "name": "Tom",
+        "dialog_stage": 0,
+        "dialogs": [
+            {
+                "if": {
+                    "stage": 0,
+                    "keywords": [
+                        "Hi",
+                        "Hello"
+                    ]
+                },
+                "then": {
+                    "responses": [
+                        "Hello, how are you?",
+                        "Hi, how are you?"
+                    ],
+                    "next_stage": 1
+                }
+            },
+            {
+                "if": {
+                    "stage": 1,
+                    "keywords": [
+                        "Bye",
+                        "Farawell"
+                    ]
+                },
+                "then": {
+                    "responses": [
+                        "Bye, see you later"
+                    ],
+                    "next_stage": 0
+                },
+                "on_drop": {
+                    "responses": [
+                        "How rude!"
+                    ],
+                    "next_stage": 0
+                }
+            },
+            {
+                "if": {
+                    "stage": 1,
+                    "on_quest": {
+                        "quest_id": 1,
+                        "quest_stage": 0
+                    },
+                    "keywords": [
+                        "Quest",
+                        "Mission"
+                    ]
+                },
+                "then": {
+                    "responses": [
+                        "Wanna quest?"
+                    ],
+                    "next_stage": 3
+                },
+                "on_drop": {
+                    "next_stage": 0
+                }
+            },
+            {
+                "if": {
+                    "stage": 3,
+                    "keywords": [
+                        "Yes"
+                    ]
+                },
+                "then": {
+                    "responses": [
+                        "Ok, here you go!"
+                    ],
+                    "set_quest": {
+                        "quest_id": 1,
+                        "quest_stage": 1
+                    },
+                    "next_stage": 1
+                },
+                "on_drop": {
+                    "next_stage": 0
+                }
+            },
+            {
+                "if": {
+                    "stage": 3,
+                    "keywords": [
+                        "No"
+                    ]
+                },
+                "then": {
+                    "responses": [
+                        "Maybe later."
+                    ],
+                    "next_stage": 1
+                },
+                "on_drop": {
+                    "next_stage": 0
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,17 @@
+{
+    "player_name": "Player",
+    "exp": 0,
+    "health": 100,
+    "inventory": [
+        {
+            "item_id": 1,
+            "quantity": 1
+        }
+    ],
+    "quest_log": [
+        {
+            "quest_id": 1,
+            "current_stage": 0
+        }
+    ]
+}
