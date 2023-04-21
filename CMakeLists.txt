@@ -7,15 +7,22 @@ enable_testing()
 
 
 include_directories(lib/cJSON)
+include_directories(src/core)
+include_directories(src/entity)
+include_directories(src/objects)
+include_directories(src/quests)
+include_directories(src/utils)
 
 add_executable(Pyrograf 
 main.c 
-core.c
-entity.c
-item.c
-loader.c
-database.c
-world.c
+src/core/core.c
+src/core/loader.c
+src/core/database.c
+src/entity/player.c
+src/objects/item.c
+src/objects/world.c
+src/quests/quest.c
+
 lib/cJSON/cJSON.c
 lib/cJSON/cJSON_Utils.c
 )

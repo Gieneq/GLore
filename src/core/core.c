@@ -52,9 +52,9 @@ result_t core_create(core_t *core) {
 }
 
 result_t core_delete(core_t* core) {
-    if(world_delete(core->world) != RESULT_OK) {
-        return RESULT_ERROR;
-    }
+    // if(world_delete(core->world) != RESULT_OK) {
+    //     return RESULT_ERROR;
+    // }
     
     if (core == NULL) {
         return RESULT_ERROR;
@@ -65,9 +65,13 @@ result_t core_delete(core_t* core) {
 
 result_t core_populate(core_t* core, database_t* database) {
 
-    if(loader_parse(core->world, database) != RESULT_OK) {
+    if(loader_parse(&(core->world), database) != RESULT_OK) {
         return RESULT_ERROR;
     }
+
+    printf("Player name: %s\n", core->world.player.name);
+    printf("Player health: %d\n", core->world.player.stats.health);
+    printf("Player exp: %d\n", core->world.player.stats.experience);
 
     return RESULT_OK;
 }

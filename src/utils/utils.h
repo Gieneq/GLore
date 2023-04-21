@@ -12,4 +12,12 @@ typedef enum result {
     RESULT_ERROR,
 } result_t;
 
+typedef enum bool {
+    FALSE,
+    TRUE,
+} bool_t;
 
+typedef enum option {
+    OPTION_SOME,
+    OPTION_NONE,
+} option_t;
