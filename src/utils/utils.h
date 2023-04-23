@@ -21,3 +21,11 @@ typedef enum option {
     OPTION_SOME,
     OPTION_NONE,
 } option_t;
+
+typedef enum overflow {
+    OVERFLOW,
+    NO_OVERFLOW,
+} overflow_t;
+
+/* copy string with l=characters length constrain macro */
+overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size);

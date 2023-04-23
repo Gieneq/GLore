@@ -22,6 +22,7 @@ src/entity/player.c
 src/objects/item.c
 src/objects/world.c
 src/quests/quest.c
+src/utils/utils.c
 
 lib/cJSON/cJSON.c
 lib/cJSON/cJSON_Utils.c

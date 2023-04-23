@@ -1,6 +1,7 @@
 #pragma once
 #include "utils.h"
 #include "item.h"
+#include "quest.h"
 
 #define DATABASE_MAX_ITEMS_COUNT 256
 #define DATABASE_MAX_OBJECTS_COUNT 256

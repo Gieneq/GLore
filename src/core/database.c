@@ -3,6 +3,7 @@
 #include <string.h>
 #include "database.h"
 
+static const char DEFAULT_NAME[] = "Unknown"; 
 
 result_t database_init(database_t *database) {
     database->items.count = 0;
@@ -32,5 +33,9 @@ result_t database_get_item_data_by_id(const database_t *database, const int id, 
             return RESULT_OK;
         }
     }
+
+    /* Set default name */
+    memcpy(item_data->name, DEFAULT_NAME, sizeof(DEFAULT_NAME));
+    
     return RESULT_ERROR;
 }

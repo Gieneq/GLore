@@ -1,10 +1,14 @@
 #pragma once
 #include "utils.h"
-#include "world.h"
 
 
 #define ITEM_NAME_BUFFER_SIZE 32
 #define ITEM_NAME_MAX_LENGTH (ITEM_NAME_BUFFER_SIZE-1)
+
+typedef struct item_stack {
+    int item_id;
+    size_t count;
+} item_stack_t;
 
 typedef struct item_data_t {
     int id;

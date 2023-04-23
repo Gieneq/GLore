@@ -1,41 +1,34 @@
 [
     {
-        "id": "1",
+        "id": 1,
         "name": "Simple request",
         "brief": "Lorem ipsum",
+        "starting_npc_id": 1,
         "stages": [
             {
-                "stage": 1,
+                "stage_no": 1,
+                "objective": "Bring to Tom 1x item 1 and 1x item 4",
                 "requirements": {
                     "items": [
                         {
-                            "id": 1,
+                            "item_id": 1,
                             "count": 1
                         },
                         {
-                            "id": 4,
+                            "item_id": 4,
+                            "count": 1
+                        }
+                    ]
+                },
+                "returning_npc_id": 1,
+                "rewards": {
+                    "items": [
+                        {
+                            "item_id": 2,
                             "count": 1
                         }
                     ],
-                    "npc_talk_stages": [
-                        {
-                            "npc_id": 1,
-                            "stage": 1
-                        }
-                    ]
-                }
-            },
-            {
-                "stage": 2,
-                "requirements": {
-                    "items": [
-                    ],
-                    "npc_talk_stages": [
-                        {
-                            "npc_id": 1,
-                            "stage": 2
-                        }
-                    ]
+                    "exp": 100
                 }
             }
         ]

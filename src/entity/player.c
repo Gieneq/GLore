@@ -6,8 +6,9 @@
 
 /* player */
 void player_set_name(player_t* player, const char * player_name) {
-    size_t chars_count = MIN(strlen(player_name), PLAYER_NAME_MAX_LENGTH);
-    strncpy(player->name, player_name, chars_count);
+    // size_t chars_count = MIN(strlen(player_name), PLAYER_NAME_MAX_LENGTH);
+    // strncpy(player->name, player_name, chars_count);
+    cpystr_trimed(player->name, player_name, PLAYER_NAME_BUFFER_SIZE);
 }
 
 void player_set_stats(player_t* player, stats_t* player_stats) {

@@ -14,3 +14,6 @@
 - [ ] load objects data,
 - [ ] load NPCs data,
 - [ ] load player data,
+
+## Iteration 3
+- [ ] Affter loading check id's between database tables,
