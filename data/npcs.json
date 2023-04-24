@@ -2,7 +2,13 @@
     {
         "id": 1,
         "name": "Tom",
-        "dialog_stage": 0,
+        "shop_id": 1,
+        "on_drop_responses": [
+            "How rude!"
+        ],
+        "dont_understand_responses": [
+            "I don't understand you.", "What?"
+        ],
         "dialogs": [
             {
                 "if": {
@@ -34,17 +40,11 @@
                     ],
                     "next_stage": 0
                 },
-                "on_drop": {
-                    "responses": [
-                        "How rude!"
-                    ],
-                    "next_stage": 0
-                }
             },
             {
                 "if": {
                     "stage": 1,
-                    "on_quest": {
+                    "questlog_is": {
                         "quest_id": 1,
                         "quest_stage": 0
                     },
@@ -58,9 +58,6 @@
                         "Wanna quest?"
                     ],
                     "next_stage": 3
-                },
-                "on_drop": {
-                    "next_stage": 0
                 }
             },
             {

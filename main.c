@@ -15,10 +15,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if(database_init(&database) != RESULT_OK) {
-        printf("Failed to init database\n");
-        return 1;
-    }
+    database_init(&database);
 
     if(core_populate(&core, &database) != RESULT_OK) {
         printf("Failed to populate world\n");

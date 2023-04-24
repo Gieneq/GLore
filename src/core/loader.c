@@ -514,6 +514,7 @@ static result_t loader_parse_quests_data(const char *buffer, database_t* databas
 
         /* Finished loading one quest */
         quest_data_printf(&quest_data);
+        database_save_quests_data(database, &quest_data);
 
     }
     

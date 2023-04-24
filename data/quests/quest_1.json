@@ -1,0 +1,70 @@
+{
+    "id": 1,
+    "name": "Simple request",
+    "brief": "Lorem ipsum",
+    "stages": [
+        {
+            "starting_npc_id": 1,
+            "dialog": [
+                {
+                    "player_keyword": "quest",
+                    "npc_says": "Wanna help?"
+                },
+                {
+                    "player_keyword": "yes",
+                    "npc_says": "Ok, bring me <$requirements.items$>",
+                    "npc_says_other": "What?"
+                }
+            ],
+            "objective": "Bring to <$end_npc_name$> <$requirements.items$>.",
+            "requirements": {
+                "items": [
+                    {
+                        "item_id": 1,
+                        "count": 1
+                    },
+                    {
+                        "item_id": 4,
+                        "count": 1
+                    }
+                ]
+            },
+            "returning_npc_id": 1,
+            "rewards": {
+                "items": [
+                    {
+                        "item_id": 2,
+                        "count": 1
+                    }
+                ],
+                "exp": 100
+            }
+        },
+        {
+            "stage_no": 1,
+            "objective": "Bring to <$end_npc_name$> items.",
+            "requirements": {
+                "items": [
+                    {
+                        "item_id": 1,
+                        "count": 1
+                    },
+                    {
+                        "item_id": 4,
+                        "count": 1
+                    }
+                ]
+            },
+            "returning_npc_id": 1,
+            "rewards": {
+                "items": [
+                    {
+                        "item_id": 2,
+                        "count": 1
+                    }
+                ],
+                "exp": 100
+            }
+        }
+    ]
+}

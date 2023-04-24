@@ -73,6 +73,11 @@ result_t core_populate(core_t* core, database_t* database) {
     printf("Player health: %d\n", core->world.player.stats.health);
     printf("Player exp: %d\n", core->world.player.stats.experience);
 
+    printf("Quests count: %llu\n", database_get_quests_count(database));
+    // quest_data_t quest_data;
+    // database_get_quests_data_by_id(database, 1, &quest_data);
+    // quest_data_printf(&quest_data);
+
     return RESULT_OK;
 }
 
