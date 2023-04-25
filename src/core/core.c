@@ -1,21 +1,8 @@
 #include "core.h"
 #include <stdio.h>
 #include <string.h>
-// #include "entity.h"
 #include "loader.h"
 #include "world.h"
-
-// #define CORE_NPC_MAX_COUNT 10
-
-// static void _core_process_say(core_t core, const char* message) {
-//     //printf("You say: %s\n", message);
-//     for(size_t i = 0; i < core->npc_count && core->npcs[i]; i++) {
-//         response_t response = npc_response(core->player, core->npcs[i], message);
-//         if(response == RESPONSE_SOME) {
-//             break;
-//         }
-//     }
-// }
 
 
 static void _core_process_cmd(core_t* core) {
@@ -51,11 +38,7 @@ result_t core_create(core_t *core) {
     return RESULT_OK;
 }
 
-result_t core_delete(core_t* core) {
-    // if(world_delete(core->world) != RESULT_OK) {
-    //     return RESULT_ERROR;
-    // }
-    
+result_t core_delete(core_t* core) {   
     if (core == NULL) {
         return RESULT_ERROR;
     }

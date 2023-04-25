@@ -184,224 +184,190 @@ static result_t loader_parse_player(const char *buffer, database_t* database, pl
     return RESULT_OK;
 }
 
-static result_t loader_parse_quest_stages(cJSON* json_quest_stages, database_t* database, quest_data_t* quest_data) {
-    /* Iterate over quest stages */
-    cJSON* json_quest_stage = NULL;
-    cJSON_ArrayForEach(json_quest_stage, json_quest_stages) {
-        quest_stage_data_t quest_stage_data;
-        quest_stage_data_create(&quest_stage_data);
-
-        if(!cJSON_IsObject(json_quest_stage)) {
-            printf("Error: quest stage is not an object.\n");
-            return RESULT_ERROR;
-        }
-
-        /* Get quest stage no */
-        if(!cJSON_HasObjectItem(json_quest_stage, "stage_no")) {
-            printf("Error: quest stage has no id.\n");
-            return RESULT_ERROR;
-        }
-        cJSON* json_quest_stage_no = cJSON_GetObjectItem(json_quest_stage, "stage_no");
-
-        if(!cJSON_IsNumber(json_quest_stage_no)) {
-            printf("Error: quest stage id is not a number.\n");
-            return RESULT_ERROR;
-        }
-
-        quest_stage_data.stage_no = (int)cJSON_GetNumberValue(json_quest_stage_no);
-
-
-        /* Get quest objective */
-        if(!cJSON_HasObjectItem(json_quest_stage, "objective")) {
-            printf("Error: quest stage requirements has no objective.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_objective = cJSON_GetObjectItem(json_quest_stage, "objective");
-
-        if(!cJSON_IsString(json_quest_objective)) {
-            printf("Error: quest stage objective is not a string.\n");
-            return RESULT_ERROR;
-        }
-
-        char *quest_objective = (char*)cJSON_GetStringValue(json_quest_objective);
-        cpystr_trimed(quest_stage_data.objective, quest_objective, QUEST_OBJECTIVE_BUFFER_SIZE);
-        printf("Quest objective: %s\n", quest_stage_data.objective);
-
-        /* Get quest requirements */
-        if(!cJSON_HasObjectItem(json_quest_stage, "requirements")) {
-            printf("Error: quest stage has no requirements.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_requirements = cJSON_GetObjectItem(json_quest_stage, "requirements");
-
-        if(!cJSON_IsObject(json_quest_requirements)) {
-            printf("Error: quest stage requirements is not an object.\n");
-            return RESULT_ERROR;
-        }
-
-        /* Get quest requirements: items */
-        if(!cJSON_HasObjectItem(json_quest_requirements, "items")) {
-            printf("Error: quest stage requirements has no items.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_requirements_items = cJSON_GetObjectItem(json_quest_requirements, "items");
-
-        if(!cJSON_IsArray(json_quest_requirements_items)) {
-            printf("Error: quest stage requirements items is not an array.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_requirements_item = NULL;
-        
-        cJSON_ArrayForEach(json_quest_requirements_item, json_quest_requirements_items) {
-            if(!cJSON_IsObject(json_quest_requirements_item)) {
-                printf("Error: quest stage requirements item is not an object.\n");
-                return RESULT_ERROR;
-            }
-
-            /* Get item id */
-            if(!cJSON_HasObjectItem(json_quest_requirements_item, "item_id")) {
-                printf("Error: quest stage requirements item has no id.\n");
-                return RESULT_ERROR;
-            }
-            cJSON* json_quest_requirements_item_id = cJSON_GetObjectItem(json_quest_requirements_item, "item_id");
-
-            if(!cJSON_IsNumber(json_quest_requirements_item_id)) {
-                printf("Error: quest stage requirements item id is not a number.\n");
-                return RESULT_ERROR;
-            }
-
-            int item_id = (int)cJSON_GetNumberValue(json_quest_requirements_item_id);
-
-            /* Get item count */
-            if(!cJSON_HasObjectItem(json_quest_requirements_item, "count")) {
-                printf("Error: quest stage requirements item has no count.\n");
-                return RESULT_ERROR;
-            }
-            cJSON* json_quest_requirements_item_count = cJSON_GetObjectItem(json_quest_requirements_item, "count");
-
-            if(!cJSON_IsNumber(json_quest_requirements_item_count)) {
-                printf("Error: quest stage requirements item count is not a number.\n");
-                return RESULT_ERROR;
-            }
-
-            int item_count = (int)cJSON_GetNumberValue(json_quest_requirements_item_count);
-
-
-            printf("__Todo: add item %d with count %d to quest requirements.\n", item_id, item_count); // TODO: add item to quest requirements
-
-            quest_requirements_add_item(&(quest_stage_data.requirements), item_id, item_count);
-        }
-
-        /* Get quest returning NPC */
-        if(!cJSON_HasObjectItem(json_quest_stage, "returning_npc_id")) {
-            printf("Error: quest stage has no returning_npc_id.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_stage_returning_npc_id = cJSON_GetObjectItem(json_quest_stage, "returning_npc_id");
-
-        if(!cJSON_IsNumber(json_quest_stage_returning_npc_id)) {
-            printf("Error: quest stage returning_npc_id is not a number.\n");
-            return RESULT_ERROR;
-        }
-
-        quest_stage_data.returning_npc_id = (int)cJSON_GetNumberValue(json_quest_stage_returning_npc_id);
-
-
-        /* Get quest rewards */
-        if(!cJSON_HasObjectItem(json_quest_stage, "rewards")) {
-            printf("Error: quest stage has no rewards.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_rewards = cJSON_GetObjectItem(json_quest_stage, "rewards");
-
-        if(!cJSON_IsObject(json_quest_rewards)) {
-            printf("Error: quest stage rewards is not an object.\n");
-            return RESULT_ERROR;
-        }
-
-        /* Get quest rewards: items */
-        if(!cJSON_HasObjectItem(json_quest_rewards, "items")) {
-            printf("Error: quest stage rewards has no items.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_rewards_items = cJSON_GetObjectItem(json_quest_rewards, "items");
-
-        if(!cJSON_IsArray(json_quest_rewards_items)) {
-            printf("Error: quest stage rewards items is not an array.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_rewards_item = NULL;
-        cJSON_ArrayForEach(json_quest_rewards_item, json_quest_rewards_items) {
-            if(!cJSON_IsObject(json_quest_rewards_item)) {
-                printf("Error: quest stage rewards item is not an object.\n");
-                return RESULT_ERROR;
-            }
-
-            /* Get item id */
-            if(!cJSON_HasObjectItem(json_quest_rewards_item, "item_id")) {
-                printf("Error: quest stage rewards item has no id.\n");
-                return RESULT_ERROR;
-            }
-            cJSON* json_quest_rewards_item_id = cJSON_GetObjectItem(json_quest_rewards_item, "item_id");
-
-            if(!cJSON_IsNumber(json_quest_rewards_item_id)) {
-                printf("Error: quest stage rewards item id is not a number.\n");
-                return RESULT_ERROR;
-            }
-
-            int item_id = (int)cJSON_GetNumberValue(json_quest_rewards_item_id);
-
-            /* Get item count */
-            if(!cJSON_HasObjectItem(json_quest_rewards_item, "count")) {
-                printf("Error: quest stage rewards item has no count.\n");
-                return RESULT_ERROR;
-            }
-            cJSON* json_quest_rewards_item_count = cJSON_GetObjectItem(json_quest_rewards_item, "count");
-
-            if(!cJSON_IsNumber(json_quest_rewards_item_count)) {
-                printf("Error: quest stage rewards item count is not a number.\n");
-                return RESULT_ERROR;
-            }
-
-            int item_count = (int)cJSON_GetNumberValue(json_quest_rewards_item_count);
-
-            quest_reward_add_item(&(quest_stage_data.reward), item_id, item_count);
-        }
-
-        /* Get quest rewards: exp */
-        if(!cJSON_HasObjectItem(json_quest_rewards, "exp")) {
-            printf("Error: quest stage rewards has no exp.\n");
-            return RESULT_ERROR;
-        }
-
-        cJSON* json_quest_rewards_exp = cJSON_GetObjectItem(json_quest_rewards, "exp");
-
-        if(!cJSON_IsNumber(json_quest_rewards_exp)) {
-            printf("Error: quest stage rewards exp is not a number.\n");
-            return RESULT_ERROR;
-        }
-
-        quest_stage_data.reward.exp = (int)cJSON_GetNumberValue(json_quest_rewards_exp);
-
-        /* Finally add stage to quest data */
-        quest_data_add_stage(quest_data, &quest_stage_data);
+static result_t loader_parse_item_stack(cJSON* json_item_stack, item_stack_t *item_stack) {
+    int item_id = 0;
+    int item_quantity = 0;
+    if(!cJSON_IsObject(json_item_stack)) {
+        printf("Error: item stack is not an object.\n");
+        return RESULT_ERROR;
     }
 
+    /* Get item id */
+    if(!cJSON_HasObjectItem(json_item_stack, "item_id")) {
+        printf("Error: item stack has no item id.\n");
+        return RESULT_ERROR;
+    }
+    cJSON* json_item_id = cJSON_GetObjectItem(json_item_stack, "item_id");
 
+    if(!cJSON_IsNumber(json_item_id)) {
+        printf("Error: item stack item id is not a number.\n");
+        return RESULT_ERROR;
+    }
+
+    item_id = (int)cJSON_GetNumberValue(json_item_id);
+
+    /* Get item quantity */
+    if(!cJSON_HasObjectItem(json_item_stack, "count")) {
+        printf("Error: item stack has no count.\n");
+        return RESULT_ERROR;
+    }
+    cJSON* json_item_quantity = cJSON_GetObjectItem(json_item_stack, "count");
+
+    if(!cJSON_IsNumber(json_item_quantity)) {
+        printf("Error: item stack count is not a number.\n");
+        return RESULT_ERROR;
+    }
+
+    item_quantity = (int)cJSON_GetNumberValue(json_item_quantity);
+
+    /* Update item stack object with loaded data */
+    item_stack_create(item_stack, item_id, item_quantity);
+
+    return RESULT_OK;
+}
+
+static result_t loader_parse_item_stacks(cJSON* json_item_stacks, item_stack_t *item_stacks, int *item_stacks_count, const size_t max_item_stacks_count) {
+    if(!cJSON_IsArray(json_item_stacks)) {
+        printf("Error: item stacks is not an array.\n");
+        return RESULT_ERROR;
+    }
+
+    int item_stacks_count_local = 0;
+    cJSON* json_item_stack = NULL;
+    cJSON_ArrayForEach(json_item_stack, json_item_stacks) {
+        if(item_stacks_count_local >= max_item_stacks_count) {
+            printf("Error: too many item stacks.\n");
+            return RESULT_ERROR;
+        }
+
+        result_t result = loader_parse_item_stack(json_item_stack, &item_stacks[item_stacks_count_local]);
+        if(result != RESULT_OK) {
+            printf("Error: failed to parse item stack.\n");
+            return result;
+        }
+
+        item_stacks_count_local++;
+    }
+
+    *item_stacks_count = item_stacks_count_local;
+
+    return RESULT_OK;
+}
+
+static result_t loader_parse_quest_stage(cJSON* json_quest_stage, database_t* database, quest_stage_data_t* quest_stage_data) {
+    quest_stage_data_create(quest_stage_data);
+
+    if(!cJSON_IsObject(json_quest_stage)) {
+        printf("Error: quest stage is not an object.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Get quest stage no */
+    if(!cJSON_HasObjectItem(json_quest_stage, "stage_no")) {
+        printf("Error: quest stage has no id.\n");
+        return RESULT_ERROR;
+    }
+    cJSON* json_quest_stage_no = cJSON_GetObjectItem(json_quest_stage, "stage_no");
+
+    if(!cJSON_IsNumber(json_quest_stage_no)) {
+        printf("Error: quest stage id is not a number.\n");
+        return RESULT_ERROR;
+    }
+
+    quest_stage_data->stage_no = (int)cJSON_GetNumberValue(json_quest_stage_no);
+
+
+    /* Get quest objective */
+    if(!cJSON_HasObjectItem(json_quest_stage, "objective")) {
+        printf("Error: quest stage requirements has no objective.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_objective = cJSON_GetObjectItem(json_quest_stage, "objective");
+
+    if(!cJSON_IsString(json_quest_objective)) {
+        printf("Error: quest stage objective is not a string.\n");
+        return RESULT_ERROR;
+    }
+
+    char *quest_objective = (char*)cJSON_GetStringValue(json_quest_objective);
+    cpystr_trimed(quest_stage_data->objective, quest_objective, QUEST_OBJECTIVE_BUFFER_SIZE);
+
+    /* Get quest stage requirements */
+    if(!cJSON_HasObjectItem(json_quest_stage, "requirements")) {
+        printf("Error: quest stage has no requirements.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_stage_requirements = cJSON_GetObjectItem(json_quest_stage, "requirements");
+
+    
+    /* Get quest stage requirements: items */
+    if(!cJSON_HasObjectItem(json_quest_stage_requirements, "items")) {
+        printf("Error: quest stage requirements has no items.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_stage_requirements_items = cJSON_GetObjectItem(json_quest_stage_requirements, "items");
+
+    result_t result = loader_parse_item_stacks(json_quest_stage_requirements_items, quest_stage_data->requirements.items, &quest_stage_data->requirements.count, QUEST_REQUIREMENTS_ITEMS_MAX_COUNT);
+    if(result != RESULT_OK) {
+        printf("Error: failed to parse quest stage requirements items.\n");
+        return result;
+    }
+
+    /* Get quest stage rewards */
+    if(!cJSON_HasObjectItem(json_quest_stage, "rewards")) {
+        printf("Error: quest stage has no reward.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_stage_reward = cJSON_GetObjectItem(json_quest_stage, "rewards");
+
+    /* Get quest stage rewards: items */
+    if(!cJSON_HasObjectItem(json_quest_stage_reward, "items")) {
+        printf("Error: quest stage reward has no items.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_stage_reward_items = cJSON_GetObjectItem(json_quest_stage_reward, "items");
+
+    if(!cJSON_IsArray(json_quest_stage_reward_items)) {
+        printf("Error: quest stage reward items is not an array.\n");
+        return RESULT_ERROR;
+    }
+
+    result = loader_parse_item_stacks(json_quest_stage_reward_items, quest_stage_data->reward.items, &quest_stage_data->reward.count, QUEST_REWARDS_ITEMS_MAX_COUNT);
+    if(result != RESULT_OK) {
+        printf("Error: failed to parse quest stage reward items.\n");
+        return result;
+    } 
+
+    /* Get quest stage rewards: exp */
+    if(!cJSON_HasObjectItem(json_quest_stage_reward, "exp")) {
+        printf("Error: quest stage reward has no exp.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_stage_reward_exp = cJSON_GetObjectItem(json_quest_stage_reward, "exp");
+
+    if(!cJSON_IsNumber(json_quest_stage_reward_exp)) {
+        printf("Error: quest stage reward exp is not a number.\n");
+        return RESULT_ERROR;
+    }
+
+    quest_stage_data->reward.exp = (int)cJSON_GetNumberValue(json_quest_stage_reward_exp);
     return RESULT_OK;
 }
 
 static result_t loader_parse_quests_data(const char *buffer, database_t* database) {
     printf("Parsing quests data...\n");
-    quest_data_printf_attach_db(database);
+    quest_data_attach_db_for_printf(database);
+
+    quest_data_t quest_data;
+    int quest_id = 0;
+    char *quest_name = NULL;
+    char* quest_brief = NULL;
 
     /* Check database requirements */
     if(!database || database_get_items_count(database) == 0) {
@@ -410,117 +376,114 @@ static result_t loader_parse_quests_data(const char *buffer, database_t* databas
     }
     
     /* Convert to cJSON objects */
-    cJSON* json_quests_data_list = cJSON_Parse(file_read_buffer);
-    if(!json_quests_data_list) {
+    cJSON* json_quest_data = cJSON_Parse(file_read_buffer);
+    if(!json_quest_data) {
         return RESULT_ERROR;
     }
 
-    if(!cJSON_IsArray(json_quests_data_list)) {
-        printf("Error: quests.json is not an array.\n");
+    if(!cJSON_IsObject(json_quest_data)) {
+        printf("Error: quests.json is not an objects.\n");
         return RESULT_ERROR;
     }
 
-    /* Iterate over quests data */
-    cJSON* json_quest_data = NULL;
-    cJSON_ArrayForEach(json_quest_data, json_quests_data_list) {
-        quest_data_t quest_data;
+    /* Get quest id */
+    if(!cJSON_HasObjectItem(json_quest_data, "id")) {
+        printf("Error: quests.json has no id.\n");
+        return RESULT_ERROR;
+    }
 
-        if(!cJSON_IsObject(json_quest_data)) {
-            printf("Error: quests.json is not an array of objects.\n");
-            return RESULT_ERROR;
-        }
+    cJSON* json_quest_id = cJSON_GetObjectItem(json_quest_data, "id");
 
-        /* Get quest id */
-        if(!cJSON_HasObjectItem(json_quest_data, "id")) {
-            printf("Error: quests.json has no id.\n");
-            return RESULT_ERROR;
-        }
-        cJSON* json_quest_id = cJSON_GetObjectItem(json_quest_data, "id");
-        if(!cJSON_IsNumber(json_quest_id)) {
-            printf("Error: quest id is not a number.\n");
-            return RESULT_ERROR;
-        }
-        int quest_id = (int)cJSON_GetNumberValue(json_quest_id);
+    if(!cJSON_IsNumber(json_quest_id)) {
+        printf("Error: quest id is not a number.\n");
+        return RESULT_ERROR;
+    }
 
-        /* Get quest name */
-        if(!cJSON_HasObjectItem(json_quest_data, "name")) {
-            printf("Error: quests.json has no name.\n");
-            return RESULT_ERROR;
-        }
-        cJSON* json_quest_name = cJSON_GetObjectItem(json_quest_data, "name");
-        if(!cJSON_IsString(json_quest_name)) {
-            printf("Error: quest name is not a string.\n");
-            return RESULT_ERROR;
-        }
-        char* quest_name = cJSON_GetStringValue(json_quest_name);
+    quest_id = (int)cJSON_GetNumberValue(json_quest_id);
 
-        /* Get quest brief */
-        if(!cJSON_HasObjectItem(json_quest_data, "brief")) {
-            printf("Error: quests.json has no brief.\n");
-            return RESULT_ERROR;
-        }
-        cJSON* json_quest_brief = cJSON_GetObjectItem(json_quest_data, "brief");
-        if(!cJSON_IsString(json_quest_brief)) {
-            printf("Error: quest brief is not a string.\n");
-            return RESULT_ERROR;
-        }
-        char* quest_brief = cJSON_GetStringValue(json_quest_brief);
 
-        /* Get quest starting NPC id */
-        if(!cJSON_HasObjectItem(json_quest_data, "starting_npc_id")) {
-            printf("Error: quests.json has no starting_npc_id.\n");
-            return RESULT_ERROR;
-        }
+    /* Get quest name */
+    if(!cJSON_HasObjectItem(json_quest_data, "name")) {
+        printf("Error: quests.json has no name.\n");
+        return RESULT_ERROR;
+    }
 
-        cJSON* json_quest_starting_npc_id = cJSON_GetObjectItem(json_quest_data, "starting_npc_id");
+    cJSON* json_quest_name = cJSON_GetObjectItem(json_quest_data, "name");
 
-        if(!cJSON_IsNumber(json_quest_starting_npc_id)) {
-            printf("Error: quest starting_npc_id is not a number.\n");
-            return RESULT_ERROR;
-        }
+    if(!cJSON_IsString(json_quest_name)) {
+        printf("Error: quest name is not a string.\n");
+        return RESULT_ERROR;
+    }
 
-        int quest_starting_npc_id = (int)cJSON_GetNumberValue(json_quest_starting_npc_id);
+    quest_name = cJSON_GetStringValue(json_quest_name);
 
-        /* Get quest stages */
-        if(!cJSON_HasObjectItem(json_quest_data, "stages")) {
-            printf("Error: quests.json has no stages.\n");
-            return RESULT_ERROR;
-        }
-        cJSON* json_quest_stages = cJSON_GetObjectItem(json_quest_data, "stages");
-        if(!cJSON_IsArray(json_quest_stages)) {
-            printf("Error: quest stages is not an array.\n");
-            return RESULT_ERROR;
-        }
+    /* Get quest brief */
+    if(!cJSON_HasObjectItem(json_quest_data, "brief")) {
+        printf("Error: quests.json has no brief.\n");
+        return RESULT_ERROR;
+    }
 
-        /* Create quest data */
-        if(quest_data_create(&quest_data, quest_id, quest_name, quest_brief, quest_starting_npc_id) != RESULT_OK) {
-            printf("Error: failed to create quest data.\n");
-            return RESULT_ERROR;
-        }
+    cJSON* json_quest_brief = cJSON_GetObjectItem(json_quest_data, "brief");
 
-        /* Parse quest stages */
-        if(loader_parse_quest_stages(json_quest_stages, database, &quest_data) != RESULT_OK) {
+    if(!cJSON_IsString(json_quest_brief)) {
+        printf("Error: quest brief is not a string.\n");
+        return RESULT_ERROR;
+    }
+
+    quest_brief = cJSON_GetStringValue(json_quest_brief);
+
+    /* Create quest data */
+    if(quest_data_create(&quest_data, quest_id, quest_name, quest_brief) != RESULT_OK) {
+        printf("Error: failed to create quest data.\n");
+        return RESULT_ERROR;
+    }
+    
+
+    /* Parse quest stages */
+    cJSON* json_quest_stages = cJSON_GetObjectItem(json_quest_data, "stages");
+
+    if(!cJSON_IsArray(json_quest_stages)) {
+        printf("Error: quest stages is not an array.\n");
+        return RESULT_ERROR;
+    }
+    
+    cJSON* json_quest_stage = NULL;
+    cJSON_ArrayForEach(json_quest_stage, json_quest_stages) {
+        quest_stage_data_t quest_stage_data;
+        if(loader_parse_quest_stage(json_quest_stage, database, &quest_stage_data) != RESULT_OK) {
             printf("Error: failed to parse quest stages.\n");
             return RESULT_ERROR;
         }
-
-        /* Check */
-        int quest_stages_count = cJSON_GetArraySize(json_quest_stages);
-
-        if(quest_data.stages_count != quest_stages_count) {
-            printf("Error: quest stages %d count is not equal to quest stages count %d.\n", quest_data.stages_count, quest_stages_count);
-            return RESULT_ERROR;
-        }
-
-        /* Finished loading one quest */
-        quest_data_printf(&quest_data);
-        database_save_quests_data(database, &quest_data);
-
+        quest_data_add_stage(&quest_data, &quest_stage_data);
     }
+
+
+    /* Parse quest dialogs */
+    cJSON* json_quest_dialogs = cJSON_GetObjectItem(json_quest_data, "dialogs");
+
+    if(!cJSON_IsArray(json_quest_dialogs)) {
+        printf("Error: quest dialogs is not an array.\n");
+        return RESULT_ERROR;
+    }
+
+    cJSON* json_quest_dialog = NULL;
+    cJSON_ArrayForEach(json_quest_dialog, json_quest_dialogs) {
+        quest_dialog_data_t quest_dialog_data;
+        // if(loader_parse_quest_dialog(json_quest_dialog, database, &quest_dialog_data) != RESULT_OK) {
+        //     printf("Error: failed to parse quest dialogs.\n");
+        //     return RESULT_ERROR;
+        // }
+        quest_data_add_dialog(&quest_data, &quest_dialog_data);
+    }
+
+    /* Save quest */
+    database_save_quests_data(database, &quest_data);
+    quest_data_printf(&quest_data);
+
     
     /* Free cJSON objects */
-    if(json_quests_data_list) {
-        cJSON_Delete(json_quests_data_list);
+    if(json_quest_data) {
+        cJSON_Delete(json_quest_data);
     }
 
     return RESULT_OK;
@@ -551,7 +514,7 @@ result_t loader_parse(world_t* world, database_t* database) {
     /* Objects */
     
     /* Quests */
-    if(loader_from_file("../data/quests.json", file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+    if(loader_from_file("../data/quests/quest_1.json", file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
         return RESULT_ERROR;
     }
 

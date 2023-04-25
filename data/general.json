@@ -1,0 +1,11 @@
+{
+    "dialog_status_mask": {
+        "regular": "0x00",
+        "quest": "0xFF00",
+        "shop": "0xFF0000"
+    },
+    "dialogs": {
+        "undefined_response": "????",
+        "dont_understand_response": "Huh?"
+    }
+}

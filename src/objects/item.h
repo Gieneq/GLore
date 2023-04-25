@@ -1,4 +1,5 @@
 #pragma once
+#include <stdlib.h>
 #include "utils.h"
 
 
@@ -17,3 +18,4 @@ typedef struct item_data_t {
 
 
 void item_data_create(item_data_t* item_data, const int item_id, const char* item_name);
+void item_stack_create(item_stack_t* item_stack, const int item_id, const size_t count);

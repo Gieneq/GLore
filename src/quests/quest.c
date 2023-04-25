@@ -59,20 +59,24 @@ result_t quest_reward_add_item(quest_reward_t *reward, int item_id, size_t count
     return RESULT_OK;
 }
 
+/* Quest Dialog Data */
+void quest_dialog_data_create(quest_dialog_data_t *dialog_data) {
+    
+}
+
 /* Quest Stage Data */
 
 void quest_stage_data_create(quest_stage_data_t *stage_data) {
     stage_data->stage_no = 0;
     memset(stage_data->objective, '\0', QUEST_BRIEF_BUFFER_SIZE);
     quest_requirements_create(&stage_data->requirements);
-    stage_data->returning_npc_id = 0;
     quest_reward_create(&stage_data->reward);
 }
 
 
 
 /* Quest Data */
-result_t quest_data_create(quest_data_t *quest_data, quest_id_t quest_id, const char *name, const char *brief, const int starting_npc_id) {
+result_t quest_data_create(quest_data_t *quest_data, quest_id_t quest_id, const char *name, const char *brief) {
     if(quest_data == NULL) {
         return RESULT_ERROR;
     }
@@ -87,8 +91,12 @@ result_t quest_data_create(quest_data_t *quest_data, quest_id_t quest_id, const 
         return RESULT_ERROR;
     }
 
+    memset(quest_data->stages, 0, sizeof(quest_stage_data_t) * QUEST_STAGES_MAX_COUNT);
     quest_data->stages_count = 0;
-    quest_data->starting_npc_id = starting_npc_id;
+
+    memset(quest_data->dialogs, 0, sizeof(quest_dialog_data_t) * QUEST_DIALOGS_MAX_COUNT);
+    quest_data->dialogs_count = 0;
+
     // printf("Creating quest %d: %s [%llu stages] (%s)\n", (int)(quest_data->quest_id), quest_data->name, stages, quest_data->brief);
     return RESULT_OK;
 }
@@ -104,6 +112,20 @@ result_t quest_data_add_stage(quest_data_t *quest_data, quest_stage_data_t *stag
 
     memcpy(&quest_data->stages[quest_data->stages_count], stage_data, sizeof(quest_stage_data_t));
     quest_data->stages_count++;
+    return RESULT_OK;
+}
+
+result_t quest_data_add_dialog(quest_data_t *quest_data, quest_dialog_data_t *dialog_data) {
+    if(quest_data == NULL || dialog_data == NULL) {
+        return RESULT_ERROR;
+    }
+
+    if(quest_data->dialogs_count >= QUEST_DIALOGS_MAX_COUNT) {
+        return RESULT_ERROR;
+    }
+
+    memcpy(&quest_data->dialogs[quest_data->dialogs_count], dialog_data, sizeof(quest_dialog_data_t));
+    quest_data->dialogs_count++;
     return RESULT_OK;
 }
 
@@ -136,20 +158,19 @@ void quest_stage_data_printf(quest_stage_data_t *stage_data) {
     printf(" Stage %llu: %s\n", stage_data->stage_no, stage_data->objective);
     quest_requirements_printf(&stage_data->requirements);
     const char *npc_name = "Unknown todo";
-    printf(" Return to NPC %d (%s)\n", stage_data->returning_npc_id, npc_name);
     quest_reward_printf(&stage_data->reward);
 }
 
 void quest_data_printf(quest_data_t *quest_data) {
     printf("Summary of quest %d: %s [%d stages] (%s)\n", (int)(quest_data->quest_id), quest_data->name, quest_data->stages_count, quest_data->brief);
-    printf("Starting NPC: %d\n", quest_data->starting_npc_id);
     printf("Stages:\n");
     for(size_t i = 0; i < quest_data->stages_count; i++) {
         quest_stage_data_printf(&quest_data->stages[i]);
     }
+    printf("Dialogs:\n");
 }
 
-result_t quest_data_printf_attach_db(void* db) {
+result_t quest_data_attach_db_for_printf(void* db) {
     if(db == NULL) {
         return RESULT_ERROR;
     }

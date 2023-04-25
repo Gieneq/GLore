@@ -1,0 +1,33 @@
+{
+    "id": 1,
+    "name": "Tom",
+    "greeting_responses": [
+        "Hello, I'm <$npc.name$>. How can I help you?"
+    ],
+    "drop_responses": [
+        "How rude!"
+    ],
+    "dont_understand_responses": [
+        "I don't understand you.", "What?"
+    ],
+    "dialogs": [
+        {
+            "if": {
+                "dialog_state": 1,
+                "keywords": ["next"]
+            },
+            "then": {
+                "responses": ["Passing"],
+                "next_dialog_state": 2   
+            }
+        },
+        {
+            "if": {
+                "dialog_state": 2,
+                "entering_quest_id": 1
+            },
+            "then": {
+            }
+        }
+    ]
+}
