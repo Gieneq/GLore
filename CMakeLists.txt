@@ -8,6 +8,7 @@ enable_testing()
 
 include_directories(lib/cJSON)
 include_directories(src/core)
+include_directories(src/dialogs)
 include_directories(src/entity)
 include_directories(src/objects)
 include_directories(src/quests)
@@ -18,10 +19,14 @@ main.c
 src/core/core.c
 src/core/loader.c
 src/core/database.c
+src/dialogs/keywords.c
+src/dialogs/dialog.c
+src/dialogs/responses.c
 src/entity/player.c
 src/objects/item.c
 src/objects/world.c
 src/quests/quest.c
+src/quests/questlog.c
 src/utils/utils.c
 
 lib/cJSON/cJSON.c

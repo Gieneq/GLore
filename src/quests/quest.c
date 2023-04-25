@@ -7,12 +7,6 @@
 
 static database_t* database = NULL;
 
-/* Questlog */
-void questlog_create(questlog_t *questlog, quest_id_t quest_id) {
-    questlog->quest_id = quest_id;
-    questlog->stage = 0;
-}
-
 /* Quest Requirements */
 
 void quest_requirements_create(quest_requirements_t *requirements) {

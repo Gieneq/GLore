@@ -37,7 +37,7 @@
                 "keywords": ["quest"]
             },
             "then": {
-                "responses": ["Wanna help me?"],
+                "response": "Wanna help me?",
                 "next_dialog_state": 1   
             }
         },
@@ -49,7 +49,7 @@
                 "keywords": ["quest"]
             },
             "then": {
-                "responses": ["Have you finished?"],
+                "response": "Have you finished?",
                 "next_dialog_state": 2   
             }
         },
@@ -57,11 +57,11 @@
         {
             "if": {
                 "dialog_state": 1,
-                "keywords": ["yes"]
+                "keywords": ["yes", "ok"]
             },
             "then": {
-                "responses": ["Ok, bring me <$requirements.items$>"],
-                "set_questlog": 1,
+                "response": "Ok, bring me <$requirements.items$>",
+                "questlog_set": 1,
                 "next_dialog_state": 0   
             }
         },
@@ -70,11 +70,11 @@
             "if": {
                 "dialog_state": 2,
                 "keywords": ["yes"],
-                "quest_reqirement": true
+                "quest_req_fullfilled": 1
             },
             "then": {
-                "responses": ["Great! Here is your reward"],
-                "set_questlog": 2,
+                "response": "Great! Here is your reward",
+                "questlog_set": 2,
                 "give_rewards": true,
                 "next_dialog_state": 0   
             }

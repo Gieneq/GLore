@@ -17,7 +17,7 @@
                 "keywords": ["next"]
             },
             "then": {
-                "responses": ["Passing"],
+                "response": ["Passing"],
                 "next_dialog_state": 2   
             }
         },

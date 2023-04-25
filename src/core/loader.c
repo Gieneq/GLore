@@ -468,12 +468,17 @@ static result_t loader_parse_quests_data(const char *buffer, database_t* databas
 
     cJSON* json_quest_dialog = NULL;
     cJSON_ArrayForEach(json_quest_dialog, json_quest_dialogs) {
-        quest_dialog_data_t quest_dialog_data;
+        // quest_dialog_data_t quest_dialog_data;
+        dialog_cond_t dialog_cond;
+        dialog_cond_init(&dialog_cond, DIALOG_TYPE_QUEST);
+        loader_dialog_cond_from_json(&dialog_cond, DIALOG_TYPE_QUEST, json_quest_dialog);
+        dialog_cond_printf(&dialog_cond);
+        
         // if(loader_parse_quest_dialog(json_quest_dialog, database, &quest_dialog_data) != RESULT_OK) {
         //     printf("Error: failed to parse quest dialogs.\n");
         //     return RESULT_ERROR;
         // }
-        quest_data_add_dialog(&quest_data, &quest_dialog_data);
+        // quest_data_add_dialog(&quest_data, &quest_dialog_data);
     }
 
     /* Save quest */
@@ -488,6 +493,8 @@ static result_t loader_parse_quests_data(const char *buffer, database_t* databas
 
     return RESULT_OK;
 }
+
+/* Publics */
 
 result_t loader_parse(world_t* world, database_t* database) {
     printf("Parsing data files...\n");
@@ -533,6 +540,101 @@ result_t loader_parse(world_t* world, database_t* database) {
     }
 
     /* World */
+
+    return RESULT_OK;
+}
+
+
+result_t loader_keywords_list_from_json(keywords_list_t *list, const cJSON *json) {
+    keywords_list_init(list);
+    if (json->type != cJSON_Array) {
+        printf("Error: JSON is not an array");
+        return RESULT_ERROR;
+    }
+    int count = cJSON_GetArraySize(json);
+    if (count > KEYWORDS_MAX_COUNT) {
+        printf("Error: Too many keywords");
+        return RESULT_ERROR;
+    }
+    for (int i = 0; i < count; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        if (item->type != cJSON_String) {
+            printf("Error: JSON item is not a string");
+            return RESULT_ERROR;
+        }
+        keyword_from_string(list->keywords[i], item->valuestring);
+    }
+    list->count = count;
+    return RESULT_OK;
+}
+
+
+result_t loader_dialog_cond_from_json(dialog_cond_t *dialog_cond, const dialog_type_t dialog_type, const cJSON *json) {
+    dialog_cond_init(dialog_cond, dialog_type);
+    if(!cJSON_IsObject(json)) {
+        printf("Error: JSON is not an object");
+        return RESULT_ERROR;
+    }
+    
+    /* Extract if case */
+    if(!cJSON_HasObjectItem(json, "if")) {
+        printf("Error: JSON has no if case");
+        return RESULT_ERROR;
+    }
+
+    cJSON *json_if = cJSON_GetObjectItem(json, "if");
+
+    if(!cJSON_IsObject(json_if)) {
+        printf("Error: JSON if is not an object");
+        return RESULT_ERROR;
+    }
+
+    /* Extract if content */
+    /* It can be:
+     * - dialog_stage as int
+     * - keywords as array of strings
+     * - questlog as int, it is rename of quest_state
+     * - entering_quest_id as int, it is used to attach quest's dialog
+     * - check_requirements bool
+    */
+    if(cJSON_HasObjectItem(json_if, "stage_no")) {
+        cJSON *json_stage_no = cJSON_GetObjectItem(json_if, "stage_no");
+        if(!cJSON_IsNumber(json_stage_no)) {
+            printf("Error: JSON stage_no is not a number");
+            return RESULT_ERROR;
+        }
+        dialog_cond->cond_if.dialog_stage = (int)(cJSON_GetNumberValue(json_stage_no));
+    }
+
+    if(cJSON_HasObjectItem(json_if, "keywords")) {
+        cJSON *json_keywords = cJSON_GetObjectItem(json_if, "keywords");
+        if(loader_keywords_list_from_json(&(dialog_cond->cond_if.keywords), json_keywords) != RESULT_OK) {
+            printf("Error: failed to parse keywords");
+            return RESULT_ERROR;
+        }
+    }
+
+    
+    /* Extract then case */
+    if(!cJSON_HasObjectItem(json, "then")) {
+        printf("Error: JSON has no then case");
+        return RESULT_ERROR;
+    }
+
+    cJSON *json_then = cJSON_GetObjectItem(json, "then");
+
+    if(!cJSON_IsObject(json_then)) {
+        printf("Error: JSON then is not an object");
+        return RESULT_ERROR;
+    }
+
+    /* Extract then content */
+    /* It can be: 
+     * - response as int
+     * - next_dialog_state as int
+     * - questlog_set as int
+     * - give_rewards as bool
+    */
 
     return RESULT_OK;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "item.h"
 #include "utils.h"
+#include "questlog.h"
 
 //QUEST_STAGE_BRIEF_BUFFER_SIZE
 //change all create to init
@@ -17,18 +18,6 @@
 
 #define QUEST_REQUIREMENTS_ITEMS_MAX_COUNT 4
 #define QUEST_REWARDS_ITEMS_MAX_COUNT 4
-
-/* Quest ID */
-typedef size_t quest_id_t;
-
-/* Questlog */
-typedef struct questlog_t {
-    quest_id_t quest_id;
-    int stage;
-} questlog_t;
-
-void questlog_create(questlog_t *questlog, quest_id_t quest_id);
-//todo questlog get finished quests: need to share data from database
 
 
 /* Quest Data */
