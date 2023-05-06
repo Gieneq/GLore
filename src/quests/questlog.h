@@ -10,10 +10,10 @@
 typedef size_t quest_id_t;
 
 /* Questlog */
-typedef struct questlog_t {
+typedef struct quest_progress_t {
     quest_id_t quest_id;
     int stage;
-} questlog_t;
+} quest_progress_t;
 
-void questlog_create(questlog_t *questlog, quest_id_t quest_id);
-void questlog_init(questlog_t *questlog);
+void quest_progress_create(quest_progress_t *quest_progress, quest_id_t quest_id);
+void quest_progress_init(quest_progress_t *quest_progress);

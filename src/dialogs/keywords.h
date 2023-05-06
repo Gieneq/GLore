@@ -6,9 +6,14 @@
 #define KEYWORDS_MAX_COUNT 4
 
 /* Keyword */
-typedef char keyword_t[KEYWORD_BUFFER_SIZE];
-void keyword_init(keyword_t keyword);
-result_t keyword_from_string(keyword_t keyword, const char *str);
+// typedef char keyword_t[KEYWORD_BUFFER_SIZE];
+typedef struct keyword_t {
+    char text[KEYWORD_BUFFER_SIZE];
+    int length;
+} keyword_t;
+
+void keyword_init(keyword_t* keyword);
+result_t keyword_from_string(keyword_t* keyword, const char *str);
 
 /* Keywords */
 typedef struct keywords_list_t {
@@ -21,5 +26,5 @@ result_t keywords_list_from_delimited_string(keywords_list_t *list, const char *
 void keywords_list_printf(const keywords_list_t *list);
 
 /* Matchings */
-option_t keyword_match(const keyword_t keyword, const char *str);
+option_t keyword_match(const keyword_t* keyword, const char *str);
 option_t keywords_list_match(const keywords_list_t *list, const char *str);

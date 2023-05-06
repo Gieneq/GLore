@@ -562,7 +562,7 @@ result_t loader_keywords_list_from_json(keywords_list_t *list, const cJSON *json
             printf("Error: JSON item is not a string");
             return RESULT_ERROR;
         }
-        keyword_from_string(list->keywords[i], item->valuestring);
+        keyword_from_string(&list->keywords[i], item->valuestring);
     }
     list->count = count;
     return RESULT_OK;

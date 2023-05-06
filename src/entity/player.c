@@ -24,7 +24,7 @@ size_t player_questlog_get_all_quests_count(player_t* player) {
     return player->quests.count;
 }
 
-option_t player_questlog_get_quest_by_id(player_t* player, quest_id_t quest_id, questlog_t* questlog) {
+option_t player_questlog_get_quest_by_id(player_t* player, quest_id_t quest_id, quest_progress_t* questlog) {
     for (size_t i = 0; i < player->quests.count; i++) {
         if (player->quests.logs[i].quest_id == quest_id) {
             questlog->quest_id = player->quests.logs[i].quest_id;

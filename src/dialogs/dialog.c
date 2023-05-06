@@ -3,24 +3,81 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/*
+ * DIALOG CONDITION IF
+ */
 
-void dialog_cond_if_init(dialog_cond_if_t *cond_if) {
+result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
+    if(!cond_if) {
+        printf("Dialog condition IF corrupted.\n");
+        return RESULT_ERROR;
+    }
+
     cond_if->dialog_stage = 0;
     keywords_list_init(&cond_if->keywords);
-    questlog_init(&cond_if->questlog_required);
+    quest_progress_init(&cond_if->quest_progress_required);
     cond_if->entering_quest_id = 0;
     cond_if->check_requirements = FALSE;
+    
+    return RESULT_OK;
 }
 
+/*
+ * DIALOG CONDITION THEN
+ */
 
-void dialog_cond_then_init(dialog_cond_then_t *cond_then) {
-    //TODO
+result_t dialog_cond_then_init(dialog_cond_then_t *cond_then) {
+    if(!cond_then) {
+        printf("Dialog condition THEN corrupted.\n");
+        return RESULT_ERROR;
+    }
+
+    //todo response
+
+    return RESULT_OK;
 }
 
-void dialog_block_init(dialog_block_t *cond, const dialog_type_t dial_type) {
-    cond->type = dial_type;
-    dialog_cond_if_init(&cond->cond_if);
-    dialog_cond_then_init(&cond->cond_then);
+/*
+ * DIALOG BLOCK
+ */
+
+result_t dialog_block_init(dialog_block_t *block, const dialog_type_t dial_type) {
+    printf("Dialog block initializing\n");
+
+    if(dialog_block_clear(block) != RESULT_OK) {
+        printf("Cannot clear dialog block.\n");
+        return RESULT_ERROR;
+    }
+
+    // block->local_stage = 0;
+    block->type = dial_type;
+
+    if(dialog_cond_if_init(&block->cond_if) != RESULT_OK) {
+        printf("Cannot initialize dialog condition IF.\n");
+        return RESULT_ERROR;
+    }
+
+    if(dialog_cond_then_init(&block->cond_then) != RESULT_OK) {
+        printf("Cannot initialize dialog condition THEN.\n");
+        return RESULT_ERROR;
+    }
+
+    return RESULT_OK;
+}
+
+result_t dialog_block_clear(dialog_block_t *dialog_block) {
+    if(!dialog_block) {
+        printf("Dialog block corrupted.\n");
+        return RESULT_ERROR;
+    }
+
+    dialog_block->type = 0;
+    /* Used to make dialog block invalid */
+    return RESULT_OK;
+}
+
+bool_t dialog_block_is_valid(dialog_block_t *dialog_block) {
+    return dialog_block->type != 0 ? TRUE : FALSE;
 }
 
 void dialog_block_printf(const dialog_block_t *cond) {

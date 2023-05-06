@@ -33,7 +33,7 @@ result_t room_clear(room_t* room) {
 
 
 bool_t room_is_valid(room_t* room) {
-    return room->id != 0 ? TRUE : FALSE;
+    return room->id != 0 && strlen(room->name) > 0 ? TRUE : FALSE;
 }
 
 result_t room_append_npc(room_t* room, npc_t* npc) {
