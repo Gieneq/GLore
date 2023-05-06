@@ -7,7 +7,7 @@
 void dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     cond_if->dialog_stage = 0;
     keywords_list_init(&cond_if->keywords);
-    questlog_init(&cond_if->questlog);
+    questlog_init(&cond_if->questlog_required);
     cond_if->entering_quest_id = 0;
     cond_if->check_requirements = FALSE;
 }
@@ -17,14 +17,14 @@ void dialog_cond_then_init(dialog_cond_then_t *cond_then) {
     //TODO
 }
 
-void dialog_cond_init(dialog_cond_t *cond, const dialog_type_t dial_type) {
+void dialog_block_init(dialog_block_t *cond, const dialog_type_t dial_type) {
     cond->type = dial_type;
     dialog_cond_if_init(&cond->cond_if);
     dialog_cond_then_init(&cond->cond_then);
 }
 
-void dialog_cond_printf(const dialog_cond_t *cond) {
-    printf("dialog_cond_t:\n");
+void dialog_block_printf(const dialog_block_t *cond) {
+    printf("dialog_block_t:\n");
     printf("type: %d\n", cond->type);
     printf("cond_if:\n");
     printf("dialog_stage: %d\n", cond->cond_if.dialog_stage);

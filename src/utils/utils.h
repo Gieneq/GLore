@@ -1,5 +1,7 @@
 #pragma once
 
+#define iterator_foreach(element, iterator) for(*(element) = ((iterator)->first != NULL) ? (iterator)->first : NULL; ((iterator)->current < (iterator)->count) && *(element); *(element) = (iterator)->first + ++((iterator)->current))
+
 #define MAX(a, b) ((a) > (b)  ? (a) : (b))
 #define MIN(a, b) ((a) < (b)  ? (a) : (b))
 #define ABS(a)    ((a) < 0    ? -(a) : (a))

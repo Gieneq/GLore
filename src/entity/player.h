@@ -1,6 +1,9 @@
 #pragma once
 #include "utils.h"
 #include "quest.h"
+// #include 
+
+typedef struct room_t room_t;
 
 
 #define PLAYER_NAME_BUFFER_SIZE 64
@@ -20,6 +23,7 @@ typedef struct player_t {
         questlog_t logs[PLAYER_QUESTLOG_BUFFER_SIZE];
         size_t count;
     } quests;
+    room_t* current_room;
 } player_t;
 
 void player_set_name(player_t* player, const char * player_name);

@@ -12,4 +12,4 @@
 */
 result_t loader_parse(world_t* world, database_t* database);
 result_t loader_keywords_list_from_json(keywords_list_t *list, const cJSON *json);
-result_t loader_dialog_cond_from_json(dialog_cond_t *cond_if, const dialog_type_t dialog_type, const cJSON *json);
+result_t loader_dialog_cond_from_json(dialog_block_t *cond_if, const dialog_type_t dialog_type, const cJSON *json);

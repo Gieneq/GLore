@@ -18,13 +18,16 @@ add_executable(Pyrograf
 main.c 
 src/core/core.c
 src/core/loader.c
+src/core/loader_testyard.c
 src/core/database.c
 src/dialogs/keywords.c
 src/dialogs/dialog.c
 src/dialogs/responses.c
 src/entity/player.c
+src/entity/npc.c
 src/objects/item.c
 src/objects/world.c
+src/objects/room.c
 src/quests/quest.c
 src/quests/questlog.c
 src/utils/utils.c

@@ -4,6 +4,8 @@
 #include "database.h"
 #include "world.h"
 
+#define CONFIG_TEST_DATABASE 1
+
 #define CORE_ARG_BUFFER_SIZE 128
 #define CORE_ARG_MAX_LENGTH (CORE_ARG_BUFFER_SIZE-1)
 

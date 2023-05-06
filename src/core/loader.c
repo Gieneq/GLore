@@ -469,11 +469,11 @@ static result_t loader_parse_quests_data(const char *buffer, database_t* databas
     cJSON* json_quest_dialog = NULL;
     cJSON_ArrayForEach(json_quest_dialog, json_quest_dialogs) {
         // quest_dialog_data_t quest_dialog_data;
-        dialog_cond_t dialog_cond;
-        dialog_cond_init(&dialog_cond, DIALOG_TYPE_QUEST);
+        dialog_block_t dialog_cond;
+        dialog_block_init(&dialog_cond, DIALOG_TYPE_QUEST);
         loader_dialog_cond_from_json(&dialog_cond, DIALOG_TYPE_QUEST, json_quest_dialog);
-        dialog_cond_printf(&dialog_cond);
-        
+        dialog_block_printf(&dialog_cond);
+
         // if(loader_parse_quest_dialog(json_quest_dialog, database, &quest_dialog_data) != RESULT_OK) {
         //     printf("Error: failed to parse quest dialogs.\n");
         //     return RESULT_ERROR;
@@ -569,8 +569,8 @@ result_t loader_keywords_list_from_json(keywords_list_t *list, const cJSON *json
 }
 
 
-result_t loader_dialog_cond_from_json(dialog_cond_t *dialog_cond, const dialog_type_t dialog_type, const cJSON *json) {
-    dialog_cond_init(dialog_cond, dialog_type);
+result_t loader_dialog_cond_from_json(dialog_block_t *dialog_cond, const dialog_type_t dialog_type, const cJSON *json) {
+    dialog_block_init(dialog_cond, dialog_type);
     if(!cJSON_IsObject(json)) {
         printf("Error: JSON is not an object");
         return RESULT_ERROR;

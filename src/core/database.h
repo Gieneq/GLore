@@ -7,6 +7,8 @@
 #define DATABASE_QUESTS_MAX_COUNT 64
 #define DATABASE_NPCS_MAX_COUNT 64
 
+typedef item_data_t (*item_data_by_id_t)(int item_id);
+
 typedef struct items_datatable_t {
     item_data_t data[DATABASE_ITEMS_MAX_COUNT];
     size_t count;
@@ -20,6 +22,8 @@ typedef struct quests_datatable_t {
 typedef struct database_t {
     items_datatable_t items_data_table;
     quests_datatable_t quests_data_table;
+
+
 } database_t;
 
 /* General */
