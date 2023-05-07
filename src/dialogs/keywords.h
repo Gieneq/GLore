@@ -29,3 +29,4 @@ void keywords_list_printf(const keywords_list_t *list);
 option_t keyword_match(const keyword_t* keyword, const char *str);
 option_t keyword_match_front(const keyword_t* keyword, const char *str);
 option_t keywords_list_match(const keywords_list_t *list, const char *str);
+option_t keywords_list_match_front(const keywords_list_t* list, const char *str);

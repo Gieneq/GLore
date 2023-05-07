@@ -7,21 +7,28 @@
 #include "dialog.h"
 #include "keywords.h"
 #include "core.h"
+#include "world.h"
 
-static keyword_t kw_exit;
+static keywords_list_t kws_exit;
 static keyword_t kw_help;
 
 static option_t system_player_communication_want_quit(player_t* player, const char* msg) {
-    return keyword_match_front(&kw_exit, msg);
+    // return keyword_match_front(&kw_exit, msg);
+    return keywords_list_match_front(&kws_exit, msg);
 }
 
 static option_t system_player_communication_want_help(player_t* player, const char* msg) {
     return keyword_match_front(&kw_help, msg);
 }
 
+static option_t system_player_communication_interacted_world(player_t* player, world_t* world, const char* msg) {
+
+    return OPTION_NONE;
+}
 
 void system_player_communication_init() {
-    keyword_from_string(&kw_exit, "!exit");
+    // keyword_from_string(&kw_exit, "!exit");
+    keywords_list_from_delimited_string(&kws_exit, "!exit,!leave,!quit,!e,!q", ",");
     keyword_from_string(&kw_help, "!help");
 }
 
@@ -33,6 +40,8 @@ void system_player_communication_process(core_t* core, player_t* player, const c
     } else if(system_player_communication_want_quit(player, msg) == OPTION_SOME) {
         printf("Quitting?\n");
         core->state = CORE_STATE_STOPPED;
+    } else if(system_player_communication_interacted_world(player, &core->world, msg) == OPTION_SOME ) {
+        //but what?
     } else {
         printf("What?\n");
     }

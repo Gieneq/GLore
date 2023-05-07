@@ -94,6 +94,10 @@ option_t keyword_match_front(const keyword_t* keyword, const char *str) {
     if (strstr(str, keyword->text)) {
         return OPTION_SOME;
     }
+    // printf(" %s vs kw: ..%s..\n", str, keyword->text);
+    // if ((str[0] == keyword->text[0]) && (str[1] == keyword->text[1])) {
+    //     return OPTION_SOME;
+    // }
 
     return OPTION_NONE;
 }
@@ -101,6 +105,16 @@ option_t keyword_match_front(const keyword_t* keyword, const char *str) {
 option_t keywords_list_match(const keywords_list_t *list, const char *str) {
     for (int i = 0; i < list->count; i++) {
         if (keyword_match(&list->keywords[i], str) == OPTION_SOME) {
+            return OPTION_SOME;
+        }
+    }
+    return OPTION_NONE;
+}
+
+option_t keywords_list_match_front(const keywords_list_t* list, const char *str) {
+    for (int i = 0; i < list->count; i++) {
+        // printf("Cecking %s/%s is %d\n", list->keywords[i].text, str, (int)(keyword_match_front(&list->keywords[i], str)));
+        if (keyword_match_front(&list->keywords[i], str) == OPTION_SOME) {
             return OPTION_SOME;
         }
     }
