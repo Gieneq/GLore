@@ -6,13 +6,14 @@
 //todo add registry to validate passing id's - they can be messed in data files.
 
 result_t npc_init(npc_t* npc) {
-    printf("NPC initializing\n");
+    printf("NPC initializing with some basic hi-bye dialog\n");
 
     if(npc_clear(npc) != RESULT_OK) {
         printf("Cannot clear NPC data.\n");
         return RESULT_ERROR;
     }
     
+    return RESULT_OK;
     /* Dialogs */
     /* Add every NPC Hi/Hello name - Bye dialog transition */
 

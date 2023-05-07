@@ -85,6 +85,19 @@ option_t keyword_match(const keyword_t* keyword, const char *str) {
     return OPTION_NONE;
 }
 
+
+option_t keyword_match_front(const keyword_t* keyword, const char *str) {
+    if(keyword->length > strlen(str)) {
+        return OPTION_NONE;
+    }
+
+    if (strstr(str, keyword->text)) {
+        return OPTION_SOME;
+    }
+
+    return OPTION_NONE;
+}
+
 option_t keywords_list_match(const keywords_list_t *list, const char *str) {
     for (int i = 0; i < list->count; i++) {
         if (keyword_match(&list->keywords[i], str) == OPTION_SOME) {

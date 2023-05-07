@@ -4,26 +4,7 @@
 #include "loader.h"
 #include "loader_testyard.h"
 #include "world.h"
-
-
-static void _core_process_cmd(core_t* core) {
-    if (strcmp(core->arg_buffer, "quit") == 0) {
-        core->state = CORE_STATE_STOPPED;
-    } 
-    
-    else if (strcmp(core->arg_buffer, "help") == 0) {
-        printf("Commands:\n");
-        printf("quit - quit the game\n");
-        printf("help - show this help\n");
-    } 
-
-    else {
-        printf("Unknown command: %s\n", core->arg_buffer);
-    }
-
-    memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-    core->arg_buffer_index = 0;
-}
+#include "system_player_communication.h"
 
 
 result_t core_create(core_t *core) {
@@ -36,6 +17,8 @@ result_t core_create(core_t *core) {
         return RESULT_ERROR;
     }
 
+    system_player_communication_init();
+
     return RESULT_OK;
 }
 
@@ -43,13 +26,15 @@ result_t core_delete(core_t* core) {
     if (core == NULL) {
         return RESULT_ERROR;
     }
-    free(core);
+    free(core); //waj?
     return RESULT_OK;
 }
 
 result_t core_populate(core_t* core, database_t* database) {
+    player_set_name(&core->world.player, "Zbignief");
 #if CONFIG_TEST_DATABASE == 1
     if(loader_testyard_populate(&(core->world), database) != RESULT_OK) {
+        printf("Problem with test loader.\n");
         return RESULT_ERROR;
     }
 #else
@@ -69,14 +54,33 @@ result_t core_populate(core_t* core, database_t* database) {
     // quest_data_printf(&quest_data);
 
 #endif
+
+    /* Set starting room for player */
+    player_t* player = &core->world.player;
+    room_t* selected_room = &core->world.rooms[0];
+
+    if(player_change_room(player, selected_room) != RESULT_OK) {
+        printf("Player cannot change room.");
+        return RESULT_ERROR;
+    }
+    
+    selected_room = &core->world.rooms[1];
+    if(player_change_room(player, selected_room) != RESULT_OK) {
+        printf("Player cannot change room.");
+        return RESULT_ERROR;
+    }
+
     return RESULT_OK;
 }
 
 void core_input(core_t* core) {
     char c = getchar();
-    // printf("%c", c);
+    printf("%c", c);
     if (c == '\n' || c == '\r' || c == '\0') {
-        _core_process_cmd(core);
+        // _core_process_cmd(core);
+        system_player_communication_process(&core, &core->world.player, core->arg_buffer);
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        core->arg_buffer_index = 0;
     } else {
         if (core->arg_buffer_index < CORE_ARG_MAX_LENGTH) {
             core->arg_buffer[core->arg_buffer_index] = c;
@@ -86,7 +90,11 @@ void core_input(core_t* core) {
 }
 
 void core_loop(core_t* core) {
-    
+
+    // world_t* world = &core->world;
+    // player_t* player = &world->player;
+
+    // core->state = CORE_STATE_STOPPED;
 }
 
 

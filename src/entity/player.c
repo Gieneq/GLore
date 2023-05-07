@@ -34,3 +34,28 @@ option_t player_questlog_get_quest_by_id(player_t* player, quest_id_t quest_id, 
     }
     return OPTION_NONE;
 }
+
+result_t player_change_room(player_t* player, room_t* room) {
+    if(!player || !room) {
+        printf("Player or room is missing or corrupted.");
+        return RESULT_ERROR;
+    }
+
+    if(player->current_room == room) {
+        //todo in future change to separated system for printing
+        printf("You are already in this room.");
+        return RESULT_ERROR;
+    }
+
+    if(player->current_room) {
+        printf("You are leaving \'%s\'\n", player->current_room->name);
+    }
+
+    if(room) {
+        printf("You are entering \'%s\'\n", room->name);
+    }
+
+    player->current_room = room;
+
+    return RESULT_OK;
+}

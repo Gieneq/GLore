@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Starting!\n");
-    return 0;
+    // return 0;
 
     while(core_get_state(&core) == CORE_STATE_RUNNING) {
         core_input(&core);
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     }
 
     //save database
-    core_delete(&core);
+    // core_delete(&core);
     printf("Finished\n");
     return 0;
 }

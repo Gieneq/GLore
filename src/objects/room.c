@@ -28,6 +28,11 @@ result_t room_clear(room_t* room) {
 
     /* Name */
     memset(room->name, '\0', ROOM_NAME_BUFFER_SIZE);
+
+    /* NPCs list */
+    memset(room->npcs, 0, sizeof(npc_t) * ROOM_NPCS_MAX_COUNT);
+    room->npcs_count = 0;
+    
     return RESULT_OK;
 }
 
@@ -55,7 +60,7 @@ result_t room_append_npc(room_t* room, npc_t* npc) {
 
     /* Copy NPC data */
     int new_npc_index = room->npcs_count;
-    memcpy(room->npcs + new_npc_index, npc, sizeof(npc_t));
+    memcpy(&room->npcs[new_npc_index], npc, sizeof(npc_t));
 
     /* After moving leave NPC data invalid */
     if(npc_clear(npc) != RESULT_OK) {

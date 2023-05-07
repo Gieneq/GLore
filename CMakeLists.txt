@@ -20,6 +20,7 @@ src/core/core.c
 src/core/loader.c
 src/core/loader_testyard.c
 src/core/database.c
+src/core/system_player_communication.c
 src/dialogs/keywords.c
 src/dialogs/dialog.c
 src/dialogs/responses.c
