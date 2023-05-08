@@ -4,7 +4,7 @@
 #include "loader.h"
 #include "loader_testyard.h"
 #include "world.h"
-#include "system_player_communication.h"
+#include "system_user_input.h"
 
 
 result_t core_create(core_t *core) {
@@ -17,12 +17,12 @@ result_t core_create(core_t *core) {
         return RESULT_ERROR;
     }
 
-    system_player_communication_init();
+    system_user_input_init();
 
     return RESULT_OK;
 }
 
-result_t core_delete(core_t* core) {   
+result_t core_delete(core_t* core) {
     if (core == NULL) {
         return RESULT_ERROR;
     }
@@ -78,7 +78,7 @@ void core_input(core_t* core) {
     printf("%c", c);
     if (c == '\n' || c == '\r' || c == '\0') {
         // _core_process_cmd(core);
-        system_player_communication_process(&core, &core->world.player, core->arg_buffer);
+        system_user_input_process(&core, &core->world.player, core->arg_buffer);
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
         core->arg_buffer_index = 0;
     } else {

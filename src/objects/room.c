@@ -16,7 +16,6 @@ result_t room_init(room_t* room) {
     return RESULT_OK;
 }
 
-
 result_t room_clear(room_t* room) {
     if(!room) {
         printf("Room data corrupted.\n");
@@ -35,7 +34,6 @@ result_t room_clear(room_t* room) {
     
     return RESULT_OK;
 }
-
 
 bool_t room_is_valid(room_t* room) {
     return room->id != 0 && strlen(room->name) > 0 ? TRUE : FALSE;
