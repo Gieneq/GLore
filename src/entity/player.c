@@ -48,11 +48,11 @@ result_t player_change_room(player_t* player, room_t* room) {
     }
 
     if(player->current_room) {
-        printf("You are leaving \'%s\'\n", player->current_room->name);
+        printf("You are leaving \'%s\'.\n", player->current_room->name);
     }
 
     if(room) {
-        printf("You are entering \'%s\'\n", room->name);
+        printf("You are entering \'%s\'.\n", room->name);
     }
 
     player->current_room = room;

@@ -31,7 +31,15 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     test_room_2.id = 2;
     room_set_name(&test_room_2, "Birch forest");
 
-
+    room_t test_room_3;
+    room_init(&test_room_3);
+    test_room_3.id = 3;
+    room_set_name(&test_room_3, "Riverbank");
+    
+    room_t test_room_4;
+    room_init(&test_room_4);
+    test_room_4.id = 4;
+    room_set_name(&test_room_4, "Riverbank Village");
 
     /* Create test NPC */
     npc_t test_npc_1;
@@ -95,6 +103,41 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
         printf("Cannot append room to the world.\n");
         return RESULT_ERROR;
     }
+    if(world_append_room(world, &test_room_3) == RESULT_ERROR) {
+        printf("Cannot append room to the world.\n");
+        return RESULT_ERROR;
+    }
+
+    if(world_append_room(world, &test_room_4) == RESULT_ERROR) {
+        printf("Cannot append room to the world.\n");
+        return RESULT_ERROR;
+    }
+    
+    /* Connect rooms. Watch out - use data from world, not local temporary variables */
+    room_t* room_1 = NULL;
+    if(world_get_room_by_name_ignorecase(world, &room_1, "The dock") == RESULT_ERROR) {
+        printf("Cannot find room with given name.\n");
+        return RESULT_ERROR;
+    }
+    room_t* room_2 = NULL;
+    if(world_get_room_by_name_ignorecase(world, &room_2, "Birch forest") == RESULT_ERROR) {
+        printf("Cannot find room with given name.\n");
+        return RESULT_ERROR;
+    }
+    room_t* room_3 = NULL;
+    if(world_get_room_by_name_ignorecase(world, &room_3, "Riverbank") == RESULT_ERROR) {
+        printf("Cannot find room with given name.\n");
+        return RESULT_ERROR;
+    }
+    room_t* room_4 = NULL;
+    if(world_get_room_by_id(world, &room_3, 4) == RESULT_ERROR) {
+        printf("Cannot find room with given id.\n");
+        return RESULT_ERROR;
+    }
+    room_connect_bidirectional(room_1, room_2);
+    room_connect_bidirectional(room_2, room_3);
+    room_connect_bidirectional(room_3, room_4);
+    room_connect_bidirectional(room_1, room_4);
 
 
     /* Iterate over all rooms and all NPCs inside them */

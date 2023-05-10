@@ -23,7 +23,10 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Starting!\n");
-    // return 0;
+
+    if(core_test_code(&core) == OPTION_SOME) {
+        return 0;
+    }
 
     while(core_get_state(&core) == CORE_STATE_RUNNING) {
         core_input(&core);

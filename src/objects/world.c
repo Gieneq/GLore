@@ -3,8 +3,6 @@
 #include <string.h>
 #include "world.h"
 
-
-
 result_t world_init(world_t* world) {
     world->rooms_count = 0;
     memset(world->rooms, 0, sizeof(room_t) * WORLD_ROOMS_MAX_COUNT);
@@ -48,5 +46,24 @@ room_iter_t world_get_room_iter(world_t* world) {
     return iter;
 }
 
+option_t world_get_room_by_name_ignorecase(world_t* world, room_t** room, const char* name) {
+    room_iter_t iter = world_get_room_iter(world);
+    iterator_foreach(room, &iter) {
+        if(string_compare_ignorecase((*room)->name, name) == 0) {
+            return OPTION_SOME;
+        }
+    }
+    *room = NULL;
+    return OPTION_NONE;
+}
 
-// room_iter_t world_get_room_iter(world_t* world);
+option_t world_get_room_by_id(world_t* world, room_t** room, int id) {
+    room_iter_t iter = world_get_room_iter(world);
+    iterator_foreach(room, &iter) {
+        if((*room)->id == id) {
+            return OPTION_SOME;
+        }
+    }
+    *room = NULL;
+    return OPTION_NONE;
+}

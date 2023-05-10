@@ -25,6 +25,7 @@ typedef struct core_t {
 result_t core_create(core_t *core);
 result_t core_delete(core_t* core);
 result_t core_populate(core_t* core, database_t* database);
+option_t core_test_code(core_t* core);
 void core_input(core_t* core);
 void core_loop(core_t* core);
 core_state_t core_get_state(core_t* core);

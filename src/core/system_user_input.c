@@ -9,6 +9,7 @@
 #include "core.h"
 #include "world.h"
 
+static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
 static keyword_t kw_help;
 static keyword_t kw_look;
@@ -45,6 +46,51 @@ return OPTION_NONE;
 }
 
 static option_t system_user_input_player_go(player_t* player, room_t* current_room, const char* msg) {
+    word_iterator_start(&word_split_iterator, msg);
+
+    if(word_iterator_has_next(&word_split_iterator) == OPTION_SOME) {
+        const char* word = word_split_iterator.next_word;
+        const char* remaining = word_split_iterator.next_word_src;
+        const int word_index = word_split_iterator.next_word_index;
+
+        /* Check if first word matches keword. Checking index is redundant. */
+        if(word_index == 0 && keyword_match(&kw_go, word) == OPTION_SOME) {
+            if(current_room->adjecent_rooms_count == 0) {
+                printf("You can't go anywhere from here.\n");
+                return OPTION_SOME;
+            }
+
+            /* Single keyword */
+            if(strlen(remaining) == 0) {
+                /* Iterate over list of adjecent rooms */
+                printf("You can go to:\n");
+
+                for(int i=0; i<current_room->adjecent_rooms_count; i++) {
+                    room_t* adjecent_room = current_room->adjecent_rooms[i];
+                    printf(" * %s\n", adjecent_room->name);
+                }
+
+                // TODO
+                // room_iter_t adjecent_room_iter = room_get_adjecent_room_iter(current_room);
+                // room_t* adjecent_room = NULL;
+                // iterator_foreach(&adjecent_room, &adjecent_room_iter) {
+                //     printf(" * %s\n", adjecent_room->name);
+                // }
+                return OPTION_SOME;
+            }
+
+            /* Keyword with remaining direction */
+            for(int i=0; i<current_room->adjecent_rooms_count; i++) {
+                room_t* adjecent_room = current_room->adjecent_rooms[i];
+                if(string_compare_ignorecase(adjecent_room->name, remaining) == OPTION_SOME) {
+                    player_change_room(player, adjecent_room);
+                    return OPTION_SOME;
+                }
+            }
+            printf("There is no road leading to %s.\n", remaining);
+            return OPTION_SOME;
+        }
+    }
     return OPTION_NONE;
 }
 
