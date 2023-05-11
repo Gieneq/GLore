@@ -8,6 +8,7 @@
 #include "keywords.h"
 #include "core.h"
 #include "world.h"
+#include "debug.h"
 
 static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
@@ -126,7 +127,7 @@ void system_user_input_init() {
 }
 
 void system_user_input_process(core_t* core, player_t* player, const char* msg) {
-    printf("Player %s says \'%s\' so...\n", player->name, msg);
+    debug_printf("Player %s says \'%s\' so...\n", player->name, msg);
 
     /* General */
     if(system_user_input_general(core, player, msg) == OPTION_SOME) {

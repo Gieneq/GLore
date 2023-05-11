@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "world.h"
+#include "debug.h"
 
 result_t world_init(world_t* world) {
+    debug_printf("World initializing\n");
     world->rooms_count = 0;
     memset(world->rooms, 0, sizeof(room_t) * WORLD_ROOMS_MAX_COUNT);
     return RESULT_OK;

@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include "core.h"
 #include "database.h"
-
+#include "debug.h"
 
 static database_t database;
 static core_t core;
 
 int main(int argc, char *argv[]) {
-    printf("Initializing\n");
+    debug_printf("Initializing\n");
 
     if(core_create(&core) != RESULT_OK) {
         printf("Failed to create core\n");
@@ -22,7 +22,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    printf("Starting!\n");
+    printf("Welcome in GLore! You are in text world in which \nyou can navigate by writing words. Keywords are fine. \nIf you need further information type \'help\'. Good luck!\n");
+    printf("---------------------------------------------------------\n");
 
     if(core_test_code(&core) == OPTION_SOME) {
         return 0;
@@ -35,6 +36,6 @@ int main(int argc, char *argv[]) {
 
     //save database
     // core_delete(&core);
-    printf("Finished\n");
+    debug_printf("Finished\n");
     return 0;
 }

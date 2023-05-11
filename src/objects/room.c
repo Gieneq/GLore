@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include "debug.h"
 #include "npc.h"
 
 static result_t room_append_adjecent_room(room_t* room, room_t* adjecent_room) {
@@ -29,7 +29,7 @@ static result_t room_append_adjecent_room(room_t* room, room_t* adjecent_room) {
 }
 
 result_t room_init(room_t* room) {
-    printf("Room initializing\n");
+    debug_printf("Room initializing\n");
 
     if(room_clear(room) != RESULT_OK) {
         printf("Cannot clear room data.\n");
@@ -133,7 +133,7 @@ bool_t room_has_adjecent_vacancy(room_t* room) {
 result_t room_connect_bidirectional(room_t* room_1, room_t* room_2) {
 
     //todo check if already connected 
-    
+
 
     if(!room_1 || !room_2) {
         printf("Room data corrupted.\n");

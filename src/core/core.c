@@ -5,7 +5,7 @@
 #include "loader_testyard.h"
 #include "world.h"
 #include "system_user_input.h"
-
+#include "debug.h"
 
 static void core_propcess_user_input(core_t* core) {
     system_user_input_process(core, &core->world.player, core->arg_buffer);
@@ -64,47 +64,48 @@ result_t core_populate(core_t* core, database_t* database) {
     /* Set starting room for player */
     player_t* player = &core->world.player;
     room_t* selected_room = &core->world.rooms[0];
-    if(player_change_room(player, selected_room) != RESULT_OK) {
-        printf("Player cannot change room.");
-        return RESULT_ERROR;
-    }
+    player->current_room = selected_room;
+    // if(player_change_room(player, selected_room) != RESULT_OK) {
+    //     printf("Player cannot change room.");
+    //     return RESULT_ERROR;
+    // }
 
     return RESULT_OK;
 }
 
 option_t core_test_code(core_t* core) {
-    printf("Test code.\n");
-    static const bool_t HAS_STH_TO_DO = TRUE;
+    debug_printf("Test code.\n");
 
-    if (HAS_STH_TO_DO) {
-        {
-            memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-            const char* msg_ = "look";
-            strcpy(core->arg_buffer, msg_);
-            core_propcess_user_input(core);
-        }
-        {
-            memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-            const char* msg_ = "go birch forest";
-            strcpy(core->arg_buffer, msg_);
-            core_propcess_user_input(core);
-        }
-        {
-            memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-            const char* msg_ = "go";
-            strcpy(core->arg_buffer, msg_);
-            core_propcess_user_input(core);
-        }
-
-        return OPTION_SOME;
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "look";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
     }
 
+#if DEBUG == 1
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "go birch forest";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "go";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+
+    return OPTION_SOME;
+#else
     return OPTION_NONE;
+#endif
 }
 
 void core_input(core_t* core) {
     char c = getchar();
-    printf("%c", c);
+    debug_printf("%c", c);
     if (c == '\n' || c == '\r' || c == '\0') {
         core_propcess_user_input(core);
     } else {

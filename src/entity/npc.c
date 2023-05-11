@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "debug.h"
 
 //todo add registry to validate passing id's - they can be messed in data files.
 
 result_t npc_init(npc_t* npc) {
-    printf("NPC initializing with some basic hi-bye dialog\n");
+    debug_printf("NPC initializing with some basic hi-bye dialog\n");
 
     if(npc_clear(npc) != RESULT_OK) {
         printf("Cannot clear NPC data.\n");
