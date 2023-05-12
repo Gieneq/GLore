@@ -1,4 +1,21 @@
 #pragma once
+#include <stdio.h>
+
+/* Global settings */
+#define DEBUG 0
+#define ERROR_OUTPUT 1
+
+#if defined(DEBUG) && DEBUG == 1
+#define debug_printf(fmt, ...) printf("#DEBUG "fmt, ##__VA_ARGS__)
+#else
+#define debug_printf(fmt, ...)
+#endif
+
+#if defined(ERROR_OUTPUT) && ERROR_OUTPUT == 1
+#define error_printf(fmt, ...) printf("#ERROR "fmt, ##__VA_ARGS__)
+#else
+#define error_printf(fmt, ...)
+#endif
 
 typedef enum result {
     RESULT_OK,

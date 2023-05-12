@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "world.h"
-#include "debug.h"
 
 result_t world_init(world_t* world) {
     debug_printf("World initializing\n");

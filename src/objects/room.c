@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "debug.h"
 #include "npc.h"
 
 static result_t room_append_adjecent_room(room_t* room, room_t* adjecent_room) {

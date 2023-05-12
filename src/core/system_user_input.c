@@ -8,13 +8,13 @@
 #include "keywords.h"
 #include "core.h"
 #include "world.h"
-#include "debug.h"
 
 static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
 static keyword_t kw_help;
 static keyword_t kw_look;
 static keyword_t kw_go;
+// static keyword_t kw_welcone;//nope - kazdy npc ma inne/;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
@@ -43,7 +43,7 @@ static option_t system_user_input_examine_room(player_t* player, room_t* current
 }
 
 static option_t system_user_input_manipulate_items(player_t* player, room_t* current_room, const char* msg) {
-return OPTION_NONE;
+    return OPTION_NONE;
 }
 
 static option_t system_user_input_player_go(player_t* player, room_t* current_room, const char* msg) {

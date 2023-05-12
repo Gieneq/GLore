@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "debug.h"
 
 //todo add registry to validate passing id's - they can be messed in data files.
 
@@ -10,7 +9,7 @@ result_t npc_init(npc_t* npc) {
     debug_printf("NPC initializing with some basic hi-bye dialog\n");
 
     if(npc_clear(npc) != RESULT_OK) {
-        printf("Cannot clear NPC data.\n");
+        error_printf("Cannot clear NPC data.\n");
         return RESULT_ERROR;
     }
     
@@ -28,7 +27,7 @@ result_t npc_init(npc_t* npc) {
 
         /* With (if) keywords */
         if(keywords_list_from_delimited_string(&greeting_dialog_block.cond_if.keywords, "hi, hello, greetings", ",") != RESULT_OK) {
-            printf("Couldnt parse keywords.\n");
+            error_printf("Couldnt parse keywords.\n");
             return RESULT_ERROR;
         }
 
@@ -89,7 +88,7 @@ result_t npc_init(npc_t* npc) {
 
 result_t npc_clear(npc_t* npc) {
     if(!npc) {
-        printf("NPC data corrupted.\n");
+        error_printf("NPC data corrupted.\n");
         return RESULT_ERROR;
     }
 
@@ -113,7 +112,7 @@ bool_t npc_is_valid(npc_t* npc) {
 
 result_t npc_set_name(npc_t* npc, const char* name) {
     if(strlen(name) > NPC_NAME_MAX_LENGTH) {
-        printf("New NPC name too long.\n");
+        error_printf("New NPC name too long.\n");
         return RESULT_ERROR;
     }
 
@@ -123,17 +122,17 @@ result_t npc_set_name(npc_t* npc, const char* name) {
 
 result_t npc_append_dialog_block(npc_t* npc, dialog_block_t* dialog_block) {
     if(npc->dialog_blocks_count >= NPC_DIALOG_BLOCKS_MAX_COUNT) {
-        printf("Failed to add dialog block to NPC: NPC is full\n");
+        error_printf("Failed to add dialog block to NPC: NPC is full\n");
         return RESULT_ERROR;
     }
 
     if(!dialog_block) {
-        printf("Dialog block data corrupted.\n");
+        error_printf("Dialog block data corrupted.\n");
         return RESULT_ERROR;
     }
 
     if(dialog_block_is_valid(dialog_block) == FALSE) {
-        printf("Dialog block data is invalid.\n");
+        error_printf("Dialog block data is invalid.\n");
         return RESULT_ERROR;
     }
 
@@ -143,7 +142,7 @@ result_t npc_append_dialog_block(npc_t* npc, dialog_block_t* dialog_block) {
 
     /* After moving leave dialog block data invalid */
     if(dialog_block_clear(dialog_block) != RESULT_OK) {
-        printf("Cannot clear dialog block data after moving.\n");
+        error_printf("Cannot clear dialog block data after moving.\n");
         // clear occupied memory?
         return RESULT_ERROR;
     }

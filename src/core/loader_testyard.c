@@ -11,7 +11,6 @@
 #include "keywords.h"
 #include "responses.h"
 #include "database.h"
-#include "debug.h"
 
 result_t loader_testyard_populate(world_t* world, database_t* database) {
     debug_printf("Populating test-world\n");
@@ -42,7 +41,7 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     npc_init(&test_npc_1);
     test_npc_1.id = 1;
     if(npc_set_name(&test_npc_1, "Stefan") == RESULT_ERROR) {
-        printf("Cannot assign name to the npc.\n");
+        error_printf("Cannot assign name to the npc.\n");
         return RESULT_ERROR;
     }
     
@@ -50,7 +49,7 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     npc_init(&test_npc_2);
     test_npc_2.id = 2;
     if(npc_set_name(&test_npc_2, "Jim") == RESULT_ERROR) {
-        printf("Cannot assign name to the npc.\n");
+        error_printf("Cannot assign name to the npc.\n");
         return RESULT_ERROR;
     }
     
@@ -58,24 +57,24 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     npc_init(&test_npc_3);
     test_npc_3.id = 3;
     if(npc_set_name(&test_npc_3, "Bim") == RESULT_ERROR) {
-        printf("Cannot assign name to the npc.\n");
+        error_printf("Cannot assign name to the npc.\n");
         return RESULT_ERROR;
     }
 
 
     /* Fill up rooms */
     if(room_append_npc(&test_room_1, &test_npc_1) == RESULT_ERROR) {
-        printf("Cannot append npc to the room.\n");
+        error_printf("Cannot append npc to the room.\n");
         return RESULT_ERROR;
     }
     
     if(room_append_npc(&test_room_1, &test_npc_2) == RESULT_ERROR) {
-        printf("Cannot append npc to the room.\n");
+        error_printf("Cannot append npc to the room.\n");
         return RESULT_ERROR;
     }
     
     if(room_append_npc(&test_room_1, &test_npc_3) == RESULT_ERROR) {
-        printf("Cannot append npc to the room.\n");
+        error_printf("Cannot append npc to the room.\n");
         return RESULT_ERROR;
     }
 
@@ -83,7 +82,7 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     /* Some tests about NPCs */
     npc_t* some_npc = NULL;
     if(room_get_npc_by_index(&test_room_1, &some_npc, 2) != RESULT_OK) {
-        printf("Missing NPC with specyfic index in array.\n");
+        error_printf("Missing NPC with specyfic index in array.\n");
         return RESULT_ERROR;
     }
     debug_printf("Got name: %s\n", some_npc->name);
@@ -91,43 +90,43 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
 
     /* Add rooms to world */
     if(world_append_room(world, &test_room_1) == RESULT_ERROR) {
-        printf("Cannot append room to the world.\n");
+        error_printf("Cannot append room to the world.\n");
         return RESULT_ERROR;
     }
 
     if(world_append_room(world, &test_room_2) == RESULT_ERROR) {
-        printf("Cannot append room to the world.\n");
+        error_printf("Cannot append room to the world.\n");
         return RESULT_ERROR;
     }
     if(world_append_room(world, &test_room_3) == RESULT_ERROR) {
-        printf("Cannot append room to the world.\n");
+        error_printf("Cannot append room to the world.\n");
         return RESULT_ERROR;
     }
 
     if(world_append_room(world, &test_room_4) == RESULT_ERROR) {
-        printf("Cannot append room to the world.\n");
+        error_printf("Cannot append room to the world.\n");
         return RESULT_ERROR;
     }
     
     /* Connect rooms. Watch out - use data from world, not local temporary variables */
     room_t* room_1 = NULL;
     if(world_get_room_by_name_ignorecase(world, &room_1, "The dock") != OPTION_SOME) {
-        printf("Cannot find room with given name.\n");
+        error_printf("Cannot find room with given name.\n");
         return RESULT_ERROR;
     }
     room_t* room_2 = NULL;
     if(world_get_room_by_name_ignorecase(world, &room_2, "Birch forest") != OPTION_SOME) {
-        printf("Cannot find room with given name.\n");
+        error_printf("Cannot find room with given name.\n");
         return RESULT_ERROR;
     }
     room_t* room_3 = NULL;
     if(world_get_room_by_name_ignorecase(world, &room_3, "Riverbank") != OPTION_SOME) {
-        printf("Cannot find room with given name.\n");
+        error_printf("Cannot find room with given name.\n");
         return RESULT_ERROR;
     }
     room_t* room_4 = NULL;
     if(world_get_room_by_id(world, &room_4, 4) != OPTION_SOME) {
-        printf("Cannot find room with given id.\n");
+        error_printf("Cannot find room with given id.\n");
         return RESULT_ERROR;
     }
     debug_printf("Room 4 is: %s\n", room_4->name);

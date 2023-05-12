@@ -5,7 +5,6 @@
 #include "loader_testyard.h"
 #include "world.h"
 #include "system_user_input.h"
-#include "debug.h"
 
 static void core_propcess_user_input(core_t* core) {
     system_user_input_process(core, &core->world.player, core->arg_buffer);
