@@ -14,19 +14,18 @@ static keywords_list_t kws_exit;
 static keyword_t kw_help;
 static keyword_t kw_look;
 static keyword_t kw_go;
-// static keyword_t kw_welcone;//nope - kazdy npc ma inne/;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
     if(keywords_list_match_front(&kws_exit, msg) == OPTION_SOME) {
-        printf("Quitting, bye then.\n");
+        info_printf("Quitting, bye then.\n");
         core->state = CORE_STATE_STOPPED;
         return OPTION_SOME;
     }
 
     /* Help */
     if(keyword_match_front(&kw_help, msg) == OPTION_SOME) {
-        printf("Help? Blah! Help yourself dude :p\n");
+        info_printf("Help? Blah! Help yourself dude :p\n");
         return OPTION_SOME;
     }
 
@@ -36,7 +35,20 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
 static option_t system_user_input_examine_room(player_t* player, room_t* current_room, const char* msg) {
     /* Look */
     if(keyword_match_front(&kw_look, msg) == OPTION_SOME) {
-        printf("You are in %s and see %d NPCs.\n", current_room->name, current_room->npcs_count);
+        info_printf("You are in %s ", current_room->name);
+        if(current_room->npcs_count == 0) {
+            info_printf("noone here.\n");
+            return OPTION_SOME;
+        }
+
+        /* Some NPCs inside room */
+        info_printf("and see %d NPCs:\n", current_room->npcs_count);
+        
+        npc_iter_t npc_iter = room_get_npc_iter(current_room);
+        npc_t* selected_npc = NULL;
+        iterator_foreach(&selected_npc, &npc_iter) {
+            info_printf(" * %s\n", selected_npc->name);
+        }
         return OPTION_SOME;
     }
     return OPTION_NONE;
@@ -57,26 +69,19 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
         /* Check if first word matches keword. Checking index is redundant. */
         if(word_index == 0 && keyword_match(&kw_go, word) == OPTION_SOME) {
             if(current_room->adjecent_rooms_count == 0) {
-                printf("You can't go anywhere from here.\n");
+                info_printf("You can't go anywhere from here.\n");
                 return OPTION_SOME;
             }
 
             /* Single keyword */
             if(strlen(remaining) == 0) {
                 /* Iterate over list of adjecent rooms */
-                printf("You can go to:\n");
+                info_printf("You can go to:\n");
 
                 for(int i=0; i<current_room->adjecent_rooms_count; i++) {
                     room_t* adjecent_room = current_room->adjecent_rooms[i];
-                    printf(" * %s\n", adjecent_room->name);
+                    info_printf(" * %s\n", adjecent_room->name);
                 }
-
-                // TODO
-                // room_iter_t adjecent_room_iter = room_get_adjecent_room_iter(current_room);
-                // room_t* adjecent_room = NULL;
-                // iterator_foreach(&adjecent_room, &adjecent_room_iter) {
-                //     printf(" * %s\n", adjecent_room->name);
-                // }
                 return OPTION_SOME;
             }
 
@@ -88,7 +93,7 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
                     return OPTION_SOME;
                 }
             }
-            printf("There is no road leading to %s.\n", remaining);
+            info_printf("There is no road leading to %s.\n", remaining);
             return OPTION_SOME;
         }
     }
@@ -117,7 +122,7 @@ static option_t system_user_input_npc_interaction(player_t* player, room_t* curr
 }
 
 static void system_user_input_on_unknown() {
-    printf("What?\n");
+    // printf("What?\n"); //Seems it is confusing: multiple hi
 }
 
 /* Public interface */

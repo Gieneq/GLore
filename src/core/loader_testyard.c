@@ -78,16 +78,6 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
         return RESULT_ERROR;
     }
 
-
-    /* Some tests about NPCs */
-    npc_t* some_npc = NULL;
-    if(room_get_npc_by_index(&test_room_1, &some_npc, 2) != RESULT_OK) {
-        error_printf("Missing NPC with specyfic index in array.\n");
-        return RESULT_ERROR;
-    }
-    debug_printf("Got name: %s\n", some_npc->name);
-
-
     /* Add rooms to world */
     if(world_append_room(world, &test_room_1) == RESULT_ERROR) {
         error_printf("Cannot append room to the world.\n");
@@ -137,6 +127,103 @@ result_t loader_testyard_populate(world_t* world, database_t* database) {
     room_connect_bidirectional(room_3, room_4);
     room_connect_bidirectional(room_1, room_4);
 
+    /* Add some more dialogs to NPC */
+    {
+        room_t* room_the_dock = NULL;
+        if(world_get_room_by_name_ignorecase(world, &room_the_dock, "The dock") != OPTION_SOME) {
+            error_printf("Cannot find room with given name.\n");
+            return RESULT_ERROR;
+        }
+        debug_printf("Found room: %s\n", room_the_dock->name);
+        npc_t* npc_bim = NULL;
+        if(room_get_npc_by_name(room_the_dock, &npc_bim, "Bim") != OPTION_SOME) {
+            error_printf("Missing NPC.\n");
+            return RESULT_ERROR;
+        }
+        debug_printf("Found NPC: %s\n", npc_bim->name);
+
+        /* Next dialog block */
+        {
+            dialog_block_t dialog_block;
+            dialog_block_init(&dialog_block, DIALOG_TYPE_REGULAR);
+            dialog_cond_if_t* cond_if = &dialog_block.cond_if;
+            
+            /* From (if) stage 1 */
+            cond_if->dialog_stage = 1;
+
+            /* With (if) keywords */
+            if(keywords_list_from_delimited_string(&cond_if->keywords, "how are you,whatsup", ",") != RESULT_OK) {
+                error_printf("Couldnt parse keywords.\n");
+                return RESULT_ERROR;
+            }
+
+            /* To (then) stage 2 */
+            dialog_block.cond_then.next_dialog_stage = 2;
+            response_from_string(&dialog_block.cond_then.response, "Nuffin special. And you?", BOOL_FALSE);
+
+            /* Append dialog block */
+            if(npc_append_dialog_block(npc_bim, &dialog_block) != RESULT_OK) {
+                /* BTW appending leaves variable invalid */
+                error_printf("Cannot add dialog block to NPC.\n");
+                return RESULT_ERROR;
+            }
+        }
+
+        /* Next dialog block */
+        {
+            dialog_block_t dialog_block;
+            dialog_block_init(&dialog_block, DIALOG_TYPE_REGULAR);
+            dialog_cond_if_t* cond_if = &dialog_block.cond_if;
+            
+            /* From (if) stage 1 */
+            cond_if->dialog_stage = 2;
+
+            /* With (if) keywords */
+            if(keywords_list_from_delimited_string(&cond_if->keywords, "good,ok,nothing special", ",") != RESULT_OK) {
+                error_printf("Couldnt parse keywords.\n");
+                return RESULT_ERROR;
+            }
+
+            /* To (then) stage 2 */
+            dialog_block.cond_then.next_dialog_stage = 1;
+            response_from_string(&dialog_block.cond_then.response, "Fine then.", BOOL_FALSE);
+
+            /* Append dialog block */
+            if(npc_append_dialog_block(npc_bim, &dialog_block) != RESULT_OK) {
+                /* BTW appending leaves variable invalid */
+                error_printf("Cannot add dialog block to NPC.\n");
+                return RESULT_ERROR;
+            }
+        }
+
+        /* Next dialog block */
+        {
+            dialog_block_t dialog_block;
+            dialog_block_init(&dialog_block, DIALOG_TYPE_REGULAR);
+            dialog_cond_if_t* cond_if = &dialog_block.cond_if;
+            
+            /* From (if) stage 1 */
+            cond_if->dialog_stage = 2;
+
+            /* With (if) keywords */
+            if(keywords_list_from_delimited_string(&cond_if->keywords, "bad, not really, not good", ",") != RESULT_OK) {
+                error_printf("Couldnt parse keywords.\n");
+                return RESULT_ERROR;
+            }
+
+            /* To (then) stage 2 */
+            dialog_block.cond_then.next_dialog_stage = 1;
+            response_from_string(&dialog_block.cond_then.response, "Ohh bad.", BOOL_FALSE);
+
+            /* Append dialog block */
+            if(npc_append_dialog_block(npc_bim, &dialog_block) != RESULT_OK) {
+                /* BTW appending leaves variable invalid */
+                error_printf("Cannot add dialog block to NPC.\n");
+                return RESULT_ERROR;
+            }
+        }
+
+    }
 
     /* Iterate over all rooms and all NPCs inside them */
     room_iter_t room_iter = world_get_room_iter(world);

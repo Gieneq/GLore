@@ -15,7 +15,7 @@ static result_t room_append_adjecent_room(room_t* room, room_t* adjecent_room) {
         return RESULT_ERROR;
     }
 
-    if(room_is_valid(adjecent_room) == FALSE) {
+    if(room_is_valid(adjecent_room) == BOOL_FALSE) {
         printf("Adjecent room data is invalid.\n");
         return RESULT_ERROR;
     }
@@ -58,7 +58,7 @@ result_t room_clear(room_t* room) {
 }
 
 bool_t room_is_valid(room_t* room) {
-    return room->id != 0 && strlen(room->name) > 0 ? TRUE : FALSE;
+    return room->id != 0 && strlen(room->name) > 0 ? BOOL_TRUE : BOOL_FALSE;
 }
 
 result_t room_append_npc(room_t* room, npc_t* npc) {
@@ -73,7 +73,7 @@ result_t room_append_npc(room_t* room, npc_t* npc) {
         return RESULT_ERROR;
     }
 
-    if(npc_is_valid(npc) == FALSE) {
+    if(npc_is_valid(npc) == BOOL_FALSE) {
         printf("NPC data is invalid.\n");
         return RESULT_ERROR;
     }
@@ -81,7 +81,7 @@ result_t room_append_npc(room_t* room, npc_t* npc) {
     /* Copy NPC data */
     int new_npc_index = room->npcs_count;
     memcpy(&room->npcs[new_npc_index], npc, sizeof(npc_t));
-    
+
 
     /* After moving leave NPC data invalid */
     if(npc_clear(npc) != RESULT_OK) {
@@ -94,21 +94,38 @@ result_t room_append_npc(room_t* room, npc_t* npc) {
     return RESULT_OK;
 }
 
-result_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index) {
+option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index) {
     if(room->npcs_count <= 0) {
-        printf("There is np NPCs in the room.\n");
-        return RESULT_ERROR;
+        return OPTION_NONE;
     }
 
     int highest_available_npc_index = room->npcs_count - 1;
 
     if(index < 0 || index > highest_available_npc_index) {
-        printf("NPC index out of range.\n");
-        return RESULT_ERROR;
+        return OPTION_NONE;
     }
 
     *npc = room->npcs + index;
-    return RESULT_OK;
+    return OPTION_SOME;
+}
+
+
+option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name) {
+    if(room->npcs_count <= 0) {
+        return OPTION_NONE;
+    }
+
+    npc_iter_t npc_iter = room_get_npc_iter(room);
+    npc_t* selected_npc = NULL;
+    iterator_foreach(&selected_npc, &npc_iter) {
+        // info_printf(" * %s\n", selected_npc->name);
+        if(string_compare_ignorecase(selected_npc->name, name) == OPTION_SOME) {
+            *npc = selected_npc;
+            return OPTION_SOME;
+        }
+    }
+
+    return OPTION_NONE;
 }
 
 npc_iter_t room_get_npc_iter(room_t* room) {
@@ -127,7 +144,7 @@ result_t room_set_name(room_t* room, const char* name) {
 }
 
 bool_t room_has_adjecent_vacancy(room_t* room) {
-    return room->adjecent_rooms_count < ROOM_ADJECTENT_ROOMS_MAX_COUNT ? TRUE : FALSE;
+    return room->adjecent_rooms_count < ROOM_ADJECTENT_ROOMS_MAX_COUNT ? BOOL_TRUE : BOOL_FALSE;
 }
 
 result_t room_connect_bidirectional(room_t* room_1, room_t* room_2) {
@@ -140,22 +157,22 @@ result_t room_connect_bidirectional(room_t* room_1, room_t* room_2) {
         return RESULT_ERROR;
     }
 
-    if(room_is_valid(room_1) == FALSE) {
+    if(room_is_valid(room_1) == BOOL_FALSE) {
         printf("Room 1 data is invalid.\n");
         return RESULT_ERROR;
     }
 
-    if(room_is_valid(room_2) == FALSE) {
+    if(room_is_valid(room_2) == BOOL_FALSE) {
         printf("Room 2 data is invalid.\n");
         return RESULT_ERROR;
     }
 
-    if(room_has_adjecent_vacancy(room_1) == FALSE) {
+    if(room_has_adjecent_vacancy(room_1) == BOOL_FALSE) {
         printf("Room 1 has no adjecent vacancy.\n");
         return RESULT_ERROR;
     }
 
-    if(room_has_adjecent_vacancy(room_2) == FALSE) {
+    if(room_has_adjecent_vacancy(room_2) == BOOL_FALSE) {
         printf("Room 2 has no adjecent vacancy.\n");
         return RESULT_ERROR;
     }
@@ -175,7 +192,7 @@ result_t room_connect_bidirectional(room_t* room_1, room_t* room_2) {
 }
 
 room_iter_t room_get_adjecent_room_iter(room_t* room) {
-    room_iter_t iter = {room->adjecent_rooms, 0, room->adjecent_rooms_count};
+    room_iter_t iter = {&room->adjecent_rooms[0], 0, room->adjecent_rooms_count};
     return iter;
 }
 

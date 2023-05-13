@@ -2,6 +2,17 @@
 #include <string.h>
 #include <stdio.h>
 
+static fancy_cmd_t _utils_fancy_cmd;
+
+void fancy_cmd_init() { 
+#if defined(FANCY_CMD) && FANCY_CMD == 1
+    /* Save current attributes */
+    _utils_fancy_cmd.hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(_utils_fancy_cmd.hConsole, &_utils_fancy_cmd.consoleInfo);
+    _utils_fancy_cmd.saved_attributes = _utils_fancy_cmd.consoleInfo.wAttributes;
+#endif
+}
+
 overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size) {
     const size_t src_len = strlen(src);
     const size_t chars_count = MIN(src_len, buffer_size);

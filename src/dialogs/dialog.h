@@ -4,6 +4,9 @@
 #include "responses.h"
 #include "questlog.h"
 
+#define WILDCARD_PLAYER_NAME "<$PLAYER_NAME$>"
+#define WILDCARD_NPC_NAME "<$NPC_NAME$>"
+
 typedef struct npc_t npc_t;
 typedef struct player_t player_t;
 

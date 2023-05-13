@@ -20,7 +20,7 @@ result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     keyword_wildcard_init(&cond_if->keyword_wildcard, WILDCARD_TYPE_NONE);
     // quest_progress_init(&cond_if->quest_progress_required);
     // cond_if->entering_quest_id = 0;
-    // cond_if->check_requirements = FALSE;
+    // cond_if->check_requirements = BOOL_FALSE;
     
     return RESULT_OK;
 }
@@ -69,12 +69,12 @@ option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, playe
 
 bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then) {
     if(!cond_then) {
-        return FALSE;
+        return BOOL_FALSE;
     }
     if(strlen(cond_then->response.text) <= 0) {
-        return FALSE;
+        return BOOL_FALSE;
     }
-    return TRUE;
+    return BOOL_TRUE;
 }
 
 result_t dialog_cond_then_execute(const dialog_cond_then_t *cond_then, npc_t* npc, player_t* player) {
@@ -90,8 +90,8 @@ result_t dialog_cond_then_execute(const dialog_cond_then_t *cond_then, npc_t* np
 #if DEBUG == 1
     dialog_cond_then_printf(cond_then);
 #endif
-    if(dialog_cond_then_has_response(cond_then) == TRUE){
-        printf("%s says: \"%s\"\n", npc->name, cond_then->response.text); //todo build
+    if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE){
+        response_printf("%s says: \"%s\"\n", npc->name, cond_then->response.text); //todo build
     }
 
     return RESULT_OK;
@@ -152,7 +152,7 @@ result_t dialog_block_clear(dialog_block_t *dialog_block) {
 }
 
 bool_t dialog_block_is_valid(dialog_block_t *dialog_block) {
-    return dialog_block->type != DIALOG_TYPE_INVALID ? TRUE : FALSE;
+    return dialog_block->type != DIALOG_TYPE_INVALID ? BOOL_TRUE : BOOL_FALSE;
 }
 
 void dialog_cond_if_printf(const dialog_cond_if_t *cond_if) {
@@ -171,7 +171,7 @@ void dialog_cond_then_printf(const dialog_cond_then_t *cond_then) {
     printf("#DEBUG ");
 #endif
     printf("Cond then enxt stage: %d response", cond_then->next_dialog_stage);
-    if(dialog_cond_then_has_response(cond_then) == TRUE) {
+    if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE) {
         printf(": %s\n", cond_then->response.text);
     } else {
         printf(" empty\n");

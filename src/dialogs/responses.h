@@ -4,7 +4,6 @@
 #define RESPONSE_BUFFER_SIZE 128
 #define RESPONSE_MAX_LENGTH (RESPONSE_BUFFER_SIZE - 1)
 
-#define RESPONSE_WILDCARD_PLAYER_NAME "<$P_NAME$>"
 
 typedef struct response_t {
     char text [RESPONSE_BUFFER_SIZE];

@@ -22,7 +22,7 @@ result_t world_append_room(world_t* world, room_t* room) {
         return RESULT_ERROR;
     }
 
-    if(room_is_valid(room) == FALSE) {
+    if(room_is_valid(room) == BOOL_FALSE) {
         printf("Room data is invalid.\n");
         return RESULT_ERROR;
     }

@@ -35,20 +35,10 @@ result_t npc_init(npc_t* npc) {
 
         cond_if->keyword_wildcard.type = WILDCARD_TYPE_NPC_NAME; //todo as function
 
-        // printf("Keywords greeting count %d.\n", greeting_dialog_block.cond_if.keywords.count);
-        // if(keywords_list_match(&greeting_dialog_block.cond_if.keywords, "hi jghfg") == OPTION_SOME) {
-        //     printf("Matching greeting keywords OK.\n");
-        // }
-
-        // if(dialog_block_is_valid(&greeting_dialog_block) == FALSE) {
-        //     printf("Cannot initialize NPC greeting dialog block.\n");
-        //     return RESULT_ERROR;
-        // }
-
         /* To (then) stage 1 */
         greeting_dialog_block.cond_then.next_dialog_stage = 1;
 
-        response_from_string(&greeting_dialog_block.cond_then.response, "Yo nyga", FALSE);
+        response_from_string(&greeting_dialog_block.cond_then.response, "Hi!", BOOL_FALSE);
 
         /* Append greeting block */
         if(npc_append_dialog_block(npc, &greeting_dialog_block) != RESULT_OK) {
@@ -78,7 +68,7 @@ result_t npc_init(npc_t* npc) {
         goodbye_dialog_block.cond_then.next_dialog_stage = 0;
         
 
-        response_from_string(&goodbye_dialog_block.cond_then.response, "Bye bye", FALSE);
+        response_from_string(&goodbye_dialog_block.cond_then.response, "Bye!", BOOL_FALSE);
 
         /* Append greeting block */
         if(npc_append_dialog_block(npc, &goodbye_dialog_block) != RESULT_OK) {
@@ -119,7 +109,7 @@ result_t npc_clear(npc_t* npc) {
 }
 
 bool_t npc_is_valid(npc_t* npc) {
-    return npc->id != 0 && strlen(npc->name) > 0 ? TRUE : FALSE;
+    return npc->id != 0 && strlen(npc->name) > 0 ? BOOL_TRUE : BOOL_FALSE;
 }
 
 result_t npc_set_name(npc_t* npc, const char* name) {
@@ -143,7 +133,7 @@ result_t npc_append_dialog_block(npc_t* npc, dialog_block_t* dialog_block) {
         return RESULT_ERROR;
     }
 
-    if(dialog_block_is_valid(dialog_block) == FALSE) {
+    if(dialog_block_is_valid(dialog_block) == BOOL_FALSE) {
         error_printf("Dialog block data is invalid.\n");
         return RESULT_ERROR;
     }
@@ -170,7 +160,7 @@ option_t npc_match_user_input(npc_t* npc, player_t* player, const char* msg) {
         return OPTION_NONE;
     }
 
-    if(npc_is_valid(npc) == FALSE) {
+    if(npc_is_valid(npc) == BOOL_FALSE) {
         error_printf("NPC data is invalid.\n");
         return OPTION_NONE;
     }
@@ -237,7 +227,7 @@ dialog_cond_then_t* npc_get_drop_cond_then(npc_t* npc) {
 }
 
 bool_t npc_is_in_conversation(npc_t* npc) {
-    return npc->dialog_stage != 0 ? TRUE : FALSE;
+    return npc->dialog_stage != 0 ? BOOL_TRUE : BOOL_FALSE;
 }
 
 void npc_leave_conversation(npc_t* npc) {
