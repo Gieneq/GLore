@@ -17,6 +17,8 @@
 #define error_printf(fmt, ...)
 #endif
 
+#define HARDFAULT() {error_printf("Hardfault in %s at %s:%d. Exit!\n", __FILE__, __func__, __LINE__); exit(1);}
+
 typedef enum result {
     RESULT_OK,
     RESULT_ERROR,

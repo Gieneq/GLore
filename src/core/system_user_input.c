@@ -96,20 +96,22 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
 }
 
 static option_t system_user_input_npc_interaction(player_t* player, room_t* current_room, const char* msg) {
-        /* Try interacting with NPCs */
-    // room_iter_t room_iter = world_get_room_iter(world);
-    // printf("Iterating over %d rooms in the world:\n", room_iter.count);
+    /* Try interacting with NPCs */
+    /* Iterate over all NPCs in current room. You don't know what dialog state they have.  */
+    /* Try matching their dialog blocks, return on success. */
 
-    // room_t* a_room = NULL;    
-    // iterator_foreach(&a_room, &room_iter) {
-        // npc_iter_t npc_iter = room_get_npc_iter(current_room);
-        // printf(" * iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
-        
-        // npc_t* a_npc = NULL;
-        // iterator_foreach(&a_npc, &npc_iter) {
-        //     printf("   - %d NPC: %s,\n", npc_iter.current, a_npc->name);
-        // }
-    // }
+    npc_iter_t npc_iter = room_get_npc_iter(current_room);
+    debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
+    
+    npc_t* selected_npc = NULL;
+    iterator_foreach(&selected_npc, &npc_iter) {
+        debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
+
+        /* Try matching NPCs dialogs blocks */
+        if(npc_match_user_input(selected_npc, player, msg) == OPTION_SOME) {
+            return OPTION_SOME;
+        }
+    }
 
     return OPTION_NONE;
 }

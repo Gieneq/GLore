@@ -81,6 +81,7 @@ result_t room_append_npc(room_t* room, npc_t* npc) {
     /* Copy NPC data */
     int new_npc_index = room->npcs_count;
     memcpy(&room->npcs[new_npc_index], npc, sizeof(npc_t));
+    
 
     /* After moving leave NPC data invalid */
     if(npc_clear(npc) != RESULT_OK) {

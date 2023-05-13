@@ -15,7 +15,7 @@ typedef struct keyword_t {
 void keyword_init(keyword_t* keyword);
 result_t keyword_from_string(keyword_t* keyword, const char *str);
 
-/* Keywords */
+/* Keywords list */
 typedef struct keywords_list_t {
     keyword_t keywords[KEYWORDS_MAX_COUNT];
     int count;
@@ -24,6 +24,24 @@ void keywords_list_init(keywords_list_t *list);
 result_t keywords_list_from_array(keywords_list_t *list, const char *keywords[], int count);
 result_t keywords_list_from_delimited_string(keywords_list_t *list, const char *str, const char *delim);
 void keywords_list_printf(const keywords_list_t *list);
+
+/* Keyword wildcard */
+typedef enum wildcard_type_t {
+    WILDCARD_TYPE_NONE = 0,
+    WILDCARD_TYPE_PLAYER_NAME,
+    WILDCARD_TYPE_NPC_NAME,
+    WILDCARD_TYPE_QUEST_NAME,
+    WILDCARD_TYPE_ITEM_NAME,
+} wildcard_type_t;
+
+typedef struct keyword_wildcard_t {
+    wildcard_type_t type;
+    // union {
+    int id;
+    // };
+} keyword_wildcard_t;
+
+void keyword_wildcard_init(keyword_wildcard_t *kw, const wildcard_type_t type);
 
 /* Matchings */
 option_t keyword_match(const keyword_t* keyword, const char *str);

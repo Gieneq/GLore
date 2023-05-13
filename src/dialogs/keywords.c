@@ -83,6 +83,11 @@ option_t keyword_match(const keyword_t* keyword, const char *str) {
     return OPTION_NONE;
 }
 
+void keyword_wildcard_init(keyword_wildcard_t *kw, const wildcard_type_t type) {
+    kw->type = type;
+    kw->id = 0; //or memset 0 before
+}
+
 
 option_t keyword_match_front(const keyword_t* keyword, const char *str) {
     if(keyword->length > strlen(str)) {

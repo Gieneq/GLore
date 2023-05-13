@@ -85,13 +85,25 @@ option_t core_test_code(core_t* core) {
 #if DEBUG == 1
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "go birch forest";
+        const char* msg_ = "look";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
         const char* msg_ = "go";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "hi Bim";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "go birch forest";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
