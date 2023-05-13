@@ -142,6 +142,6 @@ option_t word_iterator_has_next(word_iterator_t* word_iterator);
 
 /* copy string with l=characters length constrain macro */
 overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size);
-option_t match_string_ignorecase(const char* src, const char* substring);
+option_t string_match_ignorecase(const char* src, const char* substring);
 char tolowercase(char c);
-option_t string_compare_ignorecase(const char* src, const char* dst);
+option_t string_equals_ignorecase(const char* src, const char* dst);

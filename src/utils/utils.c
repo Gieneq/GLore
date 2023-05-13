@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 static fancy_cmd_t _utils_fancy_cmd;
 
@@ -89,14 +90,14 @@ option_t word_iterator_has_next(word_iterator_t* word_iterator) {
     return OPTION_NONE;
 }
 
-char tolowercase(char c) {
-    if(c >= 'A' && c <= 'Z') {
-        return c - 'A' + 'a';
-    }
-    return c;
-}
+// char tolowercase(char c) {
+//     if(c >= 'A' && c <= 'Z') {
+//         return c - 'A' + 'a';
+//     }
+//     return c;
+// }
 
-option_t string_compare_ignorecase(const char* src, const char* dst) {
+option_t string_equals_ignorecase(const char* src, const char* dst) {
     if(src == NULL || dst == NULL) {
         return OPTION_NONE;
     }
@@ -109,7 +110,7 @@ option_t string_compare_ignorecase(const char* src, const char* dst) {
     }
 
     for(int i = 0; i < src_len; ++i) {
-        if(tolowercase(src[i]) != tolowercase(dst[i])) {
+        if(tolower(src[i]) != tolower(dst[i])) {
             return OPTION_NONE;
         }
     }
@@ -117,7 +118,7 @@ option_t string_compare_ignorecase(const char* src, const char* dst) {
     return OPTION_SOME;
 }
 
-option_t match_string_ignorecase(const char* src, const char* substring) {
+option_t string_match_ignorecase(const char* src, const char* substring) {
     if(src == NULL || substring == NULL) {
         return OPTION_NONE;
     }
@@ -130,7 +131,7 @@ option_t match_string_ignorecase(const char* src, const char* substring) {
     }
 
     for(int i = 0; i < src_len - substring_len + 1; ++i) {
-        if(string_compare_ignorecase(src + i, substring) == 0) {
+        if(string_equals_ignorecase(src + i, substring) == 0) {
             return OPTION_SOME;
         }
     }

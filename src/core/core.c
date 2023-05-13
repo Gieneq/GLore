@@ -97,13 +97,7 @@ option_t core_test_code(core_t* core) {
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "hi Bim";
-        strcpy(core->arg_buffer, msg_);
-        core_propcess_user_input(core);
-    }
-    {
-        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "go birch forest";
+        const char* msg_ = "goooooo";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }

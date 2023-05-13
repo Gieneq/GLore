@@ -118,3 +118,12 @@ option_t keywords_list_match_front(const keywords_list_t* list, const char *str)
     }
     return OPTION_NONE;
 }
+
+
+option_t keyword_exact_match_ignorecase(const keyword_t* keyword, const char *str) {
+    if(!keyword || !str) {
+        return OPTION_NONE;
+    }
+
+    return string_equals_ignorecase(keyword->text, str);
+}

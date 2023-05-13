@@ -19,7 +19,7 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - Colored text on Windows target,
 
 ## Bugs
-- [ ] keywords match substring of words e.g. go is inside good,
+- [x] keywords match substring of words e.g. go is inside good,
 - [ ] keywords should ignorecase,
 
 ## Todo
@@ -36,3 +36,4 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 ## Ideas
 - [ ] Long text from game/narrator - hang game, press enter to continue,
 - [ ] Enemy/boss room - combat stage + dialogs to choose actions like attack, use object (lever, climb...),
+- [ ] Ambient sound player from time to time, or 'hear' keyword.

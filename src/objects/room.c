@@ -119,7 +119,7 @@ option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name) {
     npc_t* selected_npc = NULL;
     iterator_foreach(&selected_npc, &npc_iter) {
         // info_printf(" * %s\n", selected_npc->name);
-        if(string_compare_ignorecase(selected_npc->name, name) == OPTION_SOME) {
+        if(string_equals_ignorecase(selected_npc->name, name) == OPTION_SOME) {
             *npc = selected_npc;
             return OPTION_SOME;
         }

@@ -46,7 +46,7 @@ option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, playe
     {
     case WILDCARD_TYPE_NPC_NAME:
         {
-            if(match_string_ignorecase(msg, npc->name) != OPTION_SOME) {
+            if(string_match_ignorecase(msg, npc->name) != OPTION_SOME) {
                 return OPTION_NONE;
             }
         }
