@@ -26,27 +26,29 @@ result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
 }
 
 option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg) {
-    // dialog_cond_if_printf(cond_if);
+
     // debug_printf("  Checking stage of block %d / npc internal %d.\n", cond_if->dialog_stage, npc->dialog_stage);
 
     /* Check dialog stage */
     if(cond_if->dialog_stage != npc->dialog_stage) {
         return OPTION_NONE;
     }
+    dialog_cond_if_printf(cond_if);
     // debug_printf("   stages OK.\n");
 
     /* Check keywords */
-    if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
+    // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
+    if(keywords_list_exact_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
         return OPTION_NONE;
     }
-    // debug_printf("   keywords OK.\n");
+    debug_printf("   keywords OK.\n");
 
     /* Check wildcards */
     switch (cond_if->keyword_wildcard.type)
     {
     case WILDCARD_TYPE_NPC_NAME:
         {
-            if(string_match_ignorecase(msg, npc->name) != OPTION_SOME) {
+            if(string_equals_ignorecase(msg, npc->name) != OPTION_SOME) {
                 return OPTION_NONE;
             }
         }

@@ -85,22 +85,22 @@ option_t core_test_code(core_t* core) {
 #if DEBUG == 1
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "look";
+        const char* msg_ = "LOoK";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "go";
+        const char* msg_ = "hello bim";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
-    {
-        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "goooooo";
-        strcpy(core->arg_buffer, msg_);
-        core_propcess_user_input(core);
-    }
+    // {
+    //     memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+    //     const char* msg_ = "GO ";
+    //     strcpy(core->arg_buffer, msg_);
+    //     core_propcess_user_input(core);
+    // }
 
     return OPTION_SOME;
 #else

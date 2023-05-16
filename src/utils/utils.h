@@ -6,7 +6,7 @@
 
 /* Global settings */
 #define PLATFORM PLATFORM_WIN
-#define DEBUG 0
+#define DEBUG 1
 #define ERROR_OUTPUT 1
 
 /* Derived settings */
@@ -142,6 +142,9 @@ option_t word_iterator_has_next(word_iterator_t* word_iterator);
 
 /* copy string with l=characters length constrain macro */
 overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size);
-option_t string_match_ignorecase(const char* src, const char* substring);
-char tolowercase(char c);
+
 option_t string_equals_ignorecase(const char* src, const char* dst);
+option_t string_sub_equals_ignorecase(const char* str1, const int substr1_len, const char* str2, const int substr2_len);
+
+option_t string_match_ignorecase(const char* src, const char* substring);
+option_t string_match_front_ignorecase(const char* src, const char* substring);
