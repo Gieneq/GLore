@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-static fancy_cmd_t _utils_fancy_cmd;
+fancy_cmd_t _utils_fancy_cmd;
 
 void fancy_cmd_init() { 
 #if defined(FANCY_CMD) && FANCY_CMD == 1

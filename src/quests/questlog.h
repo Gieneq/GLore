@@ -1,5 +1,5 @@
 #pragma once 
-
+#include <stdlib.h>
 // typedef struct questlog_t {
 //     int quest_id;
 //     int quest_stage;

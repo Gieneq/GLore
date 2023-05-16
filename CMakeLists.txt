@@ -1,10 +1,36 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(Pyrograf VERSION 0.1.0)
-add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+cmake_minimum_required(VERSION 3.6)
+project(GLore VERSION 0.0.3)
+set(CMAKE_CXX_STANDARD 14)
 
-include(CTest)
+#############################
+#           TESTS           #
+#############################
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
 enable_testing()
 
+add_executable(GLore_test
+test/utils_test.cpp
+)
+
+target_link_libraries(
+    GLore_test
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(GLore_test)
+
+#############################
+#          PROJECT          #
+#############################
 
 include_directories(lib/cJSON)
 include_directories(src/core)
@@ -14,7 +40,7 @@ include_directories(src/objects)
 include_directories(src/quests)
 include_directories(src/utils)
 
-add_executable(Pyrograf 
+add_executable(GLore 
 main.c 
 src/core/core.c
 src/core/loader.c
@@ -36,11 +62,3 @@ src/utils/utils.c
 lib/cJSON/cJSON.c
 lib/cJSON/cJSON_Utils.c
 )
-
-
-
-add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
