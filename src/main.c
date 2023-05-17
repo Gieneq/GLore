@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    narrator_printf("Welcome in GLore! You are in text world in which \nyou can navigate by writing words. Keywords are fine. \nIf you need further information type \'help\'. Good luck!\n");
+    narrator_printf("Welcome in GLore! You are in text world in which \nyou can navigate by writing words. Keywords are fine. \nIf you need further information type \'!help\'. Good luck!\n");
     narrator_printf("---------------------------------------------------------\n");
 
     if(core_test_code(&core) == OPTION_SOME) {

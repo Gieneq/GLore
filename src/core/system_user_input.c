@@ -17,14 +17,14 @@ static keyword_t kw_go;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
-    if(keywords_list_match_front(&kws_exit, msg) == OPTION_SOME) {
+    if(keywords_list_exact_match_any_ignorecase(&kws_exit, msg) == OPTION_SOME) {
         info_printf("Quitting, bye then.\n");
         core->state = CORE_STATE_STOPPED;
         return OPTION_SOME;
     }
 
     /* Help */
-    if(keyword_match_front(&kw_help, msg) == OPTION_SOME) {
+    if(keyword_exact_match_ignorecase(&kw_help, msg) == OPTION_SOME) {
         info_printf("Help? Blah! Help yourself dude :p\n");
         return OPTION_SOME;
     }
@@ -34,7 +34,7 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
 
 static option_t system_user_input_examine_room(player_t* player, room_t* current_room, const char* msg) {
     /* Look */
-    if(keyword_match_front(&kw_look, msg) == OPTION_SOME) {
+    if(keyword_exact_match_ignorecase(&kw_look, msg) == OPTION_SOME) {
         info_printf("You are in %s ", current_room->name);
         if(current_room->npcs_count == 0) {
             info_printf("noone here.\n");
@@ -67,7 +67,7 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
         const int word_index = word_split_iterator.next_word_index;
 
         /* Check if first word matches keword. Checking index is redundant. */
-        if(word_index == 0 && keyword_match(&kw_go, word) == OPTION_SOME) {
+        if(word_index == 0 && keyword_exact_match_ignorecase(&kw_go, word) == OPTION_SOME) {
             if(current_room->adjecent_rooms_count == 0) {
                 info_printf("You can't go anywhere from here.\n");
                 return OPTION_SOME;
@@ -88,7 +88,7 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
             /* Keyword with remaining direction */
             for(int i=0; i<current_room->adjecent_rooms_count; i++) {
                 room_t* adjecent_room = current_room->adjecent_rooms[i];
-                if(string_compare_ignorecase(adjecent_room->name, remaining) == OPTION_SOME) {
+                if(string_equals_ignorecase(adjecent_room->name, remaining) == OPTION_SOME) {
                     player_change_room(player, adjecent_room);
                     return OPTION_SOME;
                 }
@@ -122,7 +122,7 @@ static option_t system_user_input_npc_interaction(player_t* player, room_t* curr
 }
 
 static void system_user_input_on_unknown() {
-    // printf("What?\n"); //Seems it is confusing: multiple hi
+    debug_printf("What?\n");
 }
 
 /* Public interface */

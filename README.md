@@ -19,13 +19,15 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - Colored text on Windows target,
 
 ## Bugs
-- [ ] keywords match substring of words e.g. go is inside good,
-- [ ] keywords should ignorecase,
+- [x] keywords match substring of words e.g. go is inside good,
+- [x] keywords should ignorecase,
 
 ## Todo
 - [ ] bye should drop from any state,
 - [ ] bye could not require NPC name if only 1 conversation at the time,
 - [ ] Drop should be included as farawell block, leave room,
+- [ ] Inventory for player, inventory system,
+- [ ] Stats and skills for player,
 - [ ] If player has active talk, cannot change to other NPC,
 - [ ] Use wildcards in responses,
 - [ ] strip spaces from end of user input,
@@ -36,3 +38,5 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 ## Ideas
 - [ ] Long text from game/narrator - hang game, press enter to continue,
 - [ ] Enemy/boss room - combat stage + dialogs to choose actions like attack, use object (lever, climb...),
+- [ ] Ambient sound player from time to time, or 'hear' keyword.
+- [ ] Property for room e.g. to indicate fishing spot with skill requirements,
