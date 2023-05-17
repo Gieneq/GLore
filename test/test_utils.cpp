@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
+extern "C" {
+#include "utils.h"
+}
+
+
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {
   // Expect two strings not to be equal.
   EXPECT_STRNE("worsld", "world");
   // Expect equality.
   EXPECT_EQ(7 * 6, 42);
-}
-
-extern "C" {
-  // extern option_t string_compare_ignorecase(const char *str1, const char *str2);
-#include "utils.h"
 }
 
 TEST(UtilsTest, StringCompare) {
