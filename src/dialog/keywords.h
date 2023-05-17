@@ -45,15 +45,10 @@ void keyword_wildcard_init(keyword_wildcard_t *kw, const wildcard_type_t type);
 
 /* Matchings */
 
-/* Match any word in the sentence, e.g. 'go' matches 'I want to go left'. */
 option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str);
 
-/* Match first word in the sentence, e.g. 'go' matches 'go left'. */
 option_t keyword_match_front_ignorecase(const keyword_t* keyword, const char *str);
 
-
-/* Match any word in the sentence, e.g. ['move', 'go'] matches 'I want to go left'. */
 option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const char *str);
 
-/* Match first word in the sentence, e.g. ['move', 'go'] matches 'go left'. */
 option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const char *str);

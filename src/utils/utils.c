@@ -113,6 +113,10 @@ option_t string_sub_equals_ignorecase(const char* str1, const int substr1_len, c
         return OPTION_NONE;
     }
 
+    if(substr1_len > strlen(str1) || substr2_len > strlen(str2)) {
+        return OPTION_NONE;
+    }
+
     for(int i = 0; i < substr1_len; ++i) {
         if(tolower(str1[i]) != tolower(str2[i])) {
             return OPTION_NONE;

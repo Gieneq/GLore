@@ -102,13 +102,35 @@ option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str)
 
 /* Match first word in the sentence, e.g. 'go left' matches 'go left now'. */
 option_t keyword_match_front_ignorecase(const keyword_t* keyword, const char *str) {
-    return string_match_front_ignorecase(str, keyword->text);
+    int str_len = strlen(str);
+    // if(keyword->length < str_len) {
+    //     return OPTION_NONE;
+    // }
+
+    // if(keyword->length == str_len) {
+    //     if(string_equals_ignorecase(keyword->text, str) == OPTION_SOME) {
+    //         return OPTION_SOME;
+    //     }
+    //     return OPTION_NONE;
+    // }
+
+    if(string_match_front_ignorecase(str, keyword->text) == OPTION_SOME) {
+        if((keyword->length > str_len) && str[str_len] == ' ') {
+            return OPTION_SOME;
+        }
+        return OPTION_NONE;
+    }
+
+    // if(str[str_len] == ' ') {
+    //     return OPTION_SOME;
+    // }
+    return OPTION_NONE;
 }
 
 
 /* Match any word in the sentence, e.g. ['move', 'go'] matches 'I want to go left'. */
 option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const char *str) {
-    #error
+    // #error
     for (int i = 0; i < list->count; i++) {
         if (keyword_match_any_ignorecase(&list->keywords[i], str) == OPTION_SOME) {
             return OPTION_SOME;
@@ -119,7 +141,7 @@ option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const c
 
 /* Match first word in the sentence, e.g. ['move', 'go'] matches 'go left'. */
 option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const char *str) {
-    #error
+    // #error
     for (int i = 0; i < list->count; i++) {
         if (keyword_match_front_ignorecase(&list->keywords[i], str) == OPTION_SOME) {
             return OPTION_SOME;
