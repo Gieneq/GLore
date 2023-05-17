@@ -18,8 +18,8 @@ overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size) {
     const size_t chars_count = MIN(src_len, buffer_size);
     memset(dst, '\0', buffer_size);
     memcpy(dst, src, chars_count);
-    overflow_t result = src_len >= buffer_size - 1 ? OVERFLOW : NO_OVERFLOW;
-    if(result == OVERFLOW) {
+    overflow_t result = src_len >= buffer_size - 1 ? SOME_OVERFLOW : NO_OVERFLOW;
+    if(result == SOME_OVERFLOW) {
         printf("Warning: string overflowed, %llu string was trimmed to %llu characters\n", src_len, buffer_size);
     }
     return result;

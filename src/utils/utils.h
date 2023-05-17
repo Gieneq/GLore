@@ -84,7 +84,7 @@ extern fancy_cmd_t _utils_fancy_cmd;
 /* Error print */
 #if ERROR_OUTPUT == 1
 #if FANCY_CMD == 1
-#define error_printf(fmt, ...) fancy_cmd_set_red(); printf("#ERROR "fmt, ##__VA_ARGS__); fancy_cmd_set_default()
+#define error_printf(fmt, ...) fancy_cmd_set_red(); printf("#ERROR " fmt, ##__VA_ARGS__); fancy_cmd_set_default()
 #else
 #define error_printf(fmt, ...) printf("#ERROR "fmt, ##__VA_ARGS__)
 #endif
@@ -100,7 +100,7 @@ typedef enum result {
     RESULT_ERROR,
 } result_t;
 
-typedef enum bool {
+typedef enum bool_t {
     BOOL_FALSE,
     BOOL_TRUE,
 } bool_t;
@@ -111,7 +111,7 @@ typedef enum option {
 } option_t;
 
 typedef enum overflow {
-    OVERFLOW,
+    SOME_OVERFLOW,
     NO_OVERFLOW,
 } overflow_t;
 

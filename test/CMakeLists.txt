@@ -1,5 +1,14 @@
 message(STATUS "Building test")
 
+list(APPEND LIB_DEPENDENCIES 
+  utils
+  dialog
+  world
+  entity
+)
+
+message(STATUS " -> ${LIB_DEPENDENCIES}")
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -12,12 +21,14 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(GLore_test
-utils_test.cpp
+test_utils.cpp
 )
+
 
 target_link_libraries(
     GLore_test
     GTest::gtest_main
+    utils
 )
 
 include(GoogleTest)
