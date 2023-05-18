@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 static word_iterator_t kw_word_split_iterator;
 
@@ -87,6 +88,7 @@ option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str)
     }
 
     word_iterator_start(&kw_word_split_iterator, str);
+
     while(word_iterator_has_next(&kw_word_split_iterator) == OPTION_SOME) {
         const char* word = kw_word_split_iterator.next_word;
         const char* remaining = kw_word_split_iterator.next_word_src;
@@ -102,35 +104,50 @@ option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str)
 
 /* Match first word in the sentence, e.g. 'go left' matches 'go left now'. */
 option_t keyword_match_front_ignorecase(const keyword_t* keyword, const char *str) {
-    int str_len = strlen(str);
-    // if(keyword->length < str_len) {
-    //     return OPTION_NONE;
-    // }
-
-    // if(keyword->length == str_len) {
-    //     if(string_equals_ignorecase(keyword->text, str) == OPTION_SOME) {
-    //         return OPTION_SOME;
-    //     }
-    //     return OPTION_NONE;
-    // }
-
-    if(string_match_front_ignorecase(str, keyword->text) == OPTION_SOME) {
-        if((keyword->length > str_len) && str[str_len] == ' ') {
-            return OPTION_SOME;
-        }
+    if(!keyword || !str) {
         return OPTION_NONE;
     }
 
-    // if(str[str_len] == ' ') {
-    //     return OPTION_SOME;
-    // }
+    /* Special case for leading whitespace - should be avoided by normalizing strings.*/
+    char* str_noleading_ws = string_get_noleading_whitespace_start(str);
+    if(!str_noleading_ws) {
+        return OPTION_NONE;
+    }
+
+    int str_len = strlen(str_noleading_ws);
+    int kw_len = keyword->length;
+
+    /* Not fitting kw */
+    if(kw_len > str_len) {
+        return OPTION_NONE;
+    } 
+
+    /* Exacly fitting kw */
+    else if(kw_len == str_len) {
+        if(string_equals_ignorecase(keyword->text, str_noleading_ws) == OPTION_SOME) {
+            return OPTION_SOME;
+        }
+        return OPTION_NONE;
+    } 
+
+    /* Front substring can match kw */
+    else {
+        if(string_match_front_ignorecase(str_noleading_ws, keyword->text) == OPTION_SOME) {
+
+            /* Matched keywordshould be followed with space to avoid matching substring of a word */
+            int next_char_index = kw_len;
+            if(isspace(str_noleading_ws[next_char_index]) != 0) {
+                return OPTION_SOME;
+            }
+            return OPTION_NONE;
+        }
+    }
+
     return OPTION_NONE;
 }
 
-
 /* Match any word in the sentence, e.g. ['move', 'go'] matches 'I want to go left'. */
 option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const char *str) {
-    // #error
     for (int i = 0; i < list->count; i++) {
         if (keyword_match_any_ignorecase(&list->keywords[i], str) == OPTION_SOME) {
             return OPTION_SOME;
@@ -141,7 +158,6 @@ option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const c
 
 /* Match first word in the sentence, e.g. ['move', 'go'] matches 'go left'. */
 option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const char *str) {
-    // #error
     for (int i = 0; i < list->count; i++) {
         if (keyword_match_front_ignorecase(&list->keywords[i], str) == OPTION_SOME) {
             return OPTION_SOME;
@@ -149,96 +165,3 @@ option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const
     }
     return OPTION_NONE;
 }
-
-
-
-
-// option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str) {
-//     if(!keyword || !str) {
-//         return OPTION_NONE;
-//     }
-
-//     return string_contains_ignorecase(str, keyword->text);
-// }
-
-
-
-
-
-/* */
-// option_t keyword_match_exact(const keyword_t* keyword, const char *str) {
-//     int str_length = strlen(str);
-//     if(keyword->length > str_length) {
-//         return OPTION_NONE;
-//     }
-
-//     for(int i=0; i<str_length - keyword->length + 1; ++i) {
-//         if (strstr(str + i, keyword->text)) {
-//             return OPTION_SOME;
-//         }
-//     }
-
-//     return OPTION_NONE;
-// }
-
-// option_t keyword_match_exact_ignorecase(const keyword_t* keyword, const char *str) {
-//     if(!keyword || !str) {
-//         return OPTION_NONE;
-//     }
-
-//     return string_equals_ignorecase(keyword->text, str);
-// }
-
-// option_t keyword_match_front_ignorecase(const keyword_t* keyword, const char *str) {
-//     if(keyword->length > strlen(str)) {
-//         return OPTION_NONE;
-//     }
-
-//     if (strstr(str, keyword->text)) {
-//         return OPTION_SOME;
-//     }
-
-//     return OPTION_NONE;
-// }
-
-
-// /* Lists */
-// option_t keywords_list_match_any_exact_ignorecase(const keywords_list_t *list, const char *str) {
-//     for (int i = 0; i < list->count; i++) {
-//         if (keyword_match_exact(&list->keywords[i], str) == OPTION_SOME) {
-//             return OPTION_SOME;
-//         }
-//     }
-//     return OPTION_NONE;
-// }
-
-// option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const char *str) {
-//     for (int i = 0; i < list->count; i++) {
-//         if (keyword_match_front_ignorecase(&list->keywords[i], str) == OPTION_SOME) {
-//             return OPTION_SOME;
-//         }
-//     }
-//     return OPTION_NONE;
-// }
-
-// option_t keywords_list_exact_match_any_ignorecase(const keywords_list_t* list, const char *str) {
-//     word_iterator_start(&kw_word_split_iterator, str);
-
-//     if()
-
-//     while(word_iterator_has_next(&kw_word_split_iterator) == OPTION_SOME) {
-//         const char* word = kw_word_split_iterator.next_word;
-//         const char* remaining = kw_word_split_iterator.next_word_src;
-//         const int word_index = kw_word_split_iterator.next_word_index;
-
-//         /* Check if first word matches keword. Checking index is redundant. */
-//         if(word_index == 0 && keyword_exact_match_ignorecase(&kw_go, word) == OPTION_SOME) {
-//             if(current_room->adjecent_rooms_count == 0) {
-//                 info_printf("You can't go anywhere from here.\n");
-//                 return OPTION_SOME;
-//             }
-//         }
-//     }
-
-//     return OPTION_NONE;
-// }

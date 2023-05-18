@@ -26,6 +26,86 @@ overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size) {
     return result;
 }
 
+void string_strip(char* str) {
+    int str_len = strlen(str);
+    if(str_len <= 0) {
+        return;
+    }
+    
+    /* Trimming the end */
+    int end_index = str_len - 1;
+    while(isspace(str[end_index]) != 0 && end_index >= 0) {
+        str[end_index] = '\0';
+        --end_index;
+    }
+
+    /* New string length after trimming the end */
+    str_len = strlen(str);
+    if(str_len <= 0) {
+        return;
+    }
+
+    /* calculate number of spaces */
+    int spaces_count = 0;
+    int check_index = 0;
+    while(isspace(str[check_index++]) != 0 && check_index < str_len) {
+        ++spaces_count;
+    }
+
+    /* Trimming the start */
+    for(int i = 0; i < str_len; ++i) {
+        if(i < str_len - spaces_count) {
+            str[i] = str[i + spaces_count];
+        } 
+        /* Erase remaining characters */
+        else {
+            str[i] = '\0';
+        }
+    }
+}
+
+void string_normalize(char* str) {
+    string_strip(str);
+
+    int str_len = strlen(str);
+    if(str_len <= 0) {
+        return;
+    }
+
+    /* Remove multiple whitespaces between words */
+    for(int i = 0; i < str_len; ++i) {
+        if(isspace(str[i]) != 0) {
+            int j = i + 1;
+            while(isspace(str[j]) != 0) {
+                ++j;
+            }
+            if(j > i + 1) {
+                for(int k = i + 1; k < str_len; ++k) {
+                    str[k] = str[k + j - i - 1];
+                }
+            }
+        }
+    }
+}
+
+char* string_get_noleading_whitespace_start(char* str) {
+    if(!str) {
+        return NULL;
+    }
+    
+    int str_len = strlen(str);
+    if(str_len <= 0) {
+        return NULL;
+    }
+
+    int i = 0;
+    while(isspace(str[i]) != 0) {
+        ++i;
+    }
+
+    return str + i;
+}
+
 void word_iterator_start(word_iterator_t* word_iterator, const char* text) {
     word_iterator->current_char_index = 0;
     word_iterator->next_word_length = 0;

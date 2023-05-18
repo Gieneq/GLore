@@ -44,11 +44,7 @@ typedef struct keyword_wildcard_t {
 void keyword_wildcard_init(keyword_wildcard_t *kw, const wildcard_type_t type);
 
 /* Matchings */
-
 option_t keyword_match_any_ignorecase(const keyword_t* keyword, const char *str);
-
 option_t keyword_match_front_ignorecase(const keyword_t* keyword, const char *str);
-
 option_t keywords_list_match_any_ignorecase(const keywords_list_t *list, const char *str);
-
 option_t keywords_list_match_front_ignorecase(const keywords_list_t* list, const char *str);
