@@ -16,6 +16,7 @@ enable_testing()
 add_executable(GLore_test
 test_dialog.cpp
 test_utils.cpp
+test_npc.cpp
 )
 
 
@@ -24,6 +25,8 @@ target_link_libraries(
     GTest::gtest_main
     utils
     dialog
+    entity
+    core
 )
 
 include(GoogleTest)

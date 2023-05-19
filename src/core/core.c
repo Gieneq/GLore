@@ -7,6 +7,7 @@
 #include "system_user_input.h"
 
 static void core_propcess_user_input(core_t* core) {
+    string_normalize(core->arg_buffer);
     system_user_input_process(core, &core->world.player, core->arg_buffer);
     memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
     core->arg_buffer_index = 0;

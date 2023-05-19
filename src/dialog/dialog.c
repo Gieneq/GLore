@@ -38,7 +38,7 @@ option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, playe
 
     /* Check keywords */
     // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
-    if(keywords_list_exact_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
+    if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
         return OPTION_NONE;
     }
     debug_printf("   keywords OK.\n");
