@@ -16,12 +16,12 @@ void fancy_cmd_init() {
 
 overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size) {
     const size_t src_len = strlen(src);
-    const size_t chars_count = MIN(src_len, buffer_size);
+    const size_t chars_count = MIN(src_len, buffer_size - 1);
     memset(dst, '\0', buffer_size);
     memcpy(dst, src, chars_count);
-    overflow_t result = src_len >= buffer_size - 1 ? SOME_OVERFLOW : NO_OVERFLOW;
-    if(result == SOME_OVERFLOW) {
-        printf("Warning: string overflowed, %llu string was trimmed to %llu characters\n", src_len, buffer_size);
+    overflow_t result = src_len >= buffer_size - 1 ? OVERFLOW_TRUNCATED : OVERFLOW_NONE;
+    if(result == OVERFLOW_TRUNCATED) {
+        error_printf("Warning: string buffer overflowed: %llu chars truncated to %llu chars.\n", src_len, buffer_size);
     }
     return result;
 }
@@ -88,7 +88,7 @@ void string_normalize(char* str) {
     }
 }
 
-char* string_get_noleading_whitespace_start(char* str) {
+char* string_get_noleading_whitespace_start(const char* str) {
     if(!str) {
         return NULL;
     }
@@ -121,7 +121,7 @@ void word_iterator_start(word_iterator_t* word_iterator, const char* text) {
     }
 
     /* Remove leading spaces if occured */
-    while(text[word_iterator->current_char_index] == ' ') {
+    while(isspace(text[word_iterator->current_char_index]) != 0) {
         ++word_iterator->current_char_index;
     }
 }
@@ -155,7 +155,7 @@ option_t word_iterator_has_next(word_iterator_t* word_iterator) {
     memcpy(word_iterator->next_word, word_iterator->src_text + start_index, sizeof(char) * word_iterator->next_word_length);
 
     /* Remove spaces if occured */
-    while(word_iterator->src_text[word_iterator->current_char_index] == ' ') {
+    while(isspace( word_iterator->src_text[word_iterator->current_char_index]) != 0) {
         ++word_iterator->current_char_index;
     }
 

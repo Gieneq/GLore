@@ -73,7 +73,7 @@ extern fancy_cmd_t _utils_fancy_cmd;
 /* Debug print */
 #if DEBUG == 1
 #if FANCY_CMD == 1
-#define debug_printf(fmt, ...) fancy_cmd_set_blue(); printf("#DEBUG "fmt, ##__VA_ARGS__); fancy_cmd_set_default()
+#define debug_printf(fmt, ...) fancy_cmd_set_blue(); printf("#DEBUG " fmt, ##__VA_ARGS__); fancy_cmd_set_default()
 #else
 #define debug_printf(fmt, ...) printf("#DEBUG "fmt, ##__VA_ARGS__)
 #endif
@@ -111,8 +111,8 @@ typedef enum option {
 } option_t;
 
 typedef enum overflow {
-    SOME_OVERFLOW,
-    NO_OVERFLOW,
+    OVERFLOW_TRUNCATED,
+    OVERFLOW_NONE,
 } overflow_t;
 
 
@@ -144,7 +144,7 @@ option_t word_iterator_has_next(word_iterator_t* word_iterator);
 overflow_t cpystr_trimed(char *dst, const char *src, const size_t buffer_size);
 void string_strip(char* str);
 void string_normalize(char* str);
-char* string_get_noleading_whitespace_start(char* str);
+char* string_get_noleading_whitespace_start(const char* str);
 
 option_t string_equals_ignorecase(const char* src, const char* dst);
 option_t string_sub_equals_ignorecase(const char* str1, const int substr1_len, const char* str2, const int substr2_len);

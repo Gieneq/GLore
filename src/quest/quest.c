@@ -77,11 +77,11 @@ result_t quest_data_create(quest_data_t *quest_data, quest_id_t quest_id, const 
     
     quest_data->quest_id = quest_id;
 
-    if(cpystr_trimed(quest_data->name, name, QUEST_NAME_BUFFER_SIZE) != NO_OVERFLOW) {
+    if(cpystr_trimed(quest_data->name, name, QUEST_NAME_BUFFER_SIZE) != OVERFLOW_NONE) {
         return RESULT_ERROR;
     }
 
-    if(cpystr_trimed(quest_data->brief, brief, QUEST_BRIEF_BUFFER_SIZE) != NO_OVERFLOW) {
+    if(cpystr_trimed(quest_data->brief, brief, QUEST_BRIEF_BUFFER_SIZE) != OVERFLOW_NONE) {
         return RESULT_ERROR;
     }
 
