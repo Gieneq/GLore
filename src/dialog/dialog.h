@@ -7,9 +7,6 @@
 #define WILDCARD_PLAYER_NAME "<$PLAYER_NAME$>"
 #define WILDCARD_NPC_NAME "<$NPC_NAME$>"
 
-typedef struct npc_t npc_t;
-typedef struct player_t player_t;
-
 /* Dialog type */
 typedef enum dialog_type_t {
     DIALOG_TYPE_INVALID = 0x00,
@@ -25,14 +22,10 @@ typedef struct dialog_cond_if_t {
     int dialog_stage;
     keywords_list_t keywords;
     keyword_wildcard_t keyword_wildcard;
-    // quest_progress_t quest_progress_required; // everytime checks both id and stage
-    // int entering_quest_id;
-    // bool_t check_requirements;
 } dialog_cond_if_t;
 
 result_t dialog_cond_if_init(dialog_cond_if_t *cond_if);
 void dialog_cond_if_printf(const dialog_cond_if_t *cond_if);
-option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg);
 
 /* Condition THEN */
 typedef struct dialog_cond_then_t {
@@ -42,7 +35,6 @@ typedef struct dialog_cond_then_t {
 
 result_t dialog_cond_then_init(dialog_cond_then_t *cond_then);
 void dialog_cond_then_printf(const dialog_cond_then_t *cond_then);
-result_t dialog_cond_then_execute(const dialog_cond_then_t *cond_then, npc_t* npc, player_t* player);
 bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then);
 
 /* Dialog block */

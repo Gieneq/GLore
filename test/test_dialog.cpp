@@ -2,9 +2,9 @@
 
 extern "C" {
 #include "utils.h"
-// #include "dialog.h"
 #include "keywords.h"
-// #include "responses.h"
+#include "dialog.h"
+#include "responses.h"
 }
 
 /* Keyword creation */
@@ -24,6 +24,7 @@ TEST(KeywordTest, KeywordCreationFromString) {
   EXPECT_STREQ(keyword.text, "hi there");
   EXPECT_EQ(keyword.length, (int)(strlen("hi there")));
 }
+
 
 /* Keyword match front */
 TEST(KeywordTest, KeywordMatchFrontSimpleWord) {
@@ -125,6 +126,7 @@ TEST(KeywordTest, KeywordMatchFrontTwoWords) {
     EXPECT_EQ(match_front_result, OPTION_NONE);
   }
 }
+
 
 /* Keyword match any */
 TEST(KeywordTest, KeywordMatchAnySimpleWord) {
@@ -261,7 +263,31 @@ TEST(KeywordsListTest, KeywordsListCreationFromDelimitedString) {
 
 /* Keywords list match front */
 
+
 /* Keywords list match any */
 
 
+/* Dialog cond if */
+TEST(DialogsTest, DialogCondIfInit) {
+  dialog_cond_if_t dialog_cond_if;
+  dialog_cond_if_init(&dialog_cond_if);
+  ASSERT_EQ(dialog_cond_if.dialog_stage, DIALOG_STAGE_NONE);
+  ASSERT_EQ(dialog_cond_if.keywords.count, 0);
+  ASSERT_EQ(dialog_cond_if.keyword_wildcard.type, WILDCARD_TYPE_NONE);
+  ASSERT_EQ(dialog_cond_if.keyword_wildcard.type, WILDCARD_TYPE_NONE);
+}
+
+
+/* Dialog cond then */
+TEST(DialogsTest, DialogCondThenInit) {
+  
+}
+
+
+/* Dialog blocks */
+TEST(DialogsTest, DialogBlockInit) {
+
+}
+
+/* Responses */
 

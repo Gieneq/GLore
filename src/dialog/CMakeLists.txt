@@ -4,7 +4,6 @@ list(APPEND LIB_DEPENDENCIES
   utils
   cJSON
   quest
-  entity
 )
 
 message(STATUS "   -> ${LIB_DEPENDENCIES}")

@@ -33,9 +33,6 @@ bool_t npc_is_valid(npc_t* npc);
 result_t npc_set_name(npc_t* npc, const char* name);
 result_t npc_append_dialog_block(npc_t* npc, dialog_block_t* dialog_block);
 
-option_t npc_match_user_input(npc_t* npc, player_t* player, const char* msg);
-
 dialog_cond_then_t* npc_get_drop_cond_then(npc_t* npc);
 result_t npc_set_last_block_as_drop_conversation(npc_t* npc);
 bool_t npc_is_in_conversation(npc_t* npc);
-void npc_leave_conversation(npc_t* npc);

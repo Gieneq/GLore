@@ -8,6 +8,8 @@
 #include "keywords.h"
 #include "core.h"
 #include "world.h"
+#include "system_player.h"
+#include "system_dialogs.h"
 
 static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
@@ -17,7 +19,7 @@ static keyword_t kw_go;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
-    if(keyword_match_front_ignorecase(&kws_exit, msg) == OPTION_SOME) {
+    if(keywords_list_match_any_ignorecase(&kws_exit, msg) == OPTION_SOME) {
         info_printf("Quitting, bye then.\n");
         core->state = CORE_STATE_STOPPED;
         return OPTION_SOME;
@@ -89,7 +91,8 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
             for(int i=0; i<current_room->adjecent_rooms_count; i++) {
                 room_t* adjecent_room = current_room->adjecent_rooms[i];
                 if(string_equals_ignorecase(adjecent_room->name, remaining) == OPTION_SOME) {
-                    player_change_room(player, adjecent_room);
+                    // player_change_room(player, adjecent_room);
+                    system_player_change_room(player, adjecent_room);
                     return OPTION_SOME;
                 }
             }
@@ -105,18 +108,18 @@ static option_t system_user_input_npc_interaction(player_t* player, room_t* curr
     /* Iterate over all NPCs in current room. You don't know what dialog state they have.  */
     /* Try matching their dialog blocks, return on success. */
 
-    npc_iter_t npc_iter = room_get_npc_iter(current_room);
-    debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
+    // npc_iter_t npc_iter = room_get_npc_iter(current_room);
+    // debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
     
-    npc_t* selected_npc = NULL;
-    iterator_foreach(&selected_npc, &npc_iter) {
-        debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
+    // npc_t* selected_npc = NULL;
+    // iterator_foreach(&selected_npc, &npc_iter) {
+    //     debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
 
-        /* Try matching NPCs dialogs blocks */
-        if(npc_match_user_input(selected_npc, player, msg) == OPTION_SOME) {
-            return OPTION_SOME;
-        }
-    }
+    //     /* Try matching NPCs dialogs blocks */
+    //     if(npc_match_user_input(selected_npc, player, msg) == OPTION_SOME) {
+    //         return OPTION_SOME;
+    //     }
+    // }
 
     return OPTION_NONE;
 }

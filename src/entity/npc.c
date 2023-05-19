@@ -153,49 +153,6 @@ result_t npc_append_dialog_block(npc_t* npc, dialog_block_t* dialog_block) {
     return RESULT_OK;
 }
 
-
-option_t npc_match_user_input(npc_t* npc, player_t* player, const char* msg) {
-    if(!npc || !msg) {
-        error_printf("NPC data corrupted.\n");
-        return OPTION_NONE;
-    }
-
-    if(npc_is_valid(npc) == BOOL_FALSE) {
-        error_printf("NPC data is invalid.\n");
-        return OPTION_NONE;
-    }
-
-    debug_printf("NPC %s with %d dialog blocks:\n", npc->name, npc->dialog_blocks_count);
-    /* Iterate through all dialog blocks */
-    for(int i=0; i<npc->dialog_blocks_count; ++i) {
-        dialog_block_t* dialog_block = &npc->dialog_blocks[i];
-
-        /* Check (if) block */
-        if(dialog_cond_if_match(&dialog_block->cond_if, npc, player, msg) == OPTION_SOME) {
-            debug_printf("Matched with block:\n");
-#if DEBUG == 1
-        dialog_block_printf(dialog_block);
-#endif
-
-            /* Execute (then) block */
-            if(dialog_cond_then_execute(&dialog_block->cond_then, npc, player) != RESULT_OK) {
-                /* Should not happen, crash somehow */
-                error_printf("Cannot execute dialog then case.\n");
-                HARDFAULT();
-                // todo - consider it, if NPC want to give player an item and inventory is full it will fail. Need to be safe.
-            }
-
-            // debug_printf("NPC %s entered stage %d\n", npc->name, dialog_block->cond_then.next_dialog_stage);
-
-            return OPTION_SOME;
-        }
-    }
-
-
-    return OPTION_NONE;
-}
-
-
 result_t npc_set_last_block_as_drop_conversation(npc_t* npc) {
     if(!npc) {
         error_printf("NPC data corrupted.\n");
@@ -228,17 +185,4 @@ dialog_cond_then_t* npc_get_drop_cond_then(npc_t* npc) {
 
 bool_t npc_is_in_conversation(npc_t* npc) {
     return npc->dialog_stage != 0 ? BOOL_TRUE : BOOL_FALSE;
-}
-
-void npc_leave_conversation(npc_t* npc) {
-    dialog_cond_then_t* dialog_cond_then_drop = npc_get_drop_cond_then(npc);
-    if(dialog_cond_then_drop) {
-        if(dialog_cond_then_execute(dialog_cond_then_drop, npc, NULL) != RESULT_OK) {
-            /* Should not happen, crash somehow */
-            error_printf("Cannot execute dialog then case.\n");
-            HARDFAULT();
-        }
-    } else {
-        error_printf("Missing drop condition.\n");
-    }
 }

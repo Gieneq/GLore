@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "npc.h"
-#include "player.h"
 
 /*
  * DIALOG CONDITION IF
@@ -11,7 +9,7 @@
 
 result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     if(!cond_if) {
-        printf("Dialog condition IF corrupted.\n");
+        error_printf("Dialog condition IF corrupted.\n");
         return RESULT_ERROR;
     }
 
@@ -25,49 +23,6 @@ result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     return RESULT_OK;
 }
 
-option_t dialog_cond_if_match(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg) {
-
-    // debug_printf("  Checking stage of block %d / npc internal %d.\n", cond_if->dialog_stage, npc->dialog_stage);
-
-    /* Check dialog stage */
-    if(cond_if->dialog_stage != npc->dialog_stage) {
-        return OPTION_NONE;
-    }
-    dialog_cond_if_printf(cond_if);
-    // debug_printf("   stages OK.\n");
-
-    /* Check keywords */
-    // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
-    if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
-        return OPTION_NONE;
-    }
-    debug_printf("   keywords OK.\n");
-
-    /* Check wildcards */
-    switch (cond_if->keyword_wildcard.type)
-    {
-    case WILDCARD_TYPE_NPC_NAME:
-        {
-            if(string_equals_ignorecase(msg, npc->name) != OPTION_SOME) {
-                return OPTION_NONE;
-            }
-        }
-        break;
-    case WILDCARD_TYPE_ITEM_NAME:
-        {
-        }
-        break;
-    
-    default:
-        break;
-    }
-
-    // debug_printf("   wildcard name OK.\n");
-
-    /* Check quest */
-
-    return OPTION_SOME;
-}
 
 bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then) {
     if(!cond_then) {
@@ -79,25 +34,6 @@ bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then) {
     return BOOL_TRUE;
 }
 
-result_t dialog_cond_then_execute(const dialog_cond_then_t *cond_then, npc_t* npc, player_t* player) {
-    /* Change NPC dialog stage */
-    npc->dialog_stage = cond_then->next_dialog_stage;
-    debug_printf("NPC %s dialog stage changed to %d.\n", npc->name, npc->dialog_stage);
-
-    /* Manipulate players inventory */
-
-    /* Manipulate questlog */
-
-    /* Say response */
-#if DEBUG == 1
-    dialog_cond_then_printf(cond_then);
-#endif
-    if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE){
-        response_printf("%s says: \"%s\"\n", npc->name, cond_then->response.text); //todo build
-    }
-
-    return RESULT_OK;
-}
 
 /*
  * DIALOG CONDITION THEN

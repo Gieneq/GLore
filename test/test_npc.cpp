@@ -13,8 +13,8 @@ TEST(NPCTest, NPCCreation)
   npc_init(&some_npc);
   some_npc.id = 1;
   ASSERT_EQ(npc_set_name(&some_npc, "Ivan"), RESULT_OK);
-  ASSERT_EQ(some_npc.dialog_blocks_count, 0);
-  
+  const int initial_bloks_count = 2;
+  ASSERT_EQ(some_npc.dialog_blocks_count, initial_bloks_count);
 }
 
 //todo - first test dialog blocks
