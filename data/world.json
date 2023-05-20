@@ -1,16 +1,38 @@
 [
     {
         "id": 1,
-        "name": "BSomewoods",
+        "name": "No Way Out",
+        "description": "Bad you are here"
+    },
+    {
+        "id": 2,
+        "name": "The dock",
         "description": "Some description",
-        "npcs": [
-            1
-        ],
-        "items": [
+        "npcs": [1,2,3],
+        "item_stacks": [
             {
                 "id": 1,
                 "quantity": 1
             }
+        ],
+        "roads": [
+            3
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Birch forest",
+        "description": "Some description",
+        "roads": [
+            2, 4
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Riverbank",
+        "description": "Some description",
+        "roads": [
+            3
         ]
     }
 ]

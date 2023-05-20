@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "loader.h"
-#include "loader_testyard.h"
-#include "world.h"
 #include "system_user_input.h"
 
 static void core_propcess_user_input(core_t* core) {
@@ -37,34 +35,17 @@ result_t core_delete(core_t* core) {
 }
 
 result_t core_populate(core_t* core, database_t* database) {
-    player_set_name(&core->world.player, "Zbignief");
-#if CONFIG_TEST_DATABASE == 1
-    if(loader_testyard_populate(&(core->world), database) != RESULT_OK) {
-        printf("Problem with test loader.\n");
+    player_t* player = &core->world.player;
+    world_t* world = &core->world;
+    player_set_name(player, "Zbignief");
+
+    if(loader_load_world(world) != RESULT_OK) {
+        error_printf("World not loaded.\n");
         return RESULT_ERROR;
     }
-#else
     
-    // if(loader_parse(&(core->world), database) != RESULT_OK) {
-    //     return RESULT_ERROR;
-    // }
-
-    // printf("Player name: %s\n", core->world.player.name);
-    // printf("Player health: %d\n", core->world.player.stats.health);
-    // printf("Player exp: %d\n", core->world.player.stats.experience);
-
-    // printf("Quests count: %llu\n", database_get_quests_count(database));
-
-    // quest_data_t quest_data;
-    // database_get_quests_data_by_id(database, 1, &quest_data);
-    // quest_data_printf(&quest_data);
-
-#endif
-
-    /* Set starting room for player */
-    player_t* player = &core->world.player;
-    room_t* selected_room = &core->world.rooms[0];
-    player->current_room = selected_room;
+    // room_t* selected_room = &core->world.rooms[0];
+    // player->current_room = selected_room;
     // if(player_change_room(player, selected_room) != RESULT_OK) {
     //     printf("Player cannot change room.");
     //     return RESULT_ERROR;

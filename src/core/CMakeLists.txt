@@ -4,6 +4,7 @@ list(APPEND LIB_DEPENDENCIES
   utils
   entity
   world
+  data
 )
 
 message(STATUS "   -> ${LIB_DEPENDENCIES}")

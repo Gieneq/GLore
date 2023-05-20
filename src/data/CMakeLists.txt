@@ -11,7 +11,7 @@ message(STATUS "   -> ${LIB_DEPENDENCIES}")
 
 add_library(data 
   database.c
-  loader_testyard.c
+  loader.c
 )
 
 target_link_libraries(data PUBLIC ${LIB_DEPENDENCIES})
