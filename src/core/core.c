@@ -3,6 +3,7 @@
 #include <string.h>
 #include "loader.h"
 #include "system_user_input.h"
+#include "system_player.h"
 
 static void core_propcess_user_input(core_t* core) {
     string_normalize(core->arg_buffer);
@@ -43,13 +44,10 @@ result_t core_populate(core_t* core, database_t* database) {
         error_printf("World not loaded.\n");
         return RESULT_ERROR;
     }
-    
-    // room_t* selected_room = &core->world.rooms[0];
-    // player->current_room = selected_room;
-    // if(player_change_room(player, selected_room) != RESULT_OK) {
-    //     printf("Player cannot change room.");
-    //     return RESULT_ERROR;
-    // }
+
+    /* Set player current room id */
+    //todo add some fancy methods - initial room, save, load
+    system_player_change_room(world, player, 2);
 
     return RESULT_OK;
 }
@@ -73,7 +71,7 @@ option_t core_test_code(core_t* core) {
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "hello bim";
+        const char* msg_ = "go birch forest";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }

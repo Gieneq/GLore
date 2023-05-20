@@ -6,6 +6,7 @@ result_t system_player_change_room(world_t* world, player_t* player, int room_id
         printf("World or player missing or corrupted.");
         return RESULT_ERROR;
     }
+    const int previous_room_id = player->current_room_id;
 
     // blah blah, if current room not exists thats fine!!!!!!!!!!!!!!!!!!!1
 
@@ -15,7 +16,7 @@ result_t system_player_change_room(world_t* world, player_t* player, int room_id
     }
 
     /* Case 1: passed the same id as current id */
-    if(player->current_room_id == room_id) {
+    if(previous_room_id == room_id) {
         //todo in future change to separated system for printing
         error_printf("Error: You are already in this room.\n");
         return RESULT_OK; //it is fine, not breaking system
@@ -30,15 +31,15 @@ result_t system_player_change_room(world_t* world, player_t* player, int room_id
     }
 
     /* Case 2A: player wasn't in any room before */
-    if(player->current_room_id == INVALID_ID) {
+    if(previous_room_id == INVALID_ID) {
         ; // nothing
     }
 
     /* Case 2B: player was in some room before */
     else {
         room_t* previous_room = NULL;
-        if(world_get_room_by_id(world, &other_room, player->current_room_id) != OPTION_SOME) {
-            error_printf("Error: there is no room data with id %d!\n", player->current_room_id);
+        if(world_get_room_by_id(world, &previous_room, previous_room_id) != OPTION_SOME) {
+            error_printf("Error: there is no room data with id %d!\n", previous_room_id);
             return RESULT_ERROR;
         }
         printf("You are leaving \'%s\'.\n", previous_room->name); 

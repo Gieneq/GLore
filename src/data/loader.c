@@ -5,6 +5,8 @@
 #include "cJSON.h"
 #include "room.h"
 
+#define LOADER_REL_PATH_TO_WORLD_ASSET "./asset/world.json"
+
 #define CORE_FILE_READ_BUFFER_SIZE 1024*32
 static char file_read_buffer[CORE_FILE_READ_BUFFER_SIZE];
 
@@ -25,8 +27,6 @@ static result_t loader_from_file(const char* filename, char *buffer, const size_
     return RESULT_OK;
 }
 
-
-
 result_t loader_load_world(world_t* world) {
     debug_printf("Loading world\n");
 
@@ -35,7 +35,7 @@ result_t loader_load_world(world_t* world) {
         return RESULT_ERROR;
     }
 
-    if(loader_from_file("../data/world.json", file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+    if(loader_from_file(LOADER_REL_PATH_TO_WORLD_ASSET, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
         error_printf("Error: world file not loaded.\n");
         return RESULT_ERROR;
     }
@@ -70,20 +70,27 @@ result_t loader_load_world(world_t* world) {
         {
             cJSON* room_id_json = cJSON_GetObjectItem(room_json, "id");
             if(!room_id_json) {
-                printf("Error: room missing id.\n");
+                error_printf("Error: room missing id.\n");
                 return RESULT_ERROR;
             }
 
             if(!cJSON_IsNumber(room_id_json)) {
-                printf("Error: room id is not a number.\n");
+                error_printf("Error: room id is not a number.\n");
                 return RESULT_ERROR;
             }
 
             int room_id = (int)(cJSON_GetNumberValue(room_id_json));
             if (room_id == INVALID_ID) {
-                printf("Error: passed invalid id.\n");
+                error_printf("Error: passed invalid id.\n");
                 return RESULT_ERROR;
             }
+
+            /* Validate id - should be unique */
+            if(world_has_room_with_id(world, room_id) == OPTION_SOME) {
+                error_printf("Error: room id already used. Check data file!\n");
+                return RESULT_ERROR;
+            }
+
             room_data.id = room_id;
         }
 
@@ -149,19 +156,33 @@ result_t loader_load_world(world_t* world) {
                     }
                     int road_terget_id = cJSON_GetNumberValue(directional_road_json);
                     //todo apply to room
-                    printf(" * todo - apply road %d to room %s\n", road_terget_id, room_data.name);
+                    // printf(" * todo - apply road %d to room %s\n", road_terget_id, room_data.name);
+                    room_append_adjecent_room(&room_data, road_terget_id);
                 }
 
             }
         }
-        printf("Todo save room %d with name %s\n", room_data.id, room_data.name);
+        // printf("Todo save room %d with name %s\n", room_data.id, room_data.name);
+        world_append_room(world, &room_data);
     }
 
 
 
+    /* Validate all connections - should exist */
+    room_t* checked_room = NULL;
+    room_iter_t iter = world_get_room_iter(world);
+    iterator_foreach(&checked_room, &iter) {
+        /* Iterate over all adjecent rooms, check if their roads */
+        /* leads somewhere. Cannot lead to the same room. */
+        for(int i=0; i<checked_room->adjecent_rooms_count; i++) {
+            int adjecent_room_id = checked_room->adjecent_rooms_ids[i];
+            if(world_has_room_with_id(world, adjecent_room_id) != OPTION_SOME) {
+                error_printf("Error: roads from %d leads nowhere %d.\n", checked_room->id, adjecent_room_id);
+                return RESULT_ERROR;
+            }
+        }
+    }
 
-
-    /* Validate all connections */
 
     return RESULT_OK;
 }
