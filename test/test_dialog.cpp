@@ -248,17 +248,28 @@ TEST(KeywordsListTest, KeywordsListCreationFromArray) {
 }
 
 TEST(KeywordsListTest, KeywordsListCreationFromDelimitedString) {
-  keywords_list_t keywords_list;
-  result_t creation_result = keywords_list_from_delimited_string(&keywords_list, "go up,left,right", ",");
-  EXPECT_EQ(creation_result, RESULT_OK);
-  EXPECT_EQ(keywords_list.count, 3);
+  {
+    keywords_list_t keywords_list;
+    result_t creation_result = keywords_list_from_delimited_string(&keywords_list, "go up,left,right", ",");
+    EXPECT_EQ(creation_result, RESULT_OK);
+    EXPECT_EQ(keywords_list.count, 3);
 
-  EXPECT_STREQ(keywords_list.keywords[0].text, "go up");
-  EXPECT_EQ(keywords_list.keywords[0].length, 5);
-  EXPECT_STREQ(keywords_list.keywords[1].text, "left");
-  EXPECT_EQ(keywords_list.keywords[1].length, 4);
-  EXPECT_STREQ(keywords_list.keywords[2].text, "right");
-  EXPECT_EQ(keywords_list.keywords[2].length, 5);
+    EXPECT_STREQ(keywords_list.keywords[0].text, "go up");
+    EXPECT_EQ(keywords_list.keywords[0].length, 5);
+    EXPECT_STREQ(keywords_list.keywords[1].text, "left");
+    EXPECT_EQ(keywords_list.keywords[1].length, 4);
+    EXPECT_STREQ(keywords_list.keywords[2].text, "right");
+    EXPECT_EQ(keywords_list.keywords[2].length, 5);
+  }
+  {
+    keywords_list_t keywords_list;
+    result_t creation_result = keywords_list_from_delimited_string(&keywords_list, "hi, hello, greetings", ",");
+    EXPECT_EQ(creation_result, RESULT_OK);
+    EXPECT_EQ(keywords_list.count, 3);
+    EXPECT_STREQ(keywords_list.keywords[0].text, "hi");
+    EXPECT_STREQ(keywords_list.keywords[1].text, "hello");
+    EXPECT_STREQ(keywords_list.keywords[2].text, "greetings");
+  }
 }
 
 /* Keywords list match front */

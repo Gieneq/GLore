@@ -37,6 +37,7 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - [ ] room iterator not working with pointer array (see system_user_input 'go'),
 - [ ] some option to wrap words for preset display width, center text, draw boxes, option butlabels (yes/no),
 - [ ] when building loader consider reducing stack usage,
+- [ ] in 'keywords_list_from_delimited_string' replace stirng delim with a char,
 
 ## Ideas
 - [ ] Long text from game/narrator - hang game, press enter to continue,

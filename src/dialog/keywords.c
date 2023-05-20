@@ -53,6 +53,8 @@ result_t keywords_list_from_delimited_string(keywords_list_t *list, const char *
     char *token = strtok(str_copy, delim);
     int i = 0;
     while (token != NULL && i < KEYWORDS_MAX_COUNT) {
+        /* Fix to remove spaces, in futore replace strign delim with char delim */
+        token = string_get_noleading_whitespace_start(token);
         keyword_from_string(&list->keywords[i], token);
         token = strtok(NULL, delim);
         i++;

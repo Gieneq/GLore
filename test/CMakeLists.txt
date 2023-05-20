@@ -17,6 +17,7 @@ add_executable(GLore_test
 test_dialog.cpp
 test_utils.cpp
 test_npc.cpp
+test_system_dialog.cpp
 )
 
 

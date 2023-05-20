@@ -6,7 +6,7 @@
 
 /* Global settings */
 #define PLATFORM PLATFORM_WIN
-#define DEBUG 1
+#define DEBUG 0
 #define ERROR_OUTPUT 1
 
 /* Derived settings */

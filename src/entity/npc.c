@@ -28,7 +28,7 @@ result_t npc_init(npc_t* npc) {
         cond_if->dialog_stage = 0;
 
         /* With (if) keywords */
-        if(keywords_list_from_delimited_string(&cond_if->keywords, "hi, hello, greetings", ",") != RESULT_OK) {
+        if(keywords_list_from_delimited_string(&cond_if->keywords, "hi,hello,greetings", ",") != RESULT_OK) {
             error_printf("Couldnt parse keywords.\n");
             return RESULT_ERROR;
         }
@@ -57,7 +57,7 @@ result_t npc_init(npc_t* npc) {
         goodbye_dialog_block.cond_if.dialog_stage = 1;
 
         /* With (if) keywords */
-        if(keywords_list_from_delimited_string(&goodbye_dialog_block.cond_if.keywords, "bye, cu, goodbye, farewell", ",") != RESULT_OK) {
+        if(keywords_list_from_delimited_string(&goodbye_dialog_block.cond_if.keywords, "bye,goodbye,cu,farewell", ",") != RESULT_OK) {
             error_printf("Couldnt parse keywords.\n");
             return RESULT_ERROR;
         }

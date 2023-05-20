@@ -1,19 +1,33 @@
 #include "system_dialogs.h"
 
+option_t system_dialog_match_dialog_stage(const dialog_cond_if_t *cond_if, npc_t* npc) {
+    return cond_if->dialog_stage == npc->dialog_stage ? OPTION_SOME : OPTION_NONE;
+}
+
+option_t system_dialog_match_any_npc_name(const char* npc_name, const char* msg) {
+    keyword_t kw_npc_name;
+    keyword_from_string(&kw_npc_name, npc_name);
+    if(keyword_match_any_ignorecase(&kw_npc_name, msg) != OPTION_SOME) {
+        return OPTION_NONE;
+    }
+    return OPTION_SOME;
+}
 
 option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg) {
 
     // debug_printf("  Checking stage of block %d / npc internal %d.\n", cond_if->dialog_stage, npc->dialog_stage);
 
     /* Check dialog stage */
-    if(cond_if->dialog_stage != npc->dialog_stage) {
+    if(system_dialog_match_dialog_stage(cond_if, npc)) {
         return OPTION_NONE;
     }
     dialog_cond_if_printf(cond_if);
-    // debug_printf("   stages OK.\n");
+    debug_printf("   stages OK.\n");
 
     /* Check keywords */
     // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
+    dialog_cond_if_printf(cond_if);
+    printf(">> %s\n", msg);
     if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
         return OPTION_NONE;
     }
@@ -24,7 +38,8 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     {
     case WILDCARD_TYPE_NPC_NAME:
         {
-            if(string_equals_ignorecase(msg, npc->name) != OPTION_SOME) {
+            /* Create keyword from NPC name */
+            if(system_dialog_match_any_npc_name(npc->name, msg) != OPTION_SOME) {
                 return OPTION_NONE;
             }
         }
@@ -37,8 +52,6 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     default:
         break;
     }
-
-    // debug_printf("   wildcard name OK.\n");
 
     /* Check quest */
 
