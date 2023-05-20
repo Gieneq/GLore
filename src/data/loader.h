@@ -6,7 +6,6 @@
 // #include "keywords.h"
 // #include "dialog.h"
 
-#define LOADER_INVALID_ID 0
 
 result_t loader_load_world(world_t* world);
 

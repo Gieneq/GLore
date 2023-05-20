@@ -1,6 +1,8 @@
 #pragma once
 #include <stdio.h>
 
+#define INVALID_ID 0
+
 /* PLATFORMS */
 #define PLATFORM_WIN 0 
 

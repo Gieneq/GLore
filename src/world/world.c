@@ -3,6 +3,8 @@
 #include <string.h>
 #include "world.h"
 
+static const char* WORLD_UNKNOWN_ROOM_NAME = "#Unknown location";
+
 result_t world_init(world_t* world) {
     debug_printf("World initializing\n");
     world->rooms_count = 0;
@@ -50,15 +52,60 @@ room_iter_t world_get_room_iter(world_t* world) {
 option_t world_get_room_by_name_ignorecase(world_t* world, room_t** room, const char* name) {
     room_iter_t iter = world_get_room_iter(world);
     iterator_foreach(room, &iter) {
-        if(string_equals_ignorecase((*room)->name, name) == 0) {
+        if(string_equals_ignorecase((*room)->name, name) == OPTION_SOME) {
             return OPTION_SOME;
         }
-    }
+    }    
     *room = NULL;
     return OPTION_NONE;
 }
 
+option_t world_get_room_id_by_name_ignorecase(world_t* world, int* room_id, const char* name) {
+    room_t* room = NULL;
+    room_iter_t iter = world_get_room_iter(world);
+    iterator_foreach(&room, &iter) {
+        if(string_equals_ignorecase(room->name, name) == OPTION_SOME) {
+            *room_id = room->id;
+            return OPTION_SOME;
+        }
+    }    
+    return OPTION_NONE;
+}
+
+option_t world_has_room_with_id(world_t* world, int id) {
+    if(id == INVALID_ID) {
+        return OPTION_NONE;
+    }
+    room_t* room = NULL;
+    room_iter_t iter = world_get_room_iter(world);
+    iterator_foreach(&room, &iter) {
+        if(room->id == id) {
+            return OPTION_SOME;
+        }
+    }
+    return OPTION_NONE;
+}
+
+option_t world_get_room_name_by_id_or_unknown(world_t* world, const char** room_name, const int id) {
+    if(id == INVALID_ID) {
+        *room_name = WORLD_UNKNOWN_ROOM_NAME;
+        return OPTION_NONE;
+    }
+
+    room_t* some_room = NULL;
+    if(world_get_room_by_id(world, &some_room, id) == OPTION_SOME) {
+        *room_name = some_room->name;
+        return OPTION_SOME;
+    }
+
+    *room_name = WORLD_UNKNOWN_ROOM_NAME;
+    return OPTION_NONE;
+}
+
 option_t world_get_room_by_id(world_t* world, room_t** room, int id) {
+    if(id == INVALID_ID) {
+        return OPTION_NONE;
+    }
     room_iter_t iter = world_get_room_iter(world);
     iterator_foreach(room, &iter) {
         if((*room)->id == id) {

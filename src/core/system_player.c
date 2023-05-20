@@ -1,45 +1,63 @@
 #include "system_player.h"
 #include "system_dialogs.h"
 
-result_t system_player_change_room(player_t* player, room_t* room) {
-    if(!player || !room) {
-        printf("Player or room is missing or corrupted.");
+result_t system_player_change_room(world_t* world, player_t* player, int room_id) {
+    if(!world || !player) {
+        printf("World or player missing or corrupted.");
         return RESULT_ERROR;
     }
-    room_t* current_room = player->current_room;
 
-    if(current_room == room) {
+    // blah blah, if current room not exists thats fine!!!!!!!!!!!!!!!!!!!1
+
+    if(room_id == INVALID_ID) {
+        error_printf("Error: Invalid room id\n");
+        return RESULT_ERROR;
+    }
+
+    /* Case 1: passed the same id as current id */
+    if(player->current_room_id == room_id) {
         //todo in future change to separated system for printing
-        printf("You are already in this room.");
+        error_printf("Error: You are already in this room.\n");
+        return RESULT_OK; //it is fine, not breaking system
+    }
+
+    /* Case 2: passed other id, check if exists */
+
+    room_t* other_room = NULL;
+    if(world_get_room_by_id(world, &other_room, room_id) != OPTION_SOME) {
+        error_printf("Error: there is no room data with id %d!\n", room_id);
         return RESULT_ERROR;
     }
 
-
-
-    /* Start leaving room */
-    if(current_room) {
-        printf("You are leaving \'%s\'.\n", current_room->name);
+    /* Case 2A: player wasn't in any room before */
+    if(player->current_room_id == INVALID_ID) {
+        ; // nothing
     }
 
-    /* Drop conversation if any */
-    npc_iter_t npc_iter = room_get_npc_iter(current_room);
-    debug_printf("Searching for notfinished conversations over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
-    
-    npc_t* selected_npc = NULL;
-    iterator_foreach(&selected_npc, &npc_iter) {
-        if(npc_is_in_conversation(selected_npc)) {
-            debug_printf("NPC \'%s\' is in conversation. Leaving conversation.\n", selected_npc->name);
-            // npc_leave_conversation(selected_npc);
-            system_dialog_npc_leave_conversation(selected_npc);
+    /* Case 2B: player was in some room before */
+    else {
+        room_t* previous_room = NULL;
+        if(world_get_room_by_id(world, &other_room, player->current_room_id) != OPTION_SOME) {
+            error_printf("Error: there is no room data with id %d!\n", player->current_room_id);
+            return RESULT_ERROR;
+        }
+        printf("You are leaving \'%s\'.\n", previous_room->name); 
+
+        /* Drop conversation if any */
+        npc_iter_t npc_iter = room_get_npc_iter(previous_room);
+        debug_printf("Searching for notfinished conversations over %d NPCs in the room %s:\n", npc_iter.count, previous_room->name);
+        
+        npc_t* selected_npc = NULL;
+        iterator_foreach(&selected_npc, &npc_iter) {
+            if(npc_is_in_conversation(selected_npc)) {
+                debug_printf("NPC \'%s\' is in conversation. Leaving conversation.\n", selected_npc->name);
+                system_dialog_npc_leave_conversation(selected_npc);
+            }
         }
     }
 
-    /* Entrer other room */
-    if(room) {
-        printf("You are entering \'%s\'.\n", room->name);
-    }
-
-    player->current_room = room;
-
+    /* Finally entrer other room */
+    printf("You are entering \'%s\'.\n", other_room->name);
+    player->current_room_id = room_id;
     return RESULT_OK;
 }

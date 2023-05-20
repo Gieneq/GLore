@@ -1,6 +1,6 @@
 #pragma once
 #include "utils.h"
 #include "player.h"
-#include "room.h"
+#include "world.h"
 
-result_t system_player_change_room(player_t* player, room_t* room);
+result_t system_player_change_room(world_t* world, player_t* player, int room_id);

@@ -80,7 +80,7 @@ result_t loader_load_world(world_t* world) {
             }
 
             int room_id = (int)(cJSON_GetNumberValue(room_id_json));
-            if (room_id == LOADER_INVALID_ID) {
+            if (room_id == INVALID_ID) {
                 printf("Error: passed invalid id.\n");
                 return RESULT_ERROR;
             }

@@ -60,7 +60,7 @@ static option_t system_user_input_manipulate_items(player_t* player, room_t* cur
     return OPTION_NONE;
 }
 
-static option_t system_user_input_player_go(player_t* player, room_t* current_room, const char* msg) {
+static option_t system_user_input_player_go(world_t* world, player_t* player, room_t* current_room, const char* msg) {
     word_iterator_start(&word_split_iterator, msg);
 
     if(word_iterator_has_next(&word_split_iterator) == OPTION_SOME) {
@@ -81,17 +81,23 @@ static option_t system_user_input_player_go(player_t* player, room_t* current_ro
                 info_printf("You can go to:\n");
 
                 for(int i=0; i<current_room->adjecent_rooms_count; i++) {
-                    room_t* adjecent_room = current_room->adjecent_rooms[i];
-                    info_printf(" * %s\n", adjecent_room->name);
+                    const int adjecent_room_id = current_room->adjecent_rooms_ids[i];
+                    const char* adjecent_room_name;
+                    world_get_room_name_by_id_or_unknown(world, &adjecent_room_name, adjecent_room_id);
+                    info_printf(" * %s\n", adjecent_room_name);
                 }
                 return OPTION_SOME;
             }
 
             /* Keyword with remaining direction */
             for(int i=0; i<current_room->adjecent_rooms_count; i++) {
-                room_t* adjecent_room = current_room->adjecent_rooms[i];
-                if(string_equals_ignorecase(adjecent_room->name, remaining) == OPTION_SOME) {
-                    system_player_change_room(player, adjecent_room);
+                // room_t* adjecent_room = current_room->adjecent_rooms[i];
+                const int adjecent_room_id = current_room->adjecent_rooms_ids[i];
+                const char* adjecent_room_name;
+                world_get_room_name_by_id_or_unknown(world, &adjecent_room_name, adjecent_room_id);
+                if(string_equals_ignorecase(adjecent_room_name, remaining) == OPTION_SOME) {
+                    //todo - possible unsafe method to change room
+                    system_player_change_room(world, player, adjecent_room_id);
                     return OPTION_SOME;
                 }
             }
@@ -143,8 +149,20 @@ void system_user_input_process(core_t* core, player_t* player, const char* msg) 
         return;
     } 
     
-    room_t* current_room = player->current_room;
-    if(current_room) {
+    /* Player in any room required, if not then seems bugged */
+    if(player->current_room_id == INVALID_ID) {
+        error_printf("Player without current room id, seems bad...\n");
+        return; // nothing to do, but it should not happen
+    }
+
+    room_t* current_room = NULL;
+    if(world_get_room_by_id(&core->world, &current_room, player->current_room_id) != OPTION_SOME) {
+        error_printf("Players current room %d not exist, seems bad...\n", player->current_room_id);
+        return; // nothing to do, but it should not happen
+    }
+
+    /* Finally! */
+    {
         /* Examin room */
         if(system_user_input_examine_room(player, current_room, msg) == OPTION_SOME ) {
             return;
@@ -156,7 +174,7 @@ void system_user_input_process(core_t* core, player_t* player, const char* msg) 
         } 
 
         /* Movement */
-        if(system_user_input_player_go(player, current_room, msg) == OPTION_SOME ) {
+        if(system_user_input_player_go(&core->world, player, current_room, msg) == OPTION_SOME ) {
             return;
         } 
 

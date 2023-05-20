@@ -13,18 +13,13 @@ typedef struct room_t {
     int id;
     char name[ROOM_NAME_BUFFER_SIZE];
 
-    struct room_t* adjecent_rooms[ROOM_ADJECTENT_ROOMS_MAX_COUNT];
+    int adjecent_rooms_ids[ROOM_ADJECTENT_ROOMS_MAX_COUNT]; //pointers replaced with id for flexibility
     int adjecent_rooms_count;
 
-    npc_t npcs[ROOM_NPCS_MAX_COUNT];
+    npc_t npcs[ROOM_NPCS_MAX_COUNT]; //todo - replace with id
     int npcs_count;
 } room_t;
 
-typedef struct room_iter_t {
-    room_t* first;
-    int current;
-    int count;
-} room_iter_t;
 
 
 result_t room_init(room_t* room);
@@ -35,6 +30,7 @@ option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index);
 option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name);
 npc_iter_t room_get_npc_iter(room_t* room);
 result_t room_set_name(room_t* room, const char* name);
+
 bool_t room_has_adjecent_vacancy(room_t* room);
-result_t room_connect_bidirectional(room_t* room_1, room_t* room_2);
-room_iter_t room_get_adjecent_room_iter(room_t* room);
+result_t room_append_adjecent_room(room_t* room, int adjecent_room);
+// room_iter_t room_get_adjecent_room_iter(room_t* room);

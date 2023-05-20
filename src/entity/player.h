@@ -23,7 +23,7 @@ typedef struct player_t {
         quest_progress_t logs[PLAYER_QUESTLOG_BUFFER_SIZE];
         size_t count;
     } quests;
-    room_t* current_room;
+    int current_room_id; //replaced pointer
 } player_t;
 
 void player_set_name(player_t* player, const char * player_name);
