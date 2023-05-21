@@ -63,7 +63,7 @@ result_t room_clear(room_t* room) {
     }
 
     /* NPCs list */
-    memset(room->npcs, 0, sizeof(npc_t) * ROOM_NPCS_MAX_COUNT);
+    memset(room->npcs_ids, 0, sizeof(int) * ROOM_NPCS_MAX_COUNT);
     room->npcs_count = 0;
     
     return RESULT_OK;
@@ -73,77 +73,78 @@ bool_t room_is_valid(room_t* room) {
     return room->id != 0 && strlen(room->name) > 0 ? BOOL_TRUE : BOOL_FALSE;
 }
 
-result_t room_append_npc(room_t* room, npc_t* npc) {
+result_t room_append_npc_id(room_t* room, int npc_id) {
     /* Validate space and npc data */
     if(room->npcs_count >= ROOM_NPCS_MAX_COUNT) {
         printf("Too many NPCs in the room.\n");
         return RESULT_ERROR;
     }
 
-    if(!npc) {
-        printf("NPC data corrupted.\n");
+    if(npc_id == INVALID_ID) {
+        printf("NPC id invalid.\n");
         return RESULT_ERROR;
     }
 
-    if(npc_is_valid(npc) == BOOL_FALSE) {
-        printf("NPC data is invalid.\n");
+    if(room_has_npc_with_id(room, npc_id) == OPTION_SOME) {
+        printf("NPC with id %d already in the room.\n", npc_id);
         return RESULT_ERROR;
     }
 
-    /* Copy NPC data */
+    /* Store NPC id */
     int new_npc_index = room->npcs_count;
-    memcpy(&room->npcs[new_npc_index], npc, sizeof(npc_t));
-
-
-    /* After moving leave NPC data invalid */
-    if(npc_clear(npc) != RESULT_OK) {
-        printf("Cannot clear NPC data after moving.\n");
-        // clear occupied memory?
-        return RESULT_ERROR;
-    }
-
+    room->npcs_ids[new_npc_index] = npc_id;
     ++(room->npcs_count);
     return RESULT_OK;
 }
 
-option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index) {
-    if(room->npcs_count <= 0) {
-        return OPTION_NONE;
-    }
-
-    int highest_available_npc_index = room->npcs_count - 1;
-
-    if(index < 0 || index > highest_available_npc_index) {
-        return OPTION_NONE;
-    }
-
-    *npc = room->npcs + index;
-    return OPTION_SOME;
-}
-
-
-option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name) {
-    if(room->npcs_count <= 0) {
-        return OPTION_NONE;
-    }
-
-    npc_iter_t npc_iter = room_get_npc_iter(room);
-    npc_t* selected_npc = NULL;
-    iterator_foreach(&selected_npc, &npc_iter) {
-        // info_printf(" * %s\n", selected_npc->name);
-        if(string_equals_ignorecase(selected_npc->name, name) == OPTION_SOME) {
-            *npc = selected_npc;
+option_t room_has_npc_with_id(room_t* room, int npc_id) {
+    for(int i=0; i<room->npcs_count; ++i) {
+        if(room->npcs_ids[i] == npc_id) {
             return OPTION_SOME;
         }
     }
-
     return OPTION_NONE;
 }
 
-npc_iter_t room_get_npc_iter(room_t* room) {
-    npc_iter_t iter = {room->npcs, 0, room->npcs_count};
-    return iter;
-}
+// option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index) {
+//     if(room->npcs_count <= 0) {
+//         return OPTION_NONE;
+//     }
+
+//     int highest_available_npc_index = room->npcs_count - 1;
+
+//     if(index < 0 || index > highest_available_npc_index) {
+//         return OPTION_NONE;
+//     }
+
+//     *npc = room->npcs + index;
+//     return OPTION_SOME;
+// }
+
+
+// option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name) {
+//     if(room->npcs_count <= 0) {
+//         return OPTION_NONE;
+//     }
+
+//     npc_iter_t npc_iter = room_get_npc_iter(room);
+//     npc_t* selected_npc = NULL;
+//     iterator_foreach(&selected_npc, &npc_iter) {
+//         // info_printf(" * %s\n", selected_npc->name);
+//         if(string_equals_ignorecase(selected_npc->name, name) == OPTION_SOME) {
+//             *npc = selected_npc;
+//             return OPTION_SOME;
+//         }
+//     }
+
+//     return OPTION_NONE;
+// }
+
+//move to world
+// npc_iter_t room_get_npc_iter(room_t* room) {
+//     npc_iter_t iter = {room->npcs, 0, room->npcs_count};
+//     return iter;
+// }
 
 result_t room_set_name(room_t* room, const char* name) {
     if(strlen(name) > ROOM_NAME_MAX_LENGTH) {

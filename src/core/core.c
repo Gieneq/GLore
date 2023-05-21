@@ -50,7 +50,11 @@ result_t core_populate(core_t* core, database_t* database) {
         error_printf("Player not loaded.\n");
         return RESULT_ERROR;
     }
-    
+
+#if DEBUG == 1
+    world_print_all(world);
+#endif
+
     return RESULT_OK;
 }
 
@@ -67,7 +71,7 @@ option_t core_test_code(core_t* core) {
 #if DEBUG == 1
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "LOoK";
+        const char* msg_ = "hi bim";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
@@ -77,12 +81,12 @@ option_t core_test_code(core_t* core) {
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
-    // {
-    //     memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-    //     const char* msg_ = "GO ";
-    //     strcpy(core->arg_buffer, msg_);
-    //     core_propcess_user_input(core);
-    // }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "GO ";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
 
     return OPTION_SOME;
 #else

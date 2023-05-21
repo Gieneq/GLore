@@ -4,9 +4,12 @@
 #include "loader.h"
 #include "cJSON.h"
 #include "room.h"
+#include "npc.h"
 
 #define LOADER_VOIDROOM 1
 #define LOADER_INITIAL_PLAYER_NAME "#Nonameplayer"
+
+#define LOADER_RESOURCE_PATH_BUFFER_SIZE 64
 
 #define LOADER_RESOURCES_DIR "./res"
 #define LOADER_RESOURCES_WORLD_PATH (LOADER_RESOURCES_DIR "/world.json")
@@ -73,7 +76,7 @@ result_t loader_load_player(world_t* world, player_t* player) {
         }
 
         if(!cJSON_IsString(player_name_json)) {
-            error_printf("Error: current_room_id is not a string.\n");
+            error_printf("Error: player name is not a string.\n");
             return RESULT_ERROR;
         }
         const char* player_name = cJSON_GetStringValue(player_name_json);
@@ -161,7 +164,7 @@ result_t loader_load_world(world_t* world) {
 
             /* Validate id - should be unique */
             if(world_has_room_with_id(world, room_id) == OPTION_SOME) {
-                error_printf("Error: room id already used. Check data file!\n");
+                error_printf("Error: room id %d already used. Check data file!\n", room_id);
                 return RESULT_ERROR;
             }
 
@@ -208,6 +211,51 @@ result_t loader_load_world(world_t* world) {
         }
 
         /* Get optional NPC ids */
+        {
+            cJSON* room_npcs_json = cJSON_GetObjectItem(room_json, "npcs");
+            if(room_npcs_json) {
+
+                if(!cJSON_IsArray(room_npcs_json)) {
+                    error_printf("Error: npcs is not an array.\n");
+                    return RESULT_ERROR;
+                }
+
+                /* Iterate over list of npcs ids and load them from resource files */
+                cJSON* npc_id_json = NULL;
+                cJSON_ArrayForEach(npc_id_json, room_npcs_json) {
+                    if(!cJSON_IsNumber(npc_id_json)) {
+                        error_printf("Error: npc id is not a number.\n");
+                        return RESULT_ERROR;
+                    }
+                    int npc_id_to_load = cJSON_GetNumberValue(npc_id_json);
+                    
+                    /* Load NPC data from file */
+                    npc_t new_npc_data;
+                    if(npc_init(&new_npc_data) != RESULT_OK) {
+                        error_printf("Error: couldnt initialized NPC data.\n");
+                        return RESULT_ERROR;
+                    }
+
+                    if(loader_load_npc_with_id(world, &new_npc_data, npc_id_to_load) != RESULT_OK) {
+                        error_printf("Error: couldnt load npc data from file using id %d.\n", npc_id_to_load);
+                        return RESULT_ERROR;
+                    }
+
+                    /* Store NPC data to world */
+                    if(world_append_npc(world, &new_npc_data) != RESULT_OK) {
+                        error_printf("Error: couldnt store NPC data to the world.\n");
+                        return RESULT_ERROR;
+                    }
+
+                    /* Store NPC id to currently processed room */
+                    if(room_append_npc_id(&room_data, npc_id_to_load) != RESULT_OK) {
+                        error_printf("Error: couldnt store NPC id to the room.\n");
+                        return RESULT_ERROR;
+                    }
+                }
+            }
+        }
+
         /* Get optional item stacks */
         /* Get optional roads */
         {
@@ -258,7 +306,90 @@ result_t loader_load_world(world_t* world) {
     return RESULT_OK;
 }
 
+/* Loading npcs data - requires build world to set initial room */
+result_t loader_load_npc_with_id(world_t* world, npc_t* npc_data, int npc_id) {
+    debug_printf("Loading npcs\n");
+    if(!npc_data) {
+        error_printf("Error: npc data NULL.\n");
+        return RESULT_ERROR;
+    }
+    
+    if(!world) {
+        error_printf("Error: world NULL.\n");
+        return RESULT_ERROR;
+    }
 
+    if(npc_id == INVALID_ID){
+        error_printf("Error: NPC id invalid.\n");
+        return RESULT_ERROR;
+    }
+ //LOADER_RESOURCES_WORLD_PATH + id
+    char npc_data_path[LOADER_RESOURCE_PATH_BUFFER_SIZE];
+    memset(npc_data_path, '\0', LOADER_RESOURCE_PATH_BUFFER_SIZE * sizeof(char));
+    sprintf(npc_data_path, "%s/npc_%d.json", LOADER_RESOURCES_NPCS_DIR, npc_id);
+
+    if(loader_from_file(npc_data_path, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+        error_printf("Error: npc %d file not loaded from %s.\n", npc_id, npc_data_path);
+        return RESULT_ERROR;
+    }
+
+    /* Extract rooms */
+    /* Convert to cJSON objects */
+    cJSON* json_npc = cJSON_Parse(file_read_buffer);
+    if(!json_npc) {
+        error_printf("Error: creating cJSON failed.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Get npc id */
+    {
+        cJSON* current_room_id_json = cJSON_GetObjectItem(json_npc, "id");
+        if(!current_room_id_json) {
+            error_printf("Error: npc missing id.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsNumber(current_room_id_json)) {
+            error_printf("Error: npc's id is not a number.\n");
+            return RESULT_ERROR;
+        }
+
+        int npc_id_from_file = (int)cJSON_GetNumberValue(current_room_id_json);
+        if(npc_id_from_file != npc_id) {
+            error_printf("Error: npc's id from file %d and from source %d not equal!\n", npc_id_from_file, npc_id);
+            return RESULT_ERROR;
+        }
+
+        npc_data->id = npc_id;
+        
+    }
+
+    /* Get npc name */
+    {
+        cJSON* npc_name_json = cJSON_GetObjectItem(json_npc, "name");
+        if(!npc_name_json) {
+            error_printf("Error: npc missing name.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsString(npc_name_json)) {
+            error_printf("Error: npc name is not a string.\n");
+            return RESULT_ERROR;
+        }
+
+        const char* npc_name = cJSON_GetStringValue(npc_name_json);
+        if(npc_set_name(npc_data, npc_name) != RESULT_OK) {
+            error_printf("Error: couldnt set npc name.\n");
+            return RESULT_ERROR;
+        }
+    }
+
+    /* Save NPC data to world */
+
+    // debug_printf("!!NPC  data todo save it: %d, %s\n", npc_data->id, npc_data->name);
+
+    return RESULT_OK;
+}
 
 
 

@@ -41,7 +41,7 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
     return OPTION_NONE;
 }
 
-static option_t system_user_input_examine_room(player_t* player, room_t* current_room, const char* msg) {
+static option_t system_user_input_examine_room(world_t* world, player_t* player, room_t* current_room, const char* msg) {
     /* Look */
     if(keyword_match_front_ignorecase(&kw_look, msg) == OPTION_SOME) {
         info_printf("You are in %s ", current_room->name);
@@ -52,12 +52,17 @@ static option_t system_user_input_examine_room(player_t* player, room_t* current
 
         /* Some NPCs inside room */
         info_printf("and see %d NPCs:\n", current_room->npcs_count);
-        
-        npc_iter_t npc_iter = room_get_npc_iter(current_room);
-        npc_t* selected_npc = NULL;
-        iterator_foreach(&selected_npc, &npc_iter) {
-            info_printf(" * %s\n", selected_npc->name);
+        for(int i=0; i<current_room->npcs_count; ++i) {
+            const char* npc_name = NULL;
+            const int npc_id = current_room->npcs_ids[i];
+            world_get_npc_name_by_id_or_unknown(world, &npc_name, npc_id);
+#if DEBUG == 1
+            info_printf(" * %s (%d)\n", npc_name, npc_id);
+#else
+            info_printf(" * %s\n", npc_name);
+#endif
         }
+
         return OPTION_SOME;
     }
     return OPTION_NONE;
@@ -91,7 +96,11 @@ static option_t system_user_input_player_go(world_t* world, player_t* player, ro
                     const int adjecent_room_id = current_room->adjecent_rooms_ids[i];
                     const char* adjecent_room_name;
                     world_get_room_name_by_id_or_unknown(world, &adjecent_room_name, adjecent_room_id);
-                    info_printf(" * %s\n", adjecent_room_name);
+#if DEBUG == 1
+                    info_printf(" * %s (%d)\n", adjecent_room_name, adjecent_room_id);
+#else
+                    info_printf(" * %s \n", adjecent_room_name);
+#endif
                 }
                 return OPTION_SOME;
             }
@@ -115,23 +124,32 @@ static option_t system_user_input_player_go(world_t* world, player_t* player, ro
     return OPTION_NONE;
 }
 
-static option_t system_user_input_npc_interaction(player_t* player, room_t* current_room, const char* msg) {
+static option_t system_user_input_npc_interaction(world_t* world, player_t* player, room_t* current_room, const char* msg) {
     /* Try interacting with NPCs */
     /* Iterate over all NPCs in current room. You don't know what dialog state they have.  */
     /* Try matching their dialog blocks, return on success. */
 
-    npc_iter_t npc_iter = room_get_npc_iter(current_room);
-    debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
+    // npc_iter_t npc_iter = room_get_npc_iter(current_room);
+    // debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
     
-    npc_t* selected_npc = NULL;
-    iterator_foreach(&selected_npc, &npc_iter) {
-        debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
+    // npc_t* selected_npc = NULL;
+    // iterator_foreach(&selected_npc, &npc_iter) {
+    for(int i=0; i<current_room->npcs_count; ++i) {
+        const int npc_id = current_room->npcs_ids[i];
+        npc_t* selected_npc = NULL;
+        if(world_get_npc_by_id(world, &selected_npc, npc_id) != OPTION_SOME) {
+            error_printf("Seems NPC %d is corrupted.\n", npc_id);
+            return OPTION_NONE;
+        }
+        // debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
 
         /* Try matching NPCs dialogs blocks */
         if(system_dialog_match_user_input(selected_npc, player, msg) == OPTION_SOME) {
             return OPTION_SOME;
         }
     }
+
+    printf(">>>>>todo system_user_input_npc_interaction \n");
 
     return OPTION_NONE;
 }
@@ -175,7 +193,7 @@ void system_user_input_process(core_t* core, player_t* player, const char* msg) 
     /* Finally! */
     {
         /* Examin room */
-        if(system_user_input_examine_room(player, current_room, msg) == OPTION_SOME ) {
+        if(system_user_input_examine_room(&core->world, player, current_room, msg) == OPTION_SOME ) {
             return;
         } 
         
@@ -190,7 +208,7 @@ void system_user_input_process(core_t* core, player_t* player, const char* msg) 
         } 
 
         /* NPC interaction */
-        if(system_user_input_npc_interaction(player, current_room, msg) == OPTION_SOME ) {
+        if(system_user_input_npc_interaction(&core->world, player, current_room, msg) == OPTION_SOME ) {
             return;
         }
     }

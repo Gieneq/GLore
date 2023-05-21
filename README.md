@@ -19,12 +19,14 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - Colored text on Windows target,
 - Introduced buildsystem with google (unit) tests,
 - Keywords matching accept leading whitespace,
+- Data file (json) for world with rooms and roads, player, npcs,
 
 ## Bugs
 - [x] keywords match substring of words e.g. go is inside good,
 - [x] keywords should ignorecase,
 
 ## Todo
+- [ ] player and npc set name different return
 - [ ] use cmake project version in C code,
 - [ ] bye should drop from any state,
 - [ ] bye could not require NPC name if only 1 conversation at the time,

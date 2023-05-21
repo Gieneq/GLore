@@ -21,13 +21,13 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     if(system_dialog_match_dialog_stage(cond_if, npc)) {
         return OPTION_NONE;
     }
-    dialog_cond_if_printf(cond_if);
+    // dialog_cond_if_printf(cond_if);
     debug_printf("   stages OK.\n");
 
     /* Check keywords */
     // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
-    dialog_cond_if_printf(cond_if);
-    printf(">> %s\n", msg);
+    // dialog_cond_if_printf(cond_if);
+    // printf(">> %s\n", msg);
     if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
         return OPTION_NONE;
     }
@@ -96,7 +96,7 @@ option_t system_dialog_match_user_input(npc_t* npc, player_t* player, const char
         return OPTION_NONE;
     }
 
-    debug_printf("NPC %s with %d dialog blocks:\n", npc->name, npc->dialog_blocks_count);
+    // debug_printf("NPC %s with %d dialog blocks:\n", npc->name, npc->dialog_blocks_count);
     /* Iterate through all dialog blocks */
     for(int i=0; i<npc->dialog_blocks_count; ++i) {
         dialog_block_t* dialog_block = &npc->dialog_blocks[i];

@@ -45,11 +45,22 @@ result_t system_player_change_room(world_t* world, player_t* player, int room_id
         printf("You are leaving \'%s\'.\n", previous_room->name); 
 
         /* Drop conversation if any */
-        npc_iter_t npc_iter = room_get_npc_iter(previous_room);
-        debug_printf("Searching for notfinished conversations over %d NPCs in the room %s:\n", npc_iter.count, previous_room->name);
         
-        npc_t* selected_npc = NULL;
-        iterator_foreach(&selected_npc, &npc_iter) {
+        // printf(">>>>>todo Drop conversation if any \n");
+        // const room_t* current_room_data = NULL;
+        // world_get_room_by_id()
+
+        // npc_iter_t npc_iter = room_get_npc_iter(previous_room);
+        // debug_printf("Searching for notfinished conversations over %d NPCs in the room %s:\n", npc_iter.count, previous_room->name);
+        
+        // iterator_foreach(&selected_npc, &npc_iter) {
+        for(int i=0; i<previous_room->npcs_count; ++i) {
+            const int selected_npc_id = previous_room->npcs_ids[i];
+            npc_t* selected_npc = NULL;
+            if(world_get_npc_by_id(world, &selected_npc, selected_npc_id) != OPTION_SOME) {
+                debug_printf("Not found NPC. Should not happen, blah...\n");
+                return RESULT_ERROR;
+            }
             if(npc_is_in_conversation(selected_npc)) {
                 debug_printf("NPC \'%s\' is in conversation. Leaving conversation.\n", selected_npc->name);
                 system_dialog_npc_leave_conversation(selected_npc);
