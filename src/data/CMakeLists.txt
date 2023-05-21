@@ -5,6 +5,7 @@ list(APPEND LIB_DEPENDENCIES
   object
   quest
   world
+  core
 )
 
 message(STATUS "   -> ${LIB_DEPENDENCIES}")

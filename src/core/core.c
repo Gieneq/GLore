@@ -38,17 +38,19 @@ result_t core_delete(core_t* core) {
 result_t core_populate(core_t* core, database_t* database) {
     player_t* player = &core->world.player;
     world_t* world = &core->world;
-    player_set_name(player, "Zbignief");
 
+    /* Load world data */
     if(loader_load_world(world) != RESULT_OK) {
         error_printf("World not loaded.\n");
         return RESULT_ERROR;
     }
 
-    /* Set player current room id */
-    //todo add some fancy methods - initial room, save, load
-    system_player_change_room(world, player, 2);
-
+    /* Load player data */
+    if(loader_load_player(world, player) != RESULT_OK) {
+        error_printf("Player not loaded.\n");
+        return RESULT_ERROR;
+    }
+    
     return RESULT_OK;
 }
 

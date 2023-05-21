@@ -1,5 +1,10 @@
 message(STATUS "Building src")
 
+
+# Refresh asset
+file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/res/)
+file(COPY ../res DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 add_subdirectory(utils)
 add_subdirectory(quest)
 add_subdirectory(object)
@@ -30,3 +35,4 @@ target_link_libraries(GLore PUBLIC ${DEP_LIBS})
 target_include_directories(GLore PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )
+

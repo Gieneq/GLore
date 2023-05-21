@@ -13,6 +13,7 @@
 
 static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
+static keywords_list_t kws_whoemi;
 static keyword_t kw_help;
 static keyword_t kw_look;
 static keyword_t kw_go;
@@ -28,6 +29,12 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
     /* Help */
     if(keyword_match_front_ignorecase(&kw_help, msg) == OPTION_SOME) {
         info_printf("Help? Blah! Help yourself dude :p\n");
+        return OPTION_SOME;
+    }
+
+    /* Who em I */
+    if(keywords_list_match_any_ignorecase(&kws_whoemi, msg) == OPTION_SOME) {
+        info_printf("You are %s\n", player->name);
         return OPTION_SOME;
     }
 
@@ -135,10 +142,14 @@ static void system_user_input_on_unknown() {
 
 /* Public interface */
 void system_user_input_init() {
-    keywords_list_from_delimited_string(&kws_exit, "!exit,!quit,!e,!q,!leave", ",");
+    /* Keywords */
     keyword_from_string(&kw_help, "!help");
     keyword_from_string(&kw_look, "look");
     keyword_from_string(&kw_go, "go");
+
+    /* Keywords lists */
+    keywords_list_from_delimited_string(&kws_exit, "!exit,!quit,!e,!q,!leave", ",");
+    keywords_list_from_delimited_string(&kws_whoemi, "me,who em i,whoemi", ",");
 }
 
 void system_user_input_process(core_t* core, player_t* player, const char* msg) {

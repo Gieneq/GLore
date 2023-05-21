@@ -1,5 +1,6 @@
 {
-    "player_name": "Bob Tuna",
+    "name": "Zbignief",
+    "current_room_id": 2,
     "stats": {
         "exp": 0,
         "health": 100

@@ -15,6 +15,11 @@ result_t room_append_adjecent_room(room_t* room, int adjecent_room) {
         return RESULT_ERROR;
     }
 
+    if(room->id == adjecent_room) {
+        printf("Cannot selfconnect room %d.\n", room->id);
+        return RESULT_ERROR;
+    }
+
     /* Probably this should be validated by upper level function */
     // if(room_is_valid(adjecent_room) == BOOL_FALSE) {
     //     printf("Adjecent room data is invalid.\n");

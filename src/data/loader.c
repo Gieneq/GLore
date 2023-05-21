@@ -5,7 +5,13 @@
 #include "cJSON.h"
 #include "room.h"
 
-#define LOADER_REL_PATH_TO_WORLD_ASSET "./asset/world.json"
+#define LOADER_VOIDROOM 1
+#define LOADER_INITIAL_PLAYER_NAME "#Nonameplayer"
+
+#define LOADER_RESOURCES_DIR "./res"
+#define LOADER_RESOURCES_WORLD_PATH (LOADER_RESOURCES_DIR "/world.json")
+#define LOADER_RESOURCES_PLAYER_PATH (LOADER_RESOURCES_DIR "/player.json")
+#define LOADER_RESOURCES_NPCS_DIR (LOADER_RESOURCES_DIR "/npcs")
 
 #define CORE_FILE_READ_BUFFER_SIZE 1024*32
 static char file_read_buffer[CORE_FILE_READ_BUFFER_SIZE];
@@ -27,6 +33,74 @@ static result_t loader_from_file(const char* filename, char *buffer, const size_
     return RESULT_OK;
 }
 
+
+/* Loading player data - requires build world to set initial room */
+result_t loader_load_player(world_t* world, player_t* player) {
+    debug_printf("Loading player\n");
+
+    if(!world) {
+        error_printf("Error: world NULL.\n");
+        return RESULT_ERROR;
+    }
+
+    if(!player) {
+        error_printf("Error: player NULL.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Initial presets for player */
+    player_set_name(player, LOADER_INITIAL_PLAYER_NAME);
+
+    if(loader_from_file(LOADER_RESOURCES_PLAYER_PATH, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+        error_printf("Error: player file not loaded.\n");
+        return RESULT_ERROR;
+    }
+    
+    /* Store player data from json files */
+    /* Convert to cJSON objects */
+    cJSON* json_player = cJSON_Parse(file_read_buffer);
+    if(!json_player) {
+        error_printf("Error: creating cJSON failed.\n");
+        return RESULT_ERROR;
+    }
+    
+    /* Get player name */
+    {
+        cJSON* player_name_json = cJSON_GetObjectItem(json_player, "name");
+        if(!player_name_json) {
+            error_printf("Error: player missing name.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsString(player_name_json)) {
+            error_printf("Error: current_room_id is not a string.\n");
+            return RESULT_ERROR;
+        }
+        const char* player_name = cJSON_GetStringValue(player_name_json);
+        player_set_name(player, player_name);
+    }
+
+    /* Get current room id */
+    {
+        cJSON* current_room_id_json = cJSON_GetObjectItem(json_player, "current_room_id");
+        if(!current_room_id_json) {
+            error_printf("Error: player missing current_room_id.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsNumber(current_room_id_json)) {
+            error_printf("Error: current_room_id is not a number.\n");
+            return RESULT_ERROR;
+        }
+
+        int current_room_id = (int)cJSON_GetNumberValue(current_room_id_json);
+        if(system_player_change_room(world, player, current_room_id) != RESULT_OK) {
+            error_printf("Error: couldnt change room.\n");
+            return RESULT_ERROR;
+        }
+    }
+}
+
 result_t loader_load_world(world_t* world) {
     debug_printf("Loading world\n");
 
@@ -35,7 +109,7 @@ result_t loader_load_world(world_t* world) {
         return RESULT_ERROR;
     }
 
-    if(loader_from_file(LOADER_REL_PATH_TO_WORLD_ASSET, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+    if(loader_from_file(LOADER_RESOURCES_WORLD_PATH, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
         error_printf("Error: world file not loaded.\n");
         return RESULT_ERROR;
     }
@@ -155,14 +229,11 @@ result_t loader_load_world(world_t* world) {
                         return RESULT_ERROR;
                     }
                     int road_terget_id = cJSON_GetNumberValue(directional_road_json);
-                    //todo apply to room
-                    // printf(" * todo - apply road %d to room %s\n", road_terget_id, room_data.name);
                     room_append_adjecent_room(&room_data, road_terget_id);
                 }
 
             }
         }
-        // printf("Todo save room %d with name %s\n", room_data.id, room_data.name);
         world_append_room(world, &room_data);
     }
 
