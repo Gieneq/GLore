@@ -28,7 +28,7 @@ static result_t loader_from_file(const char* filename, char *buffer, const size_
     memset(buffer, '\0', max_buffer_size);
     size_t read_size = fread(buffer, 1, max_buffer_size, file);
 
-    printf("Read %llu/%llu bytes from file %s.\n", read_size, strlen(buffer), filename);
+    debug_printf("Read %llu/%llu bytes from file %s.\n", read_size, strlen(buffer), filename);
     
     if(fclose(file) != 0) {
         return RESULT_ERROR;
@@ -36,6 +36,109 @@ static result_t loader_from_file(const char* filename, char *buffer, const size_
     return RESULT_OK;
 }
 
+static result_t loader_get_dialog_block_from_cJSON(const cJSON* json, dialog_block_t* dialog_block) {
+    if(!cJSON_IsObject(json)) {
+        error_printf("Error: dialog_block is not an object.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Get (if) case */
+    {
+        cJSON* if_case_json = cJSON_GetObjectItem(json, "if_case");
+        if(!if_case_json) {
+            error_printf("Error: if_case not in dialog_block.\n");
+            return RESULT_ERROR;
+        }
+        
+        /* From stage */
+        cJSON* if_from_stage_json = cJSON_GetObjectItem(if_case_json, "from_stage");
+        if(!if_from_stage_json) {
+            error_printf("Error: if_case missing from_stage.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsNumber(if_from_stage_json)) {
+            error_printf("Error: from_stage is not a number.\n");
+            return RESULT_ERROR;
+        }
+
+        dialog_block->cond_if.dialog_stage = (int)cJSON_GetNumberValue(if_from_stage_json);
+
+        /* Keywords */
+        cJSON* if_keywords_json = cJSON_GetObjectItem(if_case_json, "with_keywords");
+
+        if(if_keywords_json) {
+            if(!cJSON_IsArray(if_keywords_json)) {
+                error_printf("Error: keywords is not an array.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Iterate over list of keywords and load them from resource files */
+            cJSON* keyword_json = NULL;
+            cJSON_ArrayForEach(keyword_json, if_keywords_json) {
+                if(!cJSON_IsString(keyword_json)) {
+                    error_printf("Error: keyword is not a string.\n");
+                    return RESULT_ERROR;
+                }
+                const char* keyword_to_load = cJSON_GetStringValue(keyword_json);
+                if(keywords_list_append(&dialog_block->cond_if.keywords, keyword_to_load) != RESULT_OK) {
+                    error_printf("Error: couldnt append keyword.\n");
+                    return RESULT_ERROR;
+                }
+            }
+        } else {
+            return RESULT_ERROR;
+        }
+    }
+
+
+    /* Get (then) case */
+    {
+        cJSON* then_case_json = cJSON_GetObjectItem(json, "then_case");
+        if(!then_case_json) {
+            error_printf("Error: then_case not in dialog_block.\n");
+            return RESULT_ERROR;
+        }
+
+        /* Next stage */
+        cJSON* then_next_stage_json = cJSON_GetObjectItem(then_case_json, "next_stage");
+
+        if(!then_next_stage_json) {
+            error_printf("Error: then_case missing next_stage.\n");
+            return RESULT_ERROR;
+        }
+
+        if(!cJSON_IsNumber(then_next_stage_json)) {
+            error_printf("Error: next_stage is not a number.\n");
+            return RESULT_ERROR;
+        }
+
+        dialog_block->cond_then.next_dialog_stage = (int)cJSON_GetNumberValue(then_next_stage_json);
+
+        /* Response */
+        cJSON* then_response_json = cJSON_GetObjectItem(then_case_json, "response");
+
+        if(then_response_json) {
+            if(!cJSON_IsString(then_response_json)) {
+                error_printf("Error: response is not a string.\n");
+                return RESULT_ERROR;
+            }
+            const char* response_to_load = cJSON_GetStringValue(then_response_json);
+            if(response_from_string(&dialog_block->cond_then.response, response_to_load, BOOL_FALSE) != RESULT_OK) {
+                error_printf("Error: couldnt append response.\n");
+                return RESULT_ERROR;
+            }
+        } else {
+            /* No response */
+            if(response_from_string(&dialog_block->cond_then.response, "", BOOL_FALSE) != RESULT_OK) {
+                error_printf("Error: couldnt append response.\n");
+                return RESULT_ERROR;
+            }
+        }
+    }
+
+    return RESULT_OK;
+}
 
 /* Loading player data - requires build world to set initial room */
 result_t loader_load_player(world_t* world, player_t* player) {
@@ -97,11 +200,13 @@ result_t loader_load_player(world_t* world, player_t* player) {
         }
 
         int current_room_id = (int)cJSON_GetNumberValue(current_room_id_json);
-        if(system_player_change_room(world, player, current_room_id) != RESULT_OK) {
-            error_printf("Error: couldnt change room.\n");
+        if(current_room_id == INVALID_ID) {
+            error_printf("Error: passed invalid id.\n");
             return RESULT_ERROR;
         }
+        player->current_room_id = current_room_id;
     }
+    return RESULT_OK;
 }
 
 result_t loader_load_world(world_t* world) {
@@ -323,7 +428,7 @@ result_t loader_load_npc_with_id(world_t* world, npc_t* npc_data, int npc_id) {
         error_printf("Error: NPC id invalid.\n");
         return RESULT_ERROR;
     }
- //LOADER_RESOURCES_WORLD_PATH + id
+
     char npc_data_path[LOADER_RESOURCE_PATH_BUFFER_SIZE];
     memset(npc_data_path, '\0', LOADER_RESOURCE_PATH_BUFFER_SIZE * sizeof(char));
     sprintf(npc_data_path, "%s/npc_%d.json", LOADER_RESOURCES_NPCS_DIR, npc_id);
@@ -361,7 +466,6 @@ result_t loader_load_npc_with_id(world_t* world, npc_t* npc_data, int npc_id) {
         }
 
         npc_data->id = npc_id;
-        
     }
 
     /* Get npc name */
@@ -384,13 +488,69 @@ result_t loader_load_npc_with_id(world_t* world, npc_t* npc_data, int npc_id) {
         }
     }
 
-    /* Save NPC data to world */
+    /* Get optional dialog blocks */
+    {
+        cJSON* dialog_blocks_list_json = cJSON_GetObjectItem(json_npc, "dialog_blocks");
+        if(dialog_blocks_list_json) {
 
-    // debug_printf("!!NPC  data todo save it: %d, %s\n", npc_data->id, npc_data->name);
+            if(!cJSON_IsArray(dialog_blocks_list_json)) {
+                error_printf("Error: dialog_blocks is not an array.\n");
+                return RESULT_ERROR;
+            }
 
+            /* Iterate over list of npcs ids and load them from resource files */
+            cJSON* dialog_block_json = NULL;
+            cJSON_ArrayForEach(dialog_block_json, dialog_blocks_list_json) {
+                /* Get dialog block */
+                dialog_block_t dialog_block;
+                dialog_block_init(&dialog_block, DIALOG_TYPE_REGULAR);
+                if(loader_get_dialog_block_from_cJSON(dialog_block_json, &dialog_block) != RESULT_OK) {
+                    error_printf("Error: couldnt load dialog block from cJSON.\n");
+                    return RESULT_ERROR;
+                }
+
+                /* Append dialog block */
+                if(npc_append_dialog_block(npc_data, &dialog_block) != RESULT_OK) {
+                    /* BTW appending leaves variable invalid */
+                    error_printf("Cannot add dialog block to NPC.\n");
+                    return RESULT_ERROR;
+                }
+            }
+        }
+    }
+
+    /* Data should be process (saved) outside this function */
     return RESULT_OK;
 }
 
+
+
+/* Next dialog block */
+        // {
+        //     dialog_block_t dialog_block;
+        //     dialog_block_init(&dialog_block, DIALOG_TYPE_REGULAR);
+        //     dialog_cond_if_t* cond_if = &dialog_block.cond_if;
+            
+        //     /* From (if) stage 1 */
+        //     cond_if->dialog_stage = 1;
+
+        //     /* With (if) keywords */
+        //     if(keywords_list_from_delimited_string(&cond_if->keywords, "how are you,whatsup", ",") != RESULT_OK) {
+        //         error_printf("Couldnt parse keywords.\n");
+        //         return RESULT_ERROR;
+        //     }
+
+        //     /* To (then) stage 2 */
+        //     dialog_block.cond_then.next_dialog_stage = 2;
+        //     response_from_string(&dialog_block.cond_then.response, "Nuffin special. And you?", BOOL_FALSE);
+
+        //     /* Append dialog block */
+        //     if(npc_append_dialog_block(npc_bim, &dialog_block) != RESULT_OK) {
+        //         /* BTW appending leaves variable invalid */
+        //         error_printf("Cannot add dialog block to NPC.\n");
+        //         return RESULT_ERROR;
+        //     }
+        // }
 
 
 

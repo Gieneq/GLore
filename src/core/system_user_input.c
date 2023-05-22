@@ -132,11 +132,6 @@ static option_t system_user_input_npc_interaction(world_t* world, player_t* play
     /* Iterate over all NPCs in current room. You don't know what dialog state they have.  */
     /* Try matching their dialog blocks, return on success. */
 
-    // npc_iter_t npc_iter = room_get_npc_iter(current_room);
-    // debug_printf("Iterating over %d NPCs in the room %s:\n", npc_iter.count, current_room->name);
-    
-    // npc_t* selected_npc = NULL;
-    // iterator_foreach(&selected_npc, &npc_iter) {
     for(int i=0; i<current_room->npcs_count; ++i) {
         const int npc_id = current_room->npcs_ids[i];
         npc_t* selected_npc = NULL;
@@ -144,15 +139,12 @@ static option_t system_user_input_npc_interaction(world_t* world, player_t* play
             error_printf("Seems NPC %d is corrupted.\n", npc_id);
             return OPTION_NONE;
         }
-        // debug_printf("   - %d NPC: %s,\n", npc_iter.current, selected_npc->name);
 
         /* Try matching NPCs dialogs blocks */
         if(system_dialog_match_user_input(selected_npc, player, msg) == OPTION_SOME) {
             return OPTION_SOME;
         }
     }
-
-    printf(">>>>>todo system_user_input_npc_interaction \n");
 
     return OPTION_NONE;
 }

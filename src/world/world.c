@@ -43,12 +43,21 @@ void world_print_all(world_t* world) {
         }
         printf("\n");
     }
+
+    //todo print npcs data:
+    //     npc_t* some_npc;
+    // world_get_npc_by_id(world, &some_npc, 2);
+    // printf("NPC name is %s\n", some_npc->name);
+    // for(int i=0; i<some_npc->dialog_blocks_count; ++i) {
+    //     dialog_block_t* dialog_block = &some_npc->dialog_blocks[i];
+    //     dialog_block_printf(dialog_block);
+    // }
 }
 
 /* Rooms */
 
 result_t world_append_room(world_t* world, room_t* room) {
-    printf("Append room %s with id %d.\n", room->name, room->id);
+    debug_printf("Append room %s with id %d.\n", room->name, room->id);
     if(world->rooms_count >= WORLD_ROOMS_MAX_COUNT) {
         printf("Failed to add room to world: world is full\n");
         return RESULT_ERROR;

@@ -32,6 +32,16 @@ void keywords_list_init(keywords_list_t *list) {
     }
 }
 
+result_t keywords_list_append(keywords_list_t *list, const char *keyword) {
+    if (list->count >= KEYWORDS_MAX_COUNT) {
+        printf("Error: Too many keywords");
+        return RESULT_ERROR;
+    }
+    keyword_from_string(&list->keywords[list->count], keyword);
+    list->count++;
+    return RESULT_OK;
+}
+
 result_t keywords_list_from_array(keywords_list_t *list, const char *keywords[], int count) {
     keywords_list_init(list);
     if (count > KEYWORDS_MAX_COUNT) {

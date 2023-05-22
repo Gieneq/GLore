@@ -1,5 +1,37 @@
 {
     "id": 2,
-    "name": "Bim"
+    "name": "Bim",
+    "dialog_blocks": [
+        {
+            "if_case": {
+                "from_stage": 1,
+                "with_keywords": ["whatsup", "how are you"]
+            },
+            "then_case": {
+                "next_stage": 2,
+                "response": "I'm fine, thank you. How are you?"
+            }
+        },
+        {
+            "if_case": {
+                "from_stage": 2,
+                "with_keywords": ["good", "ok", "fine"]
+            },
+            "then_case": {
+                "next_stage": 1,
+                "response": "That is good to hear."
+            }
+        },
+        {
+            "if_case": {
+                "from_stage": 2,
+                "with_keywords": ["bad"]
+            },
+            "then_case": {
+                "next_stage": 1,
+                "response": "I'm sorry to hear that."
+            }
+        }
+    ]
 }
 

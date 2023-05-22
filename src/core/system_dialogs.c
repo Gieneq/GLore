@@ -25,9 +25,10 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     debug_printf("   stages OK.\n");
 
     /* Check keywords */
-    // if(keywords_list_match_front(&cond_if->keywords, msg) != OPTION_SOME) {
-    // dialog_cond_if_printf(cond_if);
-    // printf(">> %s\n", msg);
+#if DEBUG == 1
+    dialog_cond_if_printf(cond_if);
+#endif
+
     if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
         return OPTION_NONE;
     }
