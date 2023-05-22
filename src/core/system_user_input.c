@@ -10,6 +10,9 @@
 #include "world.h"
 #include "system_player.h"
 #include "system_dialogs.h"
+#include "system_help.h"
+
+static help_t help;
 
 static word_iterator_t word_split_iterator;
 static keywords_list_t kws_exit;
@@ -28,7 +31,7 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
 
     /* Help */
     if(keyword_match_front_ignorecase(&kw_help, msg) == OPTION_SOME) {
-        info_printf("Help? Blah! Help yourself dude :p\n");
+        system_help_print(&help);
         return OPTION_SOME;
     }
 
@@ -160,14 +163,22 @@ static void system_user_input_on_unknown() {
 
 /* Public interface */
 void system_user_input_init() {
+    /* Help */
+    system_help_init(&help);
+    system_help_set_initial_text(&help, "You can navigate and communicate with NPC using text. \nOnly keywords matches. Common ignorecase commands:");
+    system_help_set_ending_text(&help, "Dialogs with NPCs has no pattern.");
+
+
     /* Keywords */
-    keyword_from_string(&kw_help, "!help");
-    keyword_from_string(&kw_look, "look");
-    keyword_from_string(&kw_go, "go");
+    keyword_from_string(&kw_help, "!help"); system_help_append_command_with_keyword(&help, &kw_help, "Prints this message.");
+    keyword_from_string(&kw_look, "look"); system_help_append_command_with_keyword(&help, &kw_look, "...");
+    keyword_from_string(&kw_go, "go"); system_help_append_command_with_keyword(&help, &kw_go, "...");
 
     /* Keywords lists */
-    keywords_list_from_delimited_string(&kws_exit, "!exit,!quit,!e,!q,!leave", ",");
-    keywords_list_from_delimited_string(&kws_whoemi, "me,who em i,whoemi", ",");
+    keywords_list_from_delimited_string(&kws_exit, "!exit,!quit,!e,!q,!leave", ","); system_help_append_command_with_keywords_list(&help, &kws_exit, "...");
+    keywords_list_from_delimited_string(&kws_whoemi, "me,who em i,whoemi", ","); system_help_append_command_with_keywords_list(&help, &kws_whoemi, "...");
+    
+    /* Some more help messages */
 }
 
 void system_user_input_process(core_t* core, player_t* player, const char* msg) {
