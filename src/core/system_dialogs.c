@@ -54,6 +54,17 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
         break;
     }
 
+    /* Only one conversation at the time. If stage 0 check */
+    /* if player is already in any conversation */
+    if(cond_if->dialog_stage == 0) {
+        if(player_is_in_conversation(player) == BOOL_TRUE) {
+            info_printf("You are already in conversation with.\n");
+            return OPTION_NONE;
+        } else {
+            player->current_conversation_npc_id = npc->id;
+        }
+    }
+
     /* Check quest */
 
     return OPTION_SOME;
@@ -75,6 +86,11 @@ result_t system_dialog_execute_condition_then(const dialog_cond_then_t *cond_the
 #endif
     if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE){
         response_printf("%s says: \"%s\"\n", npc->name, cond_then->response.text); //todo build
+    }
+
+    /* Leave conversation if any */
+    if((cond_then->next_dialog_stage == INVALID_ID) && (player_is_in_conversation(player) == BOOL_TRUE)) {
+        player_leave_conversation(player);
     }
 
     return RESULT_OK;
@@ -130,10 +146,10 @@ option_t system_dialog_match_user_input(npc_t* npc, player_t* player, const char
 
 
 
-void system_dialog_npc_leave_conversation(npc_t* npc) {
+void system_dialog_npc_leave_conversation(npc_t* npc, player_t* player) {
     dialog_cond_then_t* dialog_cond_then_drop = npc_get_drop_cond_then(npc);
     if(dialog_cond_then_drop) {
-        if(system_dialog_execute_condition_then(dialog_cond_then_drop, npc, NULL) != RESULT_OK) {
+        if(system_dialog_execute_condition_then(dialog_cond_then_drop, npc, player) != RESULT_OK) {
             /* Should not happen, crash somehow */
             error_printf("Cannot execute dialog then case.\n");
             HARDFAULT();

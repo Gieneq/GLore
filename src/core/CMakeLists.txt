@@ -15,6 +15,7 @@ add_library(core
   system_dialogs.c
   system_player.c
   system_help.c
+  system_debug_message.c
 )
 
 target_link_libraries(core PUBLIC ${LIB_DEPENDENCIES})

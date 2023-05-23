@@ -34,3 +34,11 @@ option_t player_questlog_get_quest_by_id(player_t* player, quest_id_t quest_id, 
     }
     return OPTION_NONE;
 }
+
+bool_t player_is_in_conversation(player_t* player) {
+    return player->current_conversation_npc_id != INVALID_ID ? BOOL_TRUE : BOOL_FALSE;
+}
+
+void player_leave_conversation(player_t* player) {
+    player->current_conversation_npc_id = INVALID_ID;
+}

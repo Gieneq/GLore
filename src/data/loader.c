@@ -206,6 +206,9 @@ result_t loader_load_player(world_t* world, player_t* player) {
         }
         player->current_room_id = current_room_id;
     }
+
+    /* Conversation - no conversation */
+    player->current_conversation_npc_id = INVALID_ID;
     return RESULT_OK;
 }
 

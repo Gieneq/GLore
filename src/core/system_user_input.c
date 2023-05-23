@@ -11,6 +11,7 @@
 #include "system_player.h"
 #include "system_dialogs.h"
 #include "system_help.h"
+#include "system_debug_message.h"
 
 static help_t help;
 
@@ -20,12 +21,20 @@ static keywords_list_t kws_whoemi;
 static keyword_t kw_help;
 static keyword_t kw_look;
 static keyword_t kw_go;
+static keyword_t kw_hint;
+static keyword_t kw_debug;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
     if(keywords_list_match_any_ignorecase(&kws_exit, msg) == OPTION_SOME) {
         info_printf("Quitting, bye then.\n");
         core->state = CORE_STATE_STOPPED;
+        return OPTION_SOME;
+    }
+
+    /* Debug */
+    if(keyword_match_front_ignorecase(&kw_debug, msg) == OPTION_SOME) {
+        system_debug_message_printall(&core->world, player);
         return OPTION_SOME;
     }
 
@@ -38,6 +47,22 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
     /* Who em I */
     if(keywords_list_match_any_ignorecase(&kws_whoemi, msg) == OPTION_SOME) {
         info_printf("You are %s\n", player->name);
+        return OPTION_SOME;
+    }
+
+    /* Hint - what command can I use now */
+    if(keyword_match_any_ignorecase(&kw_hint, msg) == OPTION_SOME) {
+        /* Check if player in conversation. If not write information about saying 'hi', */
+        /* else print all kewords for specyfic NPC dialog stage. */
+
+        bool_t is_player_in_conversation = BOOL_FALSE;
+
+        if(is_player_in_conversation == BOOL_TRUE) {
+
+        } else {
+            info_printf("To start conversation type \'hi\' with NPC name.\n", player->name);
+        }
+
         return OPTION_SOME;
     }
 
@@ -163,12 +188,15 @@ void system_user_input_init() {
 
     /* Keywords */
     keyword_from_string(&kw_help, "!help"); system_help_append_command_with_keyword(&help, &kw_help, "Prints this message.");
-    keyword_from_string(&kw_look, "look"); system_help_append_command_with_keyword(&help, &kw_look, "...");
-    keyword_from_string(&kw_go, "go"); system_help_append_command_with_keyword(&help, &kw_go, "...");
+    keyword_from_string(&kw_look, "look"); system_help_append_command_with_keyword(&help, &kw_look, "Look around current room.");
+    keyword_from_string(&kw_go, "go"); system_help_append_command_with_keyword(&help, &kw_go, "List possible roads. Add road name to go there.");
+    keyword_from_string(&kw_hint, "hint"); system_help_append_command_with_keyword(&help, &kw_hint, "Give information about current conversation keywords.");
+    keyword_from_string(&kw_debug, "!debug"); system_help_append_command_with_keyword(&help, &kw_debug, "Give some more information.");
+
 
     /* Keywords lists */
-    keywords_list_from_delimited_string(&kws_exit, "!exit,!quit,!e,!q,!leave", ","); system_help_append_command_with_keywords_list(&help, &kws_exit, "...");
-    keywords_list_from_delimited_string(&kws_whoemi, "me,who em i,whoemi", ","); system_help_append_command_with_keywords_list(&help, &kws_whoemi, "...");
+    keywords_list_from_delimited_string(&kws_exit, "!quit,!q,", ","); system_help_append_command_with_keywords_list(&help, &kws_exit, "Shout the game. Whithout save so far.");
+    keywords_list_from_delimited_string(&kws_whoemi, "me,who em i,whoemi", ","); system_help_append_command_with_keywords_list(&help, &kws_whoemi, "Give information about player.");
     
     /* Some more help messages */
 }
