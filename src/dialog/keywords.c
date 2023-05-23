@@ -74,11 +74,11 @@ result_t keywords_list_from_delimited_string(keywords_list_t *list, const char *
     return RESULT_OK;
 }
 
-void keywords_list_printf(const keywords_list_t *list) {
+void keywords_list_printf(const keywords_list_t *list, const char* end) {
     for (int i = 0; i < list->count; i++) {
-        printf("%s ", list->keywords[i].text);
+        printf("%s, ", list->keywords[i].text);
     }
-    printf("\n");
+    printf("%s", end != NULL ? end : "");
 }
 
 void keyword_wildcard_init(keyword_wildcard_t *kw, const wildcard_type_t type) {

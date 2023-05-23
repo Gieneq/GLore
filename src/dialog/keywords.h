@@ -24,7 +24,7 @@ void keywords_list_init(keywords_list_t *list);
 result_t keywords_list_append(keywords_list_t *list, const char *keyword);
 result_t keywords_list_from_array(keywords_list_t *list, const char *keywords[], int count);
 result_t keywords_list_from_delimited_string(keywords_list_t *list, const char *str, const char *delim);
-void keywords_list_printf(const keywords_list_t *list);
+void keywords_list_printf(const keywords_list_t *list, const char* end);
 
 /* Keyword wildcard */
 typedef enum wildcard_type_t {

@@ -55,13 +55,7 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
         /* Check if player in conversation. If not write information about saying 'hi', */
         /* else print all kewords for specyfic NPC dialog stage. */
 
-        bool_t is_player_in_conversation = BOOL_FALSE;
-
-        if(is_player_in_conversation == BOOL_TRUE) {
-
-        } else {
-            info_printf("To start conversation type \'hi\' with NPC name.\n", player->name);
-        }
+        system_help_print_hint(&core->world, player);
 
         return OPTION_SOME;
     }

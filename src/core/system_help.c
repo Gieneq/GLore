@@ -243,3 +243,29 @@ void system_help_print(const help_t* help) {
     info_printf("%s\n", help->ending_text);
 }
 
+
+void system_help_print_hint(world_t* world, const player_t* player) {
+    if(! world || !player) {
+        return;
+    }
+
+    if(player_is_in_conversation(player) == BOOL_TRUE) {
+        npc_t* npc_in_conversation = NULL;
+        if(world_get_npc_by_id(world, &npc_in_conversation, player->current_conversation_npc_id) != OPTION_SOME) {
+            return;
+        }
+
+        /* List all possible keywords */
+        for(int i=0; i<npc_in_conversation->dialog_blocks_count; ++i) {
+            //todo check conditions
+            dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
+            if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
+                keywords_list_printf(&cond_if->keywords, NULL);
+            }
+        }
+        printf("\n");
+
+    } else {
+        info_printf("To start conversation type \'hi\' with NPC name.\n", player->name);
+    }
+}
