@@ -20,6 +20,7 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - Introduced buildsystem with google (unit) tests,
 - Keywords matching accept leading whitespace,
 - Data file (json) for world with rooms and roads, player, npcs,
+- Adde 'hint' command to print possible dialog keywords,
 
 ## Bugs
 - [x] keywords match substring of words e.g. go is inside good,
@@ -29,13 +30,13 @@ Text game in which you navigate by writing text. The terminal and imagination ar
 - [ ] player and npc set name different return
 - [ ] use cmake project version in C code,
 - [ ] bye should drop from any state,
-- [ ] bye could not require NPC name if only 1 conversation at the time,
-- [ ] Drop should be included as farawell block, leave room,
+- [x] bye could not require NPC name if only 1 conversation at the time,
+- [x] Drop should be included as farawell block, leave room,
 - [ ] Inventory for player, inventory system,
 - [ ] Stats and skills for player,
-- [ ] If player has active talk, cannot change to other NPC,
+- [x] If player has active talk, cannot change to other NPC,
 - [ ] Use wildcards in responses,
-- [ ] strip spaces from end of user input - normalize string,
+- [x] strip spaces from end of user input - normalize string,
 - [ ] room iterator not working with pointer array (see system_user_input 'go'),
 - [ ] some option to wrap words for preset display width, center text, draw boxes, option butlabels (yes/no),
 - [ ] when building loader consider reducing stack usage,

@@ -14,13 +14,11 @@ option_t system_dialog_match_any_npc_name(const char* npc_name, const char* msg)
 }
 
 option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg) {
-
-    // debug_printf("  Checking stage of block %d / npc internal %d.\n", cond_if->dialog_stage, npc->dialog_stage);
-
     /* Check dialog stage */
     if(system_dialog_match_dialog_stage(cond_if, npc)) {
         return OPTION_NONE;
     }
+
     // dialog_cond_if_printf(cond_if);
     debug_printf("   stages OK.\n");
 

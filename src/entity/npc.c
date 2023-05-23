@@ -61,8 +61,6 @@ result_t npc_init(npc_t* npc) {
             error_printf("Couldnt parse keywords.\n");
             return RESULT_ERROR;
         }
-
-        goodbye_dialog_block.cond_if.keyword_wildcard.type = WILDCARD_TYPE_NPC_NAME; //todo as function
         
         /* To (then) stage 1 */
         goodbye_dialog_block.cond_then.next_dialog_stage = 0;
@@ -118,7 +116,7 @@ result_t npc_set_name(npc_t* npc, const char* name) {
         return RESULT_ERROR;
     }
 
-    strcpy(npc->name, name);
+    memcpy(npc->name, name, strlen(name) * sizeof(char));
     return RESULT_OK;
 }
 

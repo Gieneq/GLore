@@ -20,8 +20,6 @@ typedef struct room_t {
     int npcs_count;
 } room_t;
 
-
-
 result_t room_init(room_t* room);
 result_t room_clear(room_t* room);
 bool_t room_is_valid(room_t* room);
@@ -30,11 +28,7 @@ result_t room_set_name(room_t* room, const char* name);
 /* NPCs in room */
 result_t room_append_npc_id(room_t* room, int npc_id);
 option_t room_has_npc_with_id(room_t* room, int npc_id);
-// option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index);
-// option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name);
-// npc_iter_t room_get_npc_iter(room_t* room);
 
 /* Roads */
 bool_t room_has_adjecent_vacancy(room_t* room);
 result_t room_append_adjecent_room(room_t* room, int adjecent_room);
-// room_iter_t room_get_adjecent_room_iter(room_t* room);

@@ -43,15 +43,6 @@ void world_print_all(world_t* world) {
         }
         printf("\n");
     }
-
-    //todo print npcs data:
-    //     npc_t* some_npc;
-    // world_get_npc_by_id(world, &some_npc, 2);
-    // printf("NPC name is %s\n", some_npc->name);
-    // for(int i=0; i<some_npc->dialog_blocks_count; ++i) {
-    //     dialog_block_t* dialog_block = &some_npc->dialog_blocks[i];
-    //     dialog_block_printf(dialog_block);
-    // }
 }
 
 /* Rooms */
@@ -123,9 +114,6 @@ option_t world_has_room_with_id(world_t* world, int id) {
     room_t* room = NULL;
     room_iter_t iter = world_get_room_iter(world);
     iterator_foreach(&room, &iter) {
-        // for(int i=0; i<world->rooms_count; ++i) { 
-        // room_t* room = &world->rooms[i];
-        // printf(" Looking at id: %d cmp with new %d\n", room->id, id);
         if(room->id == id) {
             return OPTION_SOME;
         }

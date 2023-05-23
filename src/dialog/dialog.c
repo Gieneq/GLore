@@ -16,10 +16,6 @@ result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     cond_if->dialog_stage = DIALOG_STAGE_NONE;
     keywords_list_init(&cond_if->keywords);
     keyword_wildcard_init(&cond_if->keyword_wildcard, WILDCARD_TYPE_NONE);
-    // quest_progress_init(&cond_if->quest_progress_required);
-    // cond_if->entering_quest_id = 0;
-    // cond_if->check_requirements = BOOL_FALSE;
-    
     return RESULT_OK;
 }
 

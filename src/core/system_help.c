@@ -266,6 +266,6 @@ void system_help_print_hint(world_t* world, const player_t* player) {
         printf("\n");
 
     } else {
-        info_printf("To start conversation type \'hi\' with NPC name.\n", player->name);
+        info_printf("To start conversation type \'hi\' with NPC name.\n");
     }
 }

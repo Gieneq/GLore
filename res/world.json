@@ -39,6 +39,7 @@
         "id": 5,
         "name": "Riverbank village",
         "description": "Some description",
+        "npcs": [5],
         "roads": [
             6, 4
         ]
@@ -47,8 +48,9 @@
         "id": 6,
         "name": "Watermill",
         "description": "Some description",
+        "npcs": [4],
         "roads": [
-            3, 5, 4
+            2, 3, 5, 4
         ]
     }
 ]

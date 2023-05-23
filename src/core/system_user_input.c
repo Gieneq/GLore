@@ -54,7 +54,6 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
     if(keyword_match_any_ignorecase(&kw_hint, msg) == OPTION_SOME) {
         /* Check if player in conversation. If not write information about saying 'hi', */
         /* else print all kewords for specyfic NPC dialog stage. */
-
         system_help_print_hint(&core->world, player);
 
         return OPTION_SOME;
@@ -150,7 +149,6 @@ static option_t system_user_input_npc_interaction(world_t* world, player_t* play
     /* Try interacting with NPCs */
     /* Iterate over all NPCs in current room. You don't know what dialog state they have.  */
     /* Try matching their dialog blocks, return on success. */
-
     for(int i=0; i<current_room->npcs_count; ++i) {
         const int npc_id = current_room->npcs_ids[i];
         npc_t* selected_npc = NULL;

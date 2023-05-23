@@ -6,7 +6,6 @@
 #include "system_player.h"
 
 
-
 static void core_propcess_user_input(core_t* core) {
     string_normalize(core->arg_buffer);
     system_user_input_process(core, &core->world.player, core->arg_buffer);
@@ -25,7 +24,6 @@ result_t core_create(core_t *core) {
     }
 
     system_user_input_init();
-
     return RESULT_OK;
 }
 

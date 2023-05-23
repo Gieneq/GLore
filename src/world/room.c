@@ -20,12 +20,6 @@ result_t room_append_adjecent_room(room_t* room, int adjecent_room) {
         return RESULT_ERROR;
     }
 
-    /* Probably this should be validated by upper level function */
-    // if(room_is_valid(adjecent_room) == BOOL_FALSE) {
-    //     printf("Adjecent room data is invalid.\n");
-    //     return RESULT_ERROR;
-    // }
-
     int new_adjecent_room_index = room->adjecent_rooms_count;
     room->adjecent_rooms_ids[new_adjecent_room_index] = adjecent_room;
 
@@ -106,46 +100,6 @@ option_t room_has_npc_with_id(room_t* room, int npc_id) {
     return OPTION_NONE;
 }
 
-// option_t room_get_npc_by_index(room_t* room, npc_t** npc, const int index) {
-//     if(room->npcs_count <= 0) {
-//         return OPTION_NONE;
-//     }
-
-//     int highest_available_npc_index = room->npcs_count - 1;
-
-//     if(index < 0 || index > highest_available_npc_index) {
-//         return OPTION_NONE;
-//     }
-
-//     *npc = room->npcs + index;
-//     return OPTION_SOME;
-// }
-
-
-// option_t room_get_npc_by_name(room_t* room, npc_t** npc, const char* name) {
-//     if(room->npcs_count <= 0) {
-//         return OPTION_NONE;
-//     }
-
-//     npc_iter_t npc_iter = room_get_npc_iter(room);
-//     npc_t* selected_npc = NULL;
-//     iterator_foreach(&selected_npc, &npc_iter) {
-//         // info_printf(" * %s\n", selected_npc->name);
-//         if(string_equals_ignorecase(selected_npc->name, name) == OPTION_SOME) {
-//             *npc = selected_npc;
-//             return OPTION_SOME;
-//         }
-//     }
-
-//     return OPTION_NONE;
-// }
-
-//move to world
-// npc_iter_t room_get_npc_iter(room_t* room) {
-//     npc_iter_t iter = {room->npcs, 0, room->npcs_count};
-//     return iter;
-// }
-
 result_t room_set_name(room_t* room, const char* name) {
     if(strlen(name) > ROOM_NAME_MAX_LENGTH) {
         printf("New room name too long.\n");
@@ -159,10 +113,4 @@ result_t room_set_name(room_t* room, const char* name) {
 bool_t room_has_adjecent_vacancy(room_t* room) {
     return room->adjecent_rooms_count < ROOM_ADJECTENT_ROOMS_MAX_COUNT ? BOOL_TRUE : BOOL_FALSE;
 }
-
-// room_iter_t room_get_adjecent_room_iter(room_t* room) {
-//     room_iter_t iter = {&room->adjecent_rooms[0], 0, room->adjecent_rooms_count};
-//     return iter;
-// }
-
 
