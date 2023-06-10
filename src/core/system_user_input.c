@@ -23,6 +23,7 @@ static keyword_t kw_look;
 static keyword_t kw_go;
 static keyword_t kw_hint;
 static keyword_t kw_debug;
+static keyword_t kw_questlog;
 
 static option_t system_user_input_general(core_t* core, player_t* player, const char* msg) {
     /* Quit */
@@ -55,7 +56,11 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
         /* Check if player in conversation. If not write information about saying 'hi', */
         /* else print all kewords for specyfic NPC dialog stage. */
         system_help_print_hint(&core->world, player);
+        return OPTION_SOME;
+    }
 
+    if(keyword_match_any_ignorecase(&kw_questlog, msg) == OPTION_SOME) {
+        questlog_print(&player->questlog);
         return OPTION_SOME;
     }
 
@@ -184,6 +189,8 @@ void system_user_input_init() {
     keyword_from_string(&kw_go, "go"); system_help_append_command_with_keyword(&help, &kw_go, "List possible roads. Add road name to go there.");
     keyword_from_string(&kw_hint, "hint"); system_help_append_command_with_keyword(&help, &kw_hint, "Give information about current conversation keywords.");
     keyword_from_string(&kw_debug, "!debug"); system_help_append_command_with_keyword(&help, &kw_debug, "Give some more information.");
+    keyword_from_string(&kw_questlog, "ql"); system_help_append_command_with_keyword(&help, &kw_questlog, "Print entire questlog.");
+
 
 
     /* Keywords lists */

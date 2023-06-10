@@ -11,7 +11,6 @@ list(APPEND LIB_DEPENDENCIES
 message(STATUS "   -> ${LIB_DEPENDENCIES}")
 
 add_library(data 
-  database.c
   loader.c
 )
 

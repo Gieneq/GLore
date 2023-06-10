@@ -23,6 +23,7 @@
         "id": 3,
         "name": "Birch forest",
         "description": "Some description",
+        "npcs": [5],
         "roads": [
             2, 4
         ]
@@ -39,7 +40,6 @@
         "id": 5,
         "name": "Riverbank village",
         "description": "Some description",
-        "npcs": [5],
         "roads": [
             6, 4
         ]

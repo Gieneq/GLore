@@ -12,6 +12,7 @@ result_t world_init(world_t* world) {
     memset(world->rooms, 0, sizeof(room_t) * WORLD_ROOMS_MAX_COUNT);
     memset(world->npcs_list, 0, sizeof(npc_t) * WORLD_NPC_MAX_COUNT);
     world->npcs_count = 0;
+    player_init(&world->player);
     for(int i=0; i< WORLD_NPC_MAX_COUNT; ++i) {
         if(npc_clear(&world->npcs_list[i]) != RESULT_OK) {
             return RESULT_ERROR;

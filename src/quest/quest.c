@@ -3,178 +3,92 @@
 #include <string.h>
 #include <stdio.h>
 #include "utils.h"
-#include "database.h"
 
-static database_t* database = NULL;
 
-/* Quest Requirements */
-
-void quest_requirements_create(quest_requirements_t *requirements) {
-    requirements->count = 0;
-}
-
-result_t quest_requirements_add_item(quest_requirements_t *requirements, int item_id, size_t count) {
-    if(requirements == NULL) {
-        return RESULT_ERROR;
-    }
-
-    if(requirements->count >= QUEST_REQUIREMENTS_ITEMS_MAX_COUNT) {
-        return RESULT_ERROR;
-    }
-
-    requirements->items[requirements->count].item_id = item_id;
-    requirements->items[requirements->count].count = count;
-    requirements->count++;
-    return RESULT_OK;
-}
-
-/* Quest Reward */
-void quest_reward_create(quest_reward_t *reward) {
-    reward->count = 0;
-    reward->exp = 0;
-}
-
-void quest_reward_set_exp(quest_reward_t *reward, int exp) {
-    reward->exp = exp;
-}
-
-result_t quest_reward_add_item(quest_reward_t *reward, int item_id, size_t count) {
-    if(reward == NULL) {
-        return RESULT_ERROR;
-    }
-
-    if(reward->count >= QUEST_REWARDS_ITEMS_MAX_COUNT) {
-        return RESULT_ERROR;
-    }
-
-    reward->items[reward->count].item_id = item_id;
-    reward->items[reward->count].count = count;
-    reward->count++;
-    return RESULT_OK;
-}
-
-/* Quest Dialog Data */
-void quest_dialog_data_create(quest_dialog_data_t *dialog_data) {
-    
-}
-
-/* Quest Stage Data */
-
-void quest_stage_data_create(quest_stage_data_t *stage_data) {
-    stage_data->stage_no = 0;
-    memset(stage_data->objective, '\0', QUEST_BRIEF_BUFFER_SIZE);
-    quest_requirements_create(&stage_data->requirements);
-    quest_reward_create(&stage_data->reward);
+void quest_stage_init(quest_stage_t* quest_stage_data, int quest_id, int stage) {
+    quest_stage_data->quest_id = quest_id;
+    quest_stage_data->stage = stage;
 }
 
 
+/* Questlog */
 
-/* Quest Data */
-result_t quest_data_create(quest_data_t *quest_data, quest_id_t quest_id, const char *name, const char *brief) {
-    if(quest_data == NULL) {
-        return RESULT_ERROR;
+void questlog_init(questlog_t* questlog) {
+    memset(questlog->quests, 0, sizeof(quest_stage_t) * PLAYER_QUESTLOG_MAX_COUNT);
+    for(int i = 0; i < PLAYER_QUESTLOG_MAX_COUNT; i++) {
+        quest_stage_init(&questlog->quests[i], INVALID_ID, QUEST_STAGE_NONE);
     }
-    
-    quest_data->quest_id = quest_id;
-
-    if(cpystr_trimed(quest_data->name, name, QUEST_NAME_BUFFER_SIZE) != OVERFLOW_NONE) {
-        return RESULT_ERROR;
-    }
-
-    if(cpystr_trimed(quest_data->brief, brief, QUEST_BRIEF_BUFFER_SIZE) != OVERFLOW_NONE) {
-        return RESULT_ERROR;
-    }
-
-    memset(quest_data->stages, 0, sizeof(quest_stage_data_t) * QUEST_STAGES_MAX_COUNT);
-    quest_data->stages_count = 0;
-
-    memset(quest_data->dialogs, 0, sizeof(quest_dialog_data_t) * QUEST_DIALOGS_MAX_COUNT);
-    quest_data->dialogs_count = 0;
-
-    // printf("Creating quest %d: %s [%llu stages] (%s)\n", (int)(quest_data->quest_id), quest_data->name, stages, quest_data->brief);
-    return RESULT_OK;
-}
-
-result_t quest_data_add_stage(quest_data_t *quest_data, quest_stage_data_t *stage_data) {
-    if(quest_data == NULL || stage_data == NULL) {
-        return RESULT_ERROR;
-    }
-
-    if(quest_data->stages_count >= QUEST_STAGES_MAX_COUNT) {
-        return RESULT_ERROR;
-    }
-
-    memcpy(&quest_data->stages[quest_data->stages_count], stage_data, sizeof(quest_stage_data_t));
-    quest_data->stages_count++;
-    return RESULT_OK;
-}
-
-result_t quest_data_add_dialog(quest_data_t *quest_data, quest_dialog_data_t *dialog_data) {
-    if(quest_data == NULL || dialog_data == NULL) {
-        return RESULT_ERROR;
-    }
-
-    if(quest_data->dialogs_count >= QUEST_DIALOGS_MAX_COUNT) {
-        return RESULT_ERROR;
-    }
-
-    memcpy(&quest_data->dialogs[quest_data->dialogs_count], dialog_data, sizeof(quest_dialog_data_t));
-    quest_data->dialogs_count++;
-    return RESULT_OK;
+    questlog->size = 0;
 }
 
 
-
-
-/* Printf functions */
-
-void quest_requirements_printf(quest_requirements_t *requirements) {
-    printf(" Requirements: %llu items:\n", requirements->count);
-    for(size_t i = 0; i < requirements->count; i++) {
-        item_data_t item_data;
-        if(database_get_item_data_by_id(database, requirements->items[i].item_id, &item_data) == RESULT_OK) {
+bool_t questlog_has_quest(questlog_t* questlog, int quest_id) {
+    for(int i = 0; i < questlog->size; i++) {
+        if(questlog->quests[i].quest_id == quest_id) {
+            return BOOL_TRUE;
         }
-        printf("  - Item %d (%s) x %llu\n", requirements->items[i].item_id, item_data.name, requirements->items[i].count);
     }
+    return BOOL_FALSE;
 }
 
-void quest_reward_printf(quest_reward_t *reward) {
-    printf(" Reward: %d exp, %llu items:\n", reward->exp, reward->count);
-    for(size_t i = 0; i < reward->count; i++) {
-        item_data_t item_data;
-        if(database_get_item_data_by_id(database, reward->items[i].item_id, &item_data) == RESULT_OK) {
+
+result_t questlog_append_quest(questlog_t* questlog, int quest_id, int stage) {
+    if(questlog->size >= PLAYER_QUESTLOG_MAX_COUNT) {
+        return RESULT_ERROR;
+    }
+    quest_stage_init(&questlog->quests[questlog->size], quest_id, stage);
+    questlog->size++;
+    return RESULT_OK;
+}
+
+option_t questlog_get_quest_stage(questlog_t* questlog, int quest_id, int* stage) {
+    for(int i = 0; i < questlog->size; i++) {
+        if(questlog->quests[i].quest_id == quest_id) {
+            *stage = questlog->quests[i].stage;
+            return OPTION_SOME;
         }
-        printf("  - Item %d (%s) x %llu\n", reward->items[i].item_id, item_data.name, reward->items[i].count);
     }
+    return OPTION_NONE;
 }
 
-void quest_stage_data_printf(quest_stage_data_t *stage_data) {
-    printf(" Stage %llu: %s\n", stage_data->stage_no, stage_data->objective);
-    quest_requirements_printf(&stage_data->requirements);
-    const char *npc_name = "Unknown todo";
-    quest_reward_printf(&stage_data->reward);
+option_t questlog_get_quest_by_id(questlog_t* questlog, int quest_id, quest_stage_t** quest_stage) {
+    for(int i = 0; i < questlog->size; i++) {
+        if(questlog->quests[i].quest_id == quest_id) {
+            *quest_stage = &questlog->quests[i];
+            return OPTION_SOME;
+        }
+    }
+    return OPTION_NONE;
 }
 
-void quest_data_printf(quest_data_t *quest_data) {
-    printf("Summary of quest %d: %s [%d stages] (%s)\n", (int)(quest_data->quest_id), quest_data->name, quest_data->stages_count, quest_data->brief);
-    printf("Stages:\n");
-    for(size_t i = 0; i < quest_data->stages_count; i++) {
-        quest_stage_data_printf(&quest_data->stages[i]);
+option_t questlog_update(questlog_t* questlog, int quest_id, int stage) {
+    /* If player has quest in questlog */
+    if(questlog_has_quest(questlog, quest_id) == BOOL_TRUE) {
+        quest_stage_t* quest_stage;
+        if(questlog_get_quest_by_id(questlog, quest_id, &quest_stage) == OPTION_NONE) {
+            /* Should not happen */
+            error_printf("Updating quest %d/%d failed!\n", quest_id, stage);
+            return OPTION_NONE;
+        }
+        quest_stage->stage = stage;
+        return OPTION_SOME;
     }
-    printf("Dialogs:\n");
+
+    /* Else player doesn't have quest in questlog */
+    if(questlog_append_quest(questlog, quest_id, stage) != RESULT_OK) {
+        error_printf("Appending quest %d/%d failed!\n", quest_id, stage);
+        return OPTION_NONE;
+    }
+
+    return OPTION_SOME;
 }
 
-result_t quest_data_attach_db_for_printf(void* db) {
-    if(db == NULL) {
-        return RESULT_ERROR;
+void questlog_print(questlog_t* questlog) {
+    if(questlog->size == 0) {
+        info_printf("Questlog empty\n");
     }
-
-    if(database != NULL) {
-        return RESULT_ERROR;
+    for(int i=0; i<questlog->size; ++i) {
+        quest_stage_t* stage = &questlog->quests[i];
+        info_printf("%d: %d,\n", stage->quest_id, stage->stage);
     }
-
-    database = (database_t*)db;
-        return RESULT_OK;
 }
-
-

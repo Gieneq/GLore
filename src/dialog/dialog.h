@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "keywords.h"
 #include "responses.h"
-#include "questlog.h"
+#include "quest.h"
 
 #define WILDCARD_PLAYER_NAME "<$PLAYER_NAME$>"
 #define WILDCARD_NPC_NAME "<$NPC_NAME$>"
@@ -22,20 +22,24 @@ typedef struct dialog_cond_if_t {
     int dialog_stage;
     keywords_list_t keywords;
     keyword_wildcard_t keyword_wildcard;
+    quest_stage_t quest_stage;
 } dialog_cond_if_t;
 
 result_t dialog_cond_if_init(dialog_cond_if_t *cond_if);
 void dialog_cond_if_printf(const dialog_cond_if_t *cond_if);
+bool_t dialog_cond_if_has_quest_reqirement(const dialog_cond_if_t *cond_if);
 
 /* Condition THEN */
 typedef struct dialog_cond_then_t {
     int next_dialog_stage;
     response_t response;
+    quest_stage_t update_quest_stage;
 } dialog_cond_then_t;
 
 result_t dialog_cond_then_init(dialog_cond_then_t *cond_then);
 void dialog_cond_then_printf(const dialog_cond_then_t *cond_then);
 bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then);
+bool_t dialog_cond_then_has_quest_update(const dialog_cond_then_t *cond_then);
 
 /* Dialog block */
 typedef struct dialog_block_t {

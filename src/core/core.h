@@ -1,7 +1,6 @@
 #pragma once
 #include <stdlib.h>
 #include "utils.h"
-#include "database.h"
 #include "world.h"
 
 #define CONFIG_TEST_DATABASE 1
@@ -24,7 +23,7 @@ typedef struct core_t {
 
 result_t core_create(core_t *core);
 result_t core_delete(core_t* core);
-result_t core_populate(core_t* core, database_t* database);
+result_t core_populate(core_t* core);
 option_t core_test_code(core_t* core);
 void core_input(core_t* core);
 void core_loop(core_t* core);

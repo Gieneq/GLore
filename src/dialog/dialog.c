@@ -16,7 +16,24 @@ result_t dialog_cond_if_init(dialog_cond_if_t *cond_if) {
     cond_if->dialog_stage = DIALOG_STAGE_NONE;
     keywords_list_init(&cond_if->keywords);
     keyword_wildcard_init(&cond_if->keyword_wildcard, WILDCARD_TYPE_NONE);
+
+    /* Optional quest stage requirement */
+    quest_stage_init(&cond_if->quest_stage, INVALID_ID, QUEST_STAGE_NONE);
+
     return RESULT_OK;
+}
+
+bool_t dialog_cond_if_has_quest_reqirement(const dialog_cond_if_t *cond_if) {
+    return cond_if->quest_stage.quest_id != INVALID_ID ? BOOL_TRUE : BOOL_FALSE;
+}
+
+
+/*
+ * DIALOG CONDITION THEN
+ */
+
+bool_t dialog_cond_then_has_quest_update(const dialog_cond_then_t *cond_then) {
+    return cond_then->update_quest_stage.quest_id != INVALID_ID ? BOOL_TRUE : BOOL_FALSE;
 }
 
 
@@ -31,9 +48,6 @@ bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then) {
 }
 
 
-/*
- * DIALOG CONDITION THEN
- */
 
 result_t dialog_cond_then_init(dialog_cond_then_t *cond_then) {
     if(!cond_then) {
@@ -43,6 +57,9 @@ result_t dialog_cond_then_init(dialog_cond_then_t *cond_then) {
 
     response_init(&cond_then->response);
     cond_then->next_dialog_stage = DIALOG_STAGE_NONE;
+
+    /* Optional quest stage update */
+    quest_stage_init(&cond_then->update_quest_stage, INVALID_ID, QUEST_STAGE_NONE);
 
     return RESULT_OK;
 }

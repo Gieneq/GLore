@@ -10,7 +10,6 @@ message(STATUS "   -> ${LIB_DEPENDENCIES}")
 
 add_library(quest 
   quest.c
-  questlog.c
 )
 
 target_link_libraries(quest PUBLIC ${LIB_DEPENDENCIES})

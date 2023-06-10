@@ -35,7 +35,7 @@ result_t core_delete(core_t* core) {
     return RESULT_OK;
 }
 
-result_t core_populate(core_t* core, database_t* database) {
+result_t core_populate(core_t* core) {
     player_t* player = &core->world.player;
     world_t* world = &core->world;
 
@@ -67,23 +67,35 @@ option_t core_test_code(core_t* core) {
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "hi woodworker bil";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "work";
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
 
 #if DEBUG == 1
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "hi bim";
+        const char* msg_ = "help";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "whatsup";
+        const char* msg_ = "yes";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
-        const char* msg_ = "bye bim";
+        const char* msg_ = "ql";
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }

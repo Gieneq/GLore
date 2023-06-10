@@ -1,4 +1,5 @@
 #include "system_dialogs.h"
+#include "system_quest.h"
 
 option_t system_dialog_match_dialog_stage(const dialog_cond_if_t *cond_if, npc_t* npc) {
     return cond_if->dialog_stage == npc->dialog_stage ? OPTION_SOME : OPTION_NONE;
@@ -18,6 +19,17 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     if(system_dialog_match_dialog_stage(cond_if, npc)) {
         return OPTION_NONE;
     }
+
+    /* Check questlog stage if related */
+    bool_t is_quest_matching;
+    if(system_quest_get_cond_if_mach_player_questlog(cond_if, player, &is_quest_matching) == OPTION_SOME) {
+        /* Cond_if has some quest relate stuff */
+        if(is_quest_matching == BOOL_FALSE) {
+            return OPTION_NONE;
+        }
+    } 
+    
+    /* Seems any quest conditions (if are present) are ok */
 
     // dialog_cond_if_printf(cond_if);
     debug_printf("   stages OK.\n");
@@ -77,6 +89,15 @@ result_t system_dialog_execute_condition_then(const dialog_cond_then_t *cond_the
     /* Manipulate players inventory */
 
     /* Manipulate questlog */
+    bool_t was_quest_fullfilled;
+    if(system_quest_execute_cond_then_match_player_questlog(cond_then, player, &was_quest_fullfilled) == OPTION_SOME) {
+        /* Seems there are quest related effects */
+        if(was_quest_fullfilled == BOOL_FALSE) {
+            return RESULT_ERROR;
+        }
+    }
+
+    /* Seems any quest related effects (if present) are executed */
 
     /* Say response */
 #if DEBUG == 1

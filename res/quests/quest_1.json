@@ -1,23 +1,17 @@
 {
     "id": 1,
-    "name": "Simple request",
-    "brief": "Lorem ipsum",
+    "name": "Woodcutting job",
+    "description": "Woodworker Bil needs some help in doing his job.",
     "stages": [
         {
             "stage_no": 1,
-            "objective": "Bring to <$end_npc_name$> <$requirements.items$>.",
-            "requirements": {
-                "items": [
-                    {
-                        "item_id": 1,
-                        "count": 1
-                    },
-                    {
-                        "item_id": 4,
-                        "count": 1
-                    }
-                ]
-            },
+            "objective": "Chop down 5 tree, and bring wood to Bil.",
+            "quest_items": [
+                {
+                    "item_id": 1,
+                    "count": 1
+                }
+            ],
             "rewards": {
                 "items": [
                     {
@@ -25,81 +19,7 @@
                         "count": 1
                     }
                 ],
-                "exp": 100
-            }
-        }
-    ],
-    "dialogs": [
-        {
-            "if": {
-                "dialog_state": 0,
-                "questlog": 0,
-                "keywords": ["quest"]
-            },
-            "then": {
-                "response": "Wanna help me?",
-                "next_dialog_state": 1   
-            }
-        },
-
-        {
-            "if": {
-                "dialog_state": 0,
-                "questlog": 1,
-                "keywords": ["quest"]
-            },
-            "then": {
-                "response": "Have you finished?",
-                "next_dialog_state": 2   
-            }
-        },
-
-        {
-            "if": {
-                "dialog_state": 1,
-                "keywords": ["yes", "ok"]
-            },
-            "then": {
-                "response": "Ok, bring me <$requirements.items$>",
-                "questlog_set": 1,
-                "next_dialog_state": 0   
-            }
-        },
-
-        {
-            "if": {
-                "dialog_state": 2,
-                "keywords": ["yes"],
-                "quest_req_fullfilled": 1
-            },
-            "then": {
-                "response": "Great! Here is your reward",
-                "questlog_set": 2,
-                "give_rewards": true,
-                "next_dialog_state": 0   
-            }
-        },
-
-        {
-            "if": {
-                "dialog_state": 2,
-                "keywords": ["yes"],
-                "quest_reqirement": false
-            },
-            "then": {
-                "responses": ["Seems you havent finished yet. Come back when you do"],
-                "next_dialog_state": 0   
-            }
-        },
-
-        {
-            "if": {
-                "dialog_state": 2,
-                "keywords": ["no"]
-            },
-            "then": {
-                "responses": ["Ok, come back if you finish."],
-                "next_dialog_state": 0   
+                "exp": 5
             }
         }
     ]

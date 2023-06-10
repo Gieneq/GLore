@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "core.h"
-#include "database.h"
 #include "utils.h"
 #include <windows.h>
-static database_t database;
 static core_t core;
 
 int main(int argc, char *argv[]) {
@@ -16,9 +14,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    database_init(&database);
 
-    if(core_populate(&core, &database) != RESULT_OK) {
+    if(core_populate(&core) != RESULT_OK) {
         error_printf("Failed to populate world\n");
         return 1;
     }
@@ -35,7 +32,6 @@ int main(int argc, char *argv[]) {
         core_loop(&core);
     }
 
-    //save database
     // core_delete(&core);
     debug_printf("Finished\n");
     return 0;

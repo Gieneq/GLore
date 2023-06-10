@@ -1,5 +1,85 @@
 {
     "id": 5,
-    "name": "Woodworker Bil"
+    "name": "Woodworker Bil",
+    "dialog_blocks": [
+        {
+            "if_case": {
+                "from_stage": 1,
+                "with_questlog" : {
+                    "id": 1,
+                    "at_stage": 0
+                },
+                "with_keywords": ["work"]
+            },
+            "then_case": {
+                "next_stage": 2,
+                "response": "There is high demand for wood. Go away or help me somehow."
+            }
+        },
+        {
+            "if_case": {
+                "from_stage": 1,
+                "with_questlog" : {
+                    "id": 1,
+                    "at_stage": 1
+                },
+                "with_keywords": ["work"]
+            },
+            "then_case": {
+                "next_stage": 2,
+                "response": "Have you finished?"
+            }
+        },
+        {
+            "if_case": {
+                "from_stage": 1,
+                "with_questlog" : {
+                    "id": 1,
+                    "at_stage": 2
+                },
+                "with_keywords": ["work"]
+            },
+            "then_case": {
+                "next_stage": 2,
+                "response": "Finally finished my work! I can take a breath."
+            }
+        },
+
+        {
+            "if_case": {
+                "from_stage": 2,
+                "with_keywords": ["work", "help"]
+            },
+            "then_case": {
+                "next_stage": 3,
+                "response": "Wanna help?"
+            }
+        },
+
+        {
+            "if_case": {
+                "from_stage": 3,
+                "with_keywords": ["yes", "ok"]
+            },
+            "then_case": {
+                "next_stage": 1,
+                "response": "Take this axe and bring me some wood.",
+                "update_questlog": {
+                    "id": 1,
+                    "stage": 1
+                }
+            }
+        },
+        {
+            "if_case": {
+                "from_stage": 3,
+                "with_keywords": ["no", "nope"]
+            },
+            "then_case": {
+                "next_stage": 0,
+                "response": "Ok... Bye!"
+            }
+        }
+    ]
 }
 
