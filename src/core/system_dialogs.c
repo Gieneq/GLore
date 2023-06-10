@@ -27,6 +27,8 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
         if(is_quest_matching == BOOL_FALSE) {
             return OPTION_NONE;
         }
+
+        debug_printf(" Q-is matching!\n");
     } 
     
     /* Seems any quest conditions (if are present) are ok */

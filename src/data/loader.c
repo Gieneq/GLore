@@ -64,6 +64,27 @@ static result_t loader_get_dialog_block_from_cJSON(const cJSON* json, dialog_blo
 
         dialog_block->cond_if.dialog_stage = (int)cJSON_GetNumberValue(if_from_stage_json);
 
+
+        /* Questlog requirement - optional */
+        cJSON* if_questlog_json = cJSON_GetObjectItem(if_case_json, "with_questlog");
+        if(if_questlog_json) {
+            cJSON* questlog_id_json = cJSON_GetObjectItem(if_questlog_json, "id");
+            cJSON* questlog_at_stage_json = cJSON_GetObjectItem(if_questlog_json, "at_stage");
+            if(!questlog_id_json || !questlog_at_stage_json) {
+                error_printf("Error: with_questlog missing id or at_stage.\n");
+                return RESULT_ERROR;
+            }
+
+            if(!cJSON_IsNumber(questlog_id_json) || !cJSON_IsNumber(questlog_at_stage_json)) {
+                error_printf("Error: with_questlog: id or at_stage not number.\n");
+                return RESULT_ERROR;
+            }
+
+            dialog_block->cond_if.quest_stage.quest_id = (int)cJSON_GetNumberValue(questlog_id_json);
+            dialog_block->cond_if.quest_stage.stage = (int)cJSON_GetNumberValue(questlog_at_stage_json);
+            debug_printf("Q:Found questlog_requirement: %d to stage %d\n", dialog_block->cond_if.quest_stage.quest_id, dialog_block->cond_if.quest_stage.stage);
+        }
+
         /* Keywords */
         cJSON* if_keywords_json = cJSON_GetObjectItem(if_case_json, "with_keywords");
 
@@ -134,6 +155,29 @@ static result_t loader_get_dialog_block_from_cJSON(const cJSON* json, dialog_blo
                 error_printf("Error: couldnt append response.\n");
                 return RESULT_ERROR;
             }
+        }
+
+        
+        /* Questlog update - optional */
+        cJSON* then_questlog_json = cJSON_GetObjectItem(then_case_json, "update_questlog");
+        if(then_questlog_json) {
+            /* Those must be included - progress in quest */
+            cJSON* then_questlog_id_json = cJSON_GetObjectItem(then_questlog_json, "id");
+            cJSON* then_questlog_stage_json = cJSON_GetObjectItem(then_questlog_json, "stage");
+
+            if(!then_questlog_id_json || !then_questlog_stage_json) {
+                error_printf("Error: id or stage missing in update_questlog.\n");
+                return RESULT_ERROR;
+            }
+
+            if(!cJSON_IsNumber(then_questlog_id_json) || !cJSON_IsNumber(then_questlog_stage_json)) {
+                error_printf("Error: id or stage missing in update_questlog are not number.\n");
+                return RESULT_ERROR;
+            }
+
+            dialog_block->cond_then.update_quest_stage.quest_id = (int)cJSON_GetNumberValue(then_questlog_id_json);
+            dialog_block->cond_then.update_quest_stage.stage = (int)cJSON_GetNumberValue(then_questlog_stage_json);
+            debug_printf("Q:Found questlog_update: %d to stage %d\n", dialog_block->cond_then.update_quest_stage.quest_id, dialog_block->cond_then.update_quest_stage.stage);
         }
     }
 
