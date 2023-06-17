@@ -22,6 +22,7 @@ static keyword_t kw_help;
 static keyword_t kw_look;
 static keyword_t kw_go;
 static keyword_t kw_hint;
+static keyword_t kw_debughint;
 static keyword_t kw_debug;
 static keyword_t kw_questlog;
 
@@ -55,7 +56,14 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
     if(keyword_match_any_ignorecase(&kw_hint, msg) == OPTION_SOME) {
         /* Check if player in conversation. If not write information about saying 'hi', */
         /* else print all kewords for specyfic NPC dialog stage. */
-        system_help_print_hint(&core->world, player);
+        system_help_print_hint(&core->world, player, BOOL_FALSE);
+        return OPTION_SOME;
+    }
+    /* DebugHint - what command can I use now */
+    if(keyword_match_any_ignorecase(&kw_debughint, msg) == OPTION_SOME) {
+        /* Check if player in conversation. If not write information about saying 'hi', */
+        /* else print all kewords for specyfic NPC dialog stage. */
+        system_help_print_hint(&core->world, player, BOOL_TRUE);
         return OPTION_SOME;
     }
 
@@ -188,6 +196,7 @@ void system_user_input_init() {
     keyword_from_string(&kw_look, "look"); system_help_append_command_with_keyword(&help, &kw_look, "Look around current room.");
     keyword_from_string(&kw_go, "go"); system_help_append_command_with_keyword(&help, &kw_go, "List possible roads. Add road name to go there.");
     keyword_from_string(&kw_hint, "hint"); system_help_append_command_with_keyword(&help, &kw_hint, "Give information about current conversation keywords.");
+    keyword_from_string(&kw_debughint, "?hint"); system_help_append_command_with_keyword(&help, &kw_debughint, "Give information about current conversation keywords.");
     keyword_from_string(&kw_debug, "!debug"); system_help_append_command_with_keyword(&help, &kw_debug, "Give some more information.");
     keyword_from_string(&kw_questlog, "ql"); system_help_append_command_with_keyword(&help, &kw_questlog, "Print entire questlog.");
 

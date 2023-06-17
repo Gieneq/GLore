@@ -26,7 +26,7 @@ typedef struct dialog_cond_if_t {
 } dialog_cond_if_t;
 
 result_t dialog_cond_if_init(dialog_cond_if_t *cond_if);
-void dialog_cond_if_printf(const dialog_cond_if_t *cond_if);
+void dialog_cond_if_printf(const dialog_cond_if_t *cond_if, const char* ending);
 bool_t dialog_cond_if_has_quest_reqirement(const dialog_cond_if_t *cond_if);
 
 /* Condition THEN */
@@ -37,7 +37,7 @@ typedef struct dialog_cond_then_t {
 } dialog_cond_then_t;
 
 result_t dialog_cond_then_init(dialog_cond_then_t *cond_then);
-void dialog_cond_then_printf(const dialog_cond_then_t *cond_then);
+void dialog_cond_then_printf(const dialog_cond_then_t *cond_then, const char* ending);
 bool_t dialog_cond_then_has_response(const dialog_cond_then_t *cond_then);
 bool_t dialog_cond_then_has_quest_update(const dialog_cond_then_t *cond_then);
 

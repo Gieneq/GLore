@@ -51,6 +51,12 @@ result_t core_populate(core_t* core) {
         return RESULT_ERROR;
     }
 
+    /* Load quests */
+    if(loader_load_quests(world, player) != RESULT_OK) {
+        error_printf("Quests not loaded.\n");
+        return RESULT_ERROR;
+    }
+
 #if DEBUG == 1
     world_print_all(world);
 #endif
@@ -64,18 +70,49 @@ option_t core_test_code(core_t* core) {
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
         const char* msg_ = "look";
+        printf("_%s\n", msg_);
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
         const char* msg_ = "hi woodworker bil";
+        printf("_%s\n", msg_);
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }
     {
         memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
         const char* msg_ = "work";
+        printf("_%s\n", msg_);
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "help";
+        printf("_%s\n", msg_);
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "yes";
+        printf("_%s\n", msg_);
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "ql";
+        printf("_%s\n", msg_);
+        strcpy(core->arg_buffer, msg_);
+        core_propcess_user_input(core);
+    }
+    {
+        memset(core->arg_buffer, '\0', CORE_ARG_BUFFER_SIZE);
+        const char* msg_ = "work";
+        printf("_%s\n", msg_);
         strcpy(core->arg_buffer, msg_);
         core_propcess_user_input(core);
     }

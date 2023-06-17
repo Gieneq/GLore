@@ -106,7 +106,7 @@ bool_t dialog_block_is_valid(dialog_block_t *dialog_block) {
     return dialog_block->type != DIALOG_TYPE_INVALID ? BOOL_TRUE : BOOL_FALSE;
 }
 
-void dialog_cond_if_printf(const dialog_cond_if_t *cond_if) {
+void dialog_cond_if_printf(const dialog_cond_if_t *cond_if, const char* ending) {
 #if DEBUG == 1
     printf("#DEBUG ");
 #endif
@@ -114,10 +114,14 @@ void dialog_cond_if_printf(const dialog_cond_if_t *cond_if) {
     for(int i=0; i<cond_if->keywords.count; ++i) {
         printf("\'%s\' ", cond_if->keywords.keywords[i].text);
     }
-    printf(" wildcard: %d(%d)\n", cond_if->keyword_wildcard.type, cond_if->keyword_wildcard.id);
+    printf("Q[%d/%d]", cond_if->quest_stage.quest_id, cond_if->quest_stage.stage);
+    printf(" wildcard: %d(%d)", cond_if->keyword_wildcard.type, cond_if->keyword_wildcard.id);
+    if(ending) {
+        printf("%s", ending);
+    }
 }
 
-void dialog_cond_then_printf(const dialog_cond_then_t *cond_then) {
+void dialog_cond_then_printf(const dialog_cond_then_t *cond_then, const char* ending) {
 #if DEBUG == 1
     printf("#DEBUG ");
 #endif
@@ -125,11 +129,14 @@ void dialog_cond_then_printf(const dialog_cond_then_t *cond_then) {
     if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE) {
         printf(": %s\n", cond_then->response.text);
     } else {
-        printf(" empty\n");
+        printf(" empty");
+    }
+    if(ending) {
+        printf("%s", ending);
     }
 }
 
 void dialog_block_printf(const dialog_block_t *cond) {
-    dialog_cond_if_printf(&cond->cond_if);
-    dialog_cond_then_printf(&cond->cond_then);
+    dialog_cond_if_printf(&cond->cond_if, "\n");
+    dialog_cond_then_printf(&cond->cond_then, "\n");
 }

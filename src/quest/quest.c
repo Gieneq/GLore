@@ -89,6 +89,10 @@ void questlog_print(questlog_t* questlog) {
     }
     for(int i=0; i<questlog->size; ++i) {
         quest_stage_t* stage = &questlog->quests[i];
-        info_printf("%d: %d,\n", stage->quest_id, stage->stage);
+        if(stage->stage == QUEST_STAGE_NONE) {
+            info_printf("%d: %s,\n", stage->quest_id, "Not picked yet");
+        } else {
+            info_printf("%d: %d,\n", stage->quest_id, stage->stage);
+        }
     }
 }

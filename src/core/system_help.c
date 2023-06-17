@@ -244,7 +244,7 @@ void system_help_print(const help_t* help) {
 }
 
 
-void system_help_print_hint(world_t* world, const player_t* player) {
+void system_help_print_hint(world_t* world, const player_t* player, bool_t debugfriendly) {
     if(! world || !player) {
         return;
     }
@@ -256,14 +256,39 @@ void system_help_print_hint(world_t* world, const player_t* player) {
         }
 
         /* List all possible keywords */
-        for(int i=0; i<npc_in_conversation->dialog_blocks_count; ++i) {
-            //todo check conditions
-            dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
-            if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
-                keywords_list_printf(&cond_if->keywords, NULL);
+        if(debugfriendly == BOOL_FALSE) {
+            for(int i=0; i<npc_in_conversation->dialog_blocks_count; ++i) {
+                //todo check conditions
+                dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
+                if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
+                    keywords_list_printf(&cond_if->keywords, NULL);
+                }
+            }
+            printf("\n");
+        } else {
+            /* More details for debug */
+            printf("Options:\n");
+            for(int i=0; i<npc_in_conversation->dialog_blocks_count; ++i) {
+                printf(" %d: ", i);
+                dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
+                if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
+                    // keywords_list_printf(&cond_if->keywords, NULL);
+                    dialog_cond_if_printf(cond_if, NULL);
+                    if(dialog_cond_if_has_quest_reqirement(cond_if) == BOOL_TRUE) {
+                        printf(", has QL[%d/", cond_if->quest_stage.quest_id);
+                        quest_stage_t* quest_stage;
+                        if(questlog_get_quest_by_id((questlog_t*)&player->questlog, cond_if->quest_stage.quest_id, &quest_stage) == OPTION_SOME) {
+                            printf("%d]", quest_stage->stage);
+                        } else {
+                            printf("Missing]");
+                        }
+                    }
+                } else {
+                    printf("Available at stage %d", cond_if->dialog_stage);
+                }
+                printf(",\n");
             }
         }
-        printf("\n");
 
     } else {
         info_printf("To start conversation type \'hi\' with NPC name.\n");

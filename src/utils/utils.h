@@ -4,7 +4,7 @@
 #define INVALID_ID 0
 
 #ifndef UNUSED
-#define UNUSED(x) (void *)(x)
+#define UNUSED(x) (void)(x)
 #endif
 
 /* PLATFORMS */

@@ -2,25 +2,57 @@
     "id": 1,
     "name": "Woodcutting job",
     "description": "Woodworker Bil needs some help in doing his job.",
-    "stages": [
+    "default_answer_no": "Ok maybe next time",
+    "default_answer_notfinished": "Seems you haven't finished yet",
+    "quest_stages": [
         {
-            "stage_no": 1,
-            "objective": "Chop down 5 tree, and bring wood to Bil.",
-            "quest_items": [
+            "quest_stage": 0,
+            "objective": "Talk to Bil.",
+            "npc_to_talk_id": 5,
+            "dialog_blocks": [
                 {
-                    "item_id": 1,
-                    "count": 1
-                }
-            ],
-            "rewards": {
-                "items": [
-                    {
-                        "item_id": 2,
-                        "count": 1
+                    "if_case": {
+                        "from_stage": 1,
+                        "with_keywords": ["work"]
+                    },
+                    "then_case": {
+                        "next_stage": 2,
+                        "response": "There is high demand for wood. Go away or help me somehow."
                     }
-                ],
-                "exp": 5
-            }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 2,
+                        "with_keywords": ["help"]
+                    },
+                    "then_case": {
+                        "next_stage": 3,
+                        "response": "Wanna help?"
+                    }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 3,
+                        "with_keywords": ["yes"]
+                    },
+                    "then_case": {
+                        "next_stage": 1,
+                        "response": "Gr8! Take this axe, go to forest and chop some wood.",
+                        "update_questlog_stage": 1
+                    }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 3,
+                        "with_keywords": ["no"]
+                    },
+                    "then_case": {
+                        "next_stage": 0,
+                        "response": "Don't waste my time! Bye!"
+                    }
+                }
+            ]
+
         }
     ]
 }

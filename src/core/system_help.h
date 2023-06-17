@@ -44,4 +44,4 @@ result_t system_help_append_command_with_keywords_list(help_t* help, const keywo
 result_t system_help_set_initial_text(help_t* help, const char* initial_text);
 result_t system_help_set_ending_text(help_t* help, const char* ending_text);
 void system_help_print(const help_t* help);
-void system_help_print_hint(world_t* world, const player_t* player);
+void system_help_print_hint(world_t* world, const player_t* player, bool_t debugfriendly);

@@ -22,13 +22,14 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
 
     /* Check questlog stage if related */
     bool_t is_quest_matching;
+    dialog_cond_if_printf(cond_if, "\n");
     if(system_quest_get_cond_if_mach_player_questlog(cond_if, player, &is_quest_matching) == OPTION_SOME) {
         /* Cond_if has some quest relate stuff */
         if(is_quest_matching == BOOL_FALSE) {
             return OPTION_NONE;
         }
 
-        debug_printf(" Q-is matching!\n");
+        printf(" Q-is matching!\n");
     } 
     
     /* Seems any quest conditions (if are present) are ok */
@@ -38,7 +39,7 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
 
     /* Check keywords */
 #if DEBUG == 1
-    dialog_cond_if_printf(cond_if);
+    dialog_cond_if_printf(cond_if, "\n");
 #endif
 
     if(keywords_list_match_any_ignorecase(&cond_if->keywords, msg) != OPTION_SOME) {
@@ -103,7 +104,7 @@ result_t system_dialog_execute_condition_then(const dialog_cond_then_t *cond_the
 
     /* Say response */
 #if DEBUG == 1
-    dialog_cond_then_printf(cond_then);
+    dialog_cond_then_printf(cond_then, "\n");
 #endif
     if(dialog_cond_then_has_response(cond_then) == BOOL_TRUE){
         response_printf("%s says: \"%s\"\n", npc->name, cond_then->response.text); //todo build
