@@ -110,12 +110,16 @@ void dialog_cond_if_printf(const dialog_cond_if_t *cond_if, const char* ending) 
 #if DEBUG == 1
     printf("#DEBUG ");
 #endif
-    printf("Cond if stage: %d, with keywords:", cond_if->dialog_stage);
+    printf("@ stage: %d, kws:", cond_if->dialog_stage);
     for(int i=0; i<cond_if->keywords.count; ++i) {
         printf("\'%s\' ", cond_if->keywords.keywords[i].text);
     }
-    printf("Q[%d/%d]", cond_if->quest_stage.quest_id, cond_if->quest_stage.stage);
-    printf(" wildcard: %d(%d)", cond_if->keyword_wildcard.type, cond_if->keyword_wildcard.id);
+    if(dialog_cond_if_has_quest_reqirement(cond_if) == BOOL_TRUE) {
+        printf("Q[%d/%d] ", cond_if->quest_stage.quest_id, cond_if->quest_stage.stage);
+    }
+    if(cond_if->keyword_wildcard.type != WILDCARD_TYPE_NONE) {
+        printf(", wildcard: %d(%d)", cond_if->keyword_wildcard.type, cond_if->keyword_wildcard.id);
+    }
     if(ending) {
         printf("%s", ending);
     }

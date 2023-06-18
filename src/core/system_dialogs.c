@@ -14,6 +14,7 @@ option_t system_dialog_match_any_npc_name(const char* npc_name, const char* msg)
     return OPTION_SOME;
 }
 
+//todo - probably need to extract logic to check everything against a keyword.
 option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc, player_t* player, const char *msg) {
     /* Check dialog stage */
     if(system_dialog_match_dialog_stage(cond_if, npc)) {
@@ -21,15 +22,16 @@ option_t system_dialog_match_cond_if(const dialog_cond_if_t *cond_if, npc_t* npc
     }
 
     /* Check questlog stage if related */
-    bool_t is_quest_matching;
-    dialog_cond_if_printf(cond_if, "\n");
+    bool_t is_quest_matching = BOOL_FALSE;
+    // dialog_cond_if_printf(cond_if, "\n");
     if(system_quest_get_cond_if_mach_player_questlog(cond_if, player, &is_quest_matching) == OPTION_SOME) {
         /* Cond_if has some quest relate stuff */
         if(is_quest_matching == BOOL_FALSE) {
+            // printf(" Q not matching!\n");
             return OPTION_NONE;
         }
 
-        printf(" Q-is matching!\n");
+        // printf(" Q-is matching!\n");
     } 
     
     /* Seems any quest conditions (if are present) are ok */

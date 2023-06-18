@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "system_quest.h"
 
 static result_t system_help_append_command(help_t* help, help_cmd_t* cmd) {
     if(help->commands_count >= HELP_COMMANDS_MAX_COUNT) {
@@ -261,30 +262,46 @@ void system_help_print_hint(world_t* world, const player_t* player, bool_t debug
                 //todo check conditions
                 dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
                 if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
+                    bool_t is_matching = BOOL_FALSE;
+                    if(system_quest_get_cond_if_mach_player_questlog(cond_if, (player_t *)player, &is_matching) == OPTION_SOME) {
+                        if(is_matching == BOOL_FALSE) {
+                            continue;
+                        }
+                    }
                     keywords_list_printf(&cond_if->keywords, NULL);
                 }
             }
             printf("\n");
-        } else {
+        } 
+        
+        else {
             /* More details for debug */
-            printf("Options:\n");
+            npc_t* npc_in_conversation = NULL;
+            if(world_get_npc_by_id(world, &npc_in_conversation, player->current_conversation_npc_id) != OPTION_SOME) {
+                return;
+            }
+            printf("Options for current converstion stage [%d] with %s [%d]:\n", npc_in_conversation->dialog_stage ,npc_in_conversation->name, npc_in_conversation->id);
             for(int i=0; i<npc_in_conversation->dialog_blocks_count; ++i) {
-                printf(" %d: ", i);
+                printf(" %02d: ", i);
                 dialog_cond_if_t* cond_if = &npc_in_conversation->dialog_blocks[i].cond_if;
                 if(system_dialog_match_dialog_stage(cond_if, npc_in_conversation) == OPTION_SOME) {
-                    // keywords_list_printf(&cond_if->keywords, NULL);
                     dialog_cond_if_printf(cond_if, NULL);
-                    if(dialog_cond_if_has_quest_reqirement(cond_if) == BOOL_TRUE) {
-                        printf(", has QL[%d/", cond_if->quest_stage.quest_id);
-                        quest_stage_t* quest_stage;
-                        if(questlog_get_quest_by_id((questlog_t*)&player->questlog, cond_if->quest_stage.quest_id, &quest_stage) == OPTION_SOME) {
-                            printf("%d]", quest_stage->stage);
+
+                    bool_t is_matching = BOOL_FALSE;
+                    if(system_quest_get_cond_if_mach_player_questlog(cond_if, (player_t *)player, &is_matching) == OPTION_SOME) {
+                        if(is_matching == BOOL_TRUE) {
+                            quest_stage_t* quest_stage;
+                            if(questlog_get_quest_by_id((questlog_t*)&player->questlog, cond_if->quest_stage.quest_id, &quest_stage) == OPTION_SOME) {
+                                printf(", QL[%d/%d]", quest_stage->quest_id, quest_stage->stage);
+                            }
                         } else {
-                            printf("Missing]");
+                            printf(", QL not matching qstage");
                         }
                     }
-                } else {
-                    printf("Available at stage %d", cond_if->dialog_stage);
+                    /* Else - don't have quest requirement */
+                } 
+                else {
+                    printf("Available at dialog stage %d", cond_if->dialog_stage);
                 }
                 printf(",\n");
             }

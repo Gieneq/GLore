@@ -37,7 +37,7 @@
                     },
                     "then_case": {
                         "next_stage": 1,
-                        "response": "Gr8! Take this axe, go to forest and chop some wood.",
+                        "response": "Perfect! Take this axe, go to forest and chop some wood.",
                         "update_questlog_stage": 1
                     }
                 },
@@ -49,6 +49,56 @@
                     "then_case": {
                         "next_stage": 0,
                         "response": "Don't waste my time! Bye!"
+                    }
+                }
+            ]
+
+        },
+        
+        {
+            "quest_stage": 1,
+            "objective": "Bring 5 wood to Bil.",
+            "npc_to_talk_id": 5,
+            "dialog_blocks": [
+                {
+                    "if_case": {
+                        "from_stage": 1,
+                        "with_keywords": ["work"]
+                    },
+                    "then_case": {
+                        "next_stage": 2,
+                        "response": "Have you finished?"
+                    }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 2,
+                        "with_keywords": ["yes"]
+                    },
+                    "then_case": {
+                        "next_stage": 1,
+                        "response": "Perfec! But I cannot check your inventory.",
+                        "update_questlog_stage": 2
+                    }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 2,
+                        "with_keywords": ["yesbutnotfinished"]
+                    },
+                    "then_case": {
+                        "next_stage": 1,
+                        "response": "Seems you havent't finished yet."
+                    }
+                },
+                {
+                    "if_case": {
+                        "from_stage": 2,
+                        "with_keywords": ["no"]
+                    },
+                    "then_case": {
+                        "next_stage": 0,
+                        "response": "Come back when you are done."
                     }
                 }
             ]
