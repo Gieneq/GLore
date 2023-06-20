@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "world.h"
+#include "item_database.h"
 
 #define CONFIG_TEST_DATABASE 1
 
@@ -14,6 +15,7 @@ typedef enum core_state {
 } core_state_t;
 
 typedef struct core_t {
+    item_database_t item_database;
     core_state_t state;
     char arg_buffer[CORE_ARG_BUFFER_SIZE];
     size_t arg_buffer_index;

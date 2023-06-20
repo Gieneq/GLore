@@ -17,6 +17,7 @@ add_library(core
   system_help.c
   system_debug_message.c
   system_quest.c
+  system_items.c
 )
 
 target_link_libraries(core PUBLIC ${LIB_DEPENDENCIES})

@@ -19,6 +19,8 @@ result_t core_create(core_t *core) {
     }
     core->state = CORE_STATE_RUNNING;
 
+    item_database_init(&core->item_database);
+
     if(world_init(&(core->world)) != RESULT_OK) {
         return RESULT_ERROR;
     }

@@ -1,7 +1,8 @@
 [
     {
         "id": 1,
-        "name": "Wooden log"
+        "name": "Birch wood log",
+        "max_stack": 16
     },
     {
         "id": 2,
@@ -9,10 +10,15 @@
     },
     {
         "id": 3,
-        "name": "Red apple"
+        "name": "Red apple",
+        "max_stack": 16
     },
     {
         "id": 4,
         "name": "Flask of beer"
+    },
+    {
+        "id": 5,
+        "name": "Leather boots"
     }
 ]

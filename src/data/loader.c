@@ -226,7 +226,7 @@ static result_t loader_get_cond_then_from_cJSON(const cJSON* then_case_json, dia
         /* Combine quest id with quest stage */
         cond_then->update_quest_stage.quest_id = context->quest_id;
         cond_then->update_quest_stage.stage = quest_stage;
-        printf("Q:Found questlog_update: %d to stage %d\n", cond_then->update_quest_stage.quest_id, cond_then->update_quest_stage.stage);
+        debug_printf("Q:Found questlog_update: %d to stage %d\n", cond_then->update_quest_stage.quest_id, cond_then->update_quest_stage.stage);
     }
 
     return RESULT_OK;
@@ -712,13 +712,11 @@ result_t loader_load_quests(world_t* world, player_t* player) {
 }
 
 
-
-
 /**
  * Load single quest
 */
 static result_t loader_load_quest_data_from_cJSON(const cJSON* json, world_t* world, player_t* player, const int quest_id) {
-    info_printf("Processing quest %d\n", quest_id);
+    debug_printf("Processing quest %d\n", quest_id);
 
     /* Get quest id*/
     int loaded_quest_id;
@@ -837,10 +835,6 @@ static result_t loader_load_quest_data_from_cJSON(const cJSON* json, world_t* wo
                 error_printf("Error: appending dialog block to NPC failed.\n");
                 return RESULT_ERROR;
             }
-
-            //#error
-
-
         }
 
     }
