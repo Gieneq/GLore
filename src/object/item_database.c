@@ -1,13 +1,12 @@
 #include "item_database.h"
-
+#include <string.h>
+#include <stdio.h>
 
 void item_database_init(item_database_t* item_database) {
     /* INVALI_ID to all */
     memset(item_database, 0, sizeof(item_database_t));
     item_database->items_count = 0;
 }
-
-
 
 option_t item_database_get_item_data_by_id(item_database_t* item_database, item_data_t** item_data, const int item_id) {
     for(int i = 0; i < item_database->items_count; i++) {
@@ -47,4 +46,16 @@ result_t item_database_append_item_data(item_database_t* item_database, const it
     memcpy(&item_database->items_data[item_database->items_count], item_data, sizeof(item_data_t));
     item_database->items_count++;
     return RESULT_OK;
+}
+
+void item_database_print_item(item_database_t* item_database, const item_data_t* item_data, const char* ending) {
+    printf("Item id: %d, name: %s, stackable:%c%s", item_data->id, item_data->name, item_data_is_stackable(item_data) == BOOL_TRUE ? 'y' : 'n', ending?ending:"");
+}
+
+void item_database_print_all(item_database_t* item_database) {
+    printf("Item database:%s\n" , item_database->items_count == 0 ? " empty" : "");
+    for(int i = 0; i < item_database->items_count; i++) {
+        printf(" - ");
+        item_database_print_item(item_database, &item_database->items_data[i], ",\n");
+    }
 }

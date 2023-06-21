@@ -5,6 +5,7 @@
 #include "cJSON.h"
 #include "room.h"
 #include "npc.h"
+#include "item.h"
 
 #define LOADER_VOIDROOM 1
 #define LOADER_INITIAL_PLAYER_NAME "#Nonameplayer"
@@ -16,6 +17,7 @@
 #define LOADER_RESOURCES_PLAYER_PATH (LOADER_RESOURCES_DIR "/player.json")
 #define LOADER_RESOURCES_NPCS_DIR (LOADER_RESOURCES_DIR "/npcs")
 #define LOADER_RESOURCES_QUESTS_DIR (LOADER_RESOURCES_DIR "/quests")
+#define LOADER_RESOURCES_ITEM_DATABASE_PATH (LOADER_RESOURCES_DIR "/items.json")
 
 #define CORE_FILE_READ_BUFFER_SIZE 1024*32
 static char file_read_buffer[CORE_FILE_READ_BUFFER_SIZE];
@@ -845,5 +847,76 @@ static result_t loader_load_quest_data_from_cJSON(const cJSON* json, world_t* wo
 
     // todo - use stages_count
     UNUSED(stages_count);
+    return RESULT_OK;
+}
+
+
+result_t loader_load_items_database(item_database_t* item_database) {
+    debug_printf("Loading item database\n");
+
+    if(!item_database) {
+        error_printf("Error: item_database NULL.\n");
+        return RESULT_ERROR;
+    }
+
+    if(loader_from_file(LOADER_RESOURCES_ITEM_DATABASE_PATH, file_read_buffer, CORE_FILE_READ_BUFFER_SIZE) != RESULT_OK) {
+        error_printf("Error: item database file not loaded.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Extract each item data */
+    /* Convert to cJSON objects */
+    cJSON* json_item_data_array = cJSON_Parse(file_read_buffer);
+    if(!json_item_data_array) {
+        error_printf("Error: creating cJSON failed.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Get items array */
+    if(!cJSON_IsArray(json_item_data_array)) {
+        error_printf("Error: item database json is not an array.\n");
+        return RESULT_ERROR;
+    }
+
+    /* Iterate over list of rooms */
+    cJSON* item_data_json = NULL;
+    cJSON_ArrayForEach(item_data_json, json_item_data_array) {
+        if(!cJSON_IsObject(item_data_json)) {
+            error_printf("Error: item_data is not an object.\n");
+            return RESULT_ERROR;
+        }
+
+        /* Required unique id */
+        item_data_t item_data;
+        if(loader_get_int_from_cJSON(item_data_json, "id", &item_data.id) == OPTION_NONE) {
+            error_printf("Error: item_data missing id.\n");
+            return RESULT_ERROR;
+        }
+
+        /* Required unique name */
+        if(loader_get_string_from_cJSON(item_data_json, "name", item_data.name, ITEM_NAME_MAX_LENGTH) == OPTION_NONE) {
+            error_printf("Error: item_data missing name.\n");
+            return RESULT_ERROR;
+        }
+
+
+        /* Optional max_stack, if not - default 1 (not stackable) */
+        item_data_set_not_stackable(&item_data);
+        int loaded_stack_size;
+        if(loader_get_int_from_cJSON(item_data_json, "max_stack", &loaded_stack_size) == OPTION_SOME) {
+            if(loaded_stack_size <= 0) {
+                error_printf("Error: item_data of %d, stack size < 0.\n", item_data.id);
+                return RESULT_ERROR;
+            }
+            item_data_set_stackable(&item_data, loaded_stack_size);
+        }
+
+
+        /* Store in db */
+        if(item_database_append_item_data(item_database, &item_data) != RESULT_OK) {
+            error_printf("Error: appending item_data to item_database failed.\n");
+            return RESULT_ERROR;
+        }
+    }
     return RESULT_OK;
 }

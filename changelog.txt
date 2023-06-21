@@ -1,0 +1,14 @@
+- Processing user input.
+- Keywords detection.
+- Room roads introduced.
+- Player moving on roads.
+- Player talking to NPCs.
+- Colored text on Windows target.
+- Introduced buildsystem with google (unit) tests.
+- Keywords matching accept leading whitespace.
+- Data file (json) for world with rooms and roads, player, npcs.
+- Added 'hint' command to print possible dialog keywords.
+- Added quest with quest data files.
+- Added separation between NPC dialog and quest trigger dialogs.
+- Added questlog for player.
+- Added items with items data file.

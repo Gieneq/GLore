@@ -20,6 +20,8 @@ typedef struct item_t {
 } item_t;
 
 result_t item_data_create(item_data_t* item_data, const int item_id, const char* item_name, const int max_stack);
+void item_data_set_not_stackable(item_data_t* item_data);
+void item_data_set_stackable(item_data_t* item_data, const int max_stack);
 bool_t item_data_is_stackable(const item_data_t* item_data);
 
 void item_create(item_t* item, const int item_id, const size_t count);

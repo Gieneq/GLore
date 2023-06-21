@@ -41,6 +41,13 @@ result_t core_populate(core_t* core) {
     player_t* player = &core->world.player;
     world_t* world = &core->world;
 
+    /* Load items database */
+    if(loader_load_items_database(&core->item_database) != RESULT_OK) {
+        error_printf("Items database not loaded.\n");
+        return RESULT_ERROR;
+    }
+    item_database_print_all(&core->item_database);
+
     /* Load world data */
     if(loader_load_world(world) != RESULT_OK) {
         error_printf("World not loaded.\n");

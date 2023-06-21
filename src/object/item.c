@@ -1,7 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "item.h"
+#include <stdlib.h>
+#include <string.h>
 #include "item_database.h"
 
 
@@ -14,6 +13,14 @@ result_t item_data_create(item_data_t* item_data, const int item_id, const char*
     }
     memcpy(item_data->name, item_name, strlen(item_name) + 1);
     return RESULT_OK;
+}
+
+void item_data_set_not_stackable(item_data_t* item_data) {
+    item_data->max_stack = ITEM_NOT_STACKABLE;
+}
+
+void item_data_set_stackable(item_data_t* item_data, const int max_stack) {
+    item_data->max_stack = max_stack;
 }
 
 bool_t item_data_is_stackable(const item_data_t* item_data) {
