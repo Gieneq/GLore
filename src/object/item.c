@@ -28,7 +28,12 @@ bool_t item_data_is_stackable(const item_data_t* item_data) {
 }
 
 
-void item_create(item_t* item, const int item_id, const size_t count) {
-    item->item_id = item_id;
+void item_create(item_t* item, const int item_id, const int count) {
+    item->id = item_id;
     item->count = count;
+}
+
+void item_clear(item_t* item) {
+    item->id = INVALID_ID;
+    item->count = 0;
 }
