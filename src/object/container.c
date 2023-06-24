@@ -132,7 +132,7 @@ static bool_t container_can_remove_stackable_item(const container_t* container, 
     int occupied_slots_count = container->item_count;
     
     /* Case if items count exceeds already occupied stacks */
-    if(items_count <= occupied_slots_count * stack_size) {
+    if(items_count > occupied_slots_count * stack_size) {
         return BOOL_FALSE;
     }
 
@@ -200,6 +200,7 @@ static result_t container_remove_notstackable_item(container_t* container, int i
             /* Found */
             item_clear(&container->items[i]);
             container->item_count--;
+            container_remove_empty_spaces(container);
             return RESULT_OK;
         }
     }
@@ -277,7 +278,6 @@ result_t container_remove_item_by_id(container_t* container, const item_t* item,
 
     /* Not stackable */
     return container_remove_notstackable_item(container, item->id);
-    return RESULT_ERROR;
 }
 
 bool_t container_has_free_slot(const container_t* container) {
