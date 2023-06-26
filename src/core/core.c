@@ -55,7 +55,7 @@ result_t core_populate(core_t* core) {
     }
 
     /* Load player data */
-    if(loader_load_player(world, player) != RESULT_OK) {
+    if(loader_load_player(world, &core->item_database, player) != RESULT_OK) {
         error_printf("Player not loaded.\n");
         return RESULT_ERROR;
     }

@@ -273,7 +273,7 @@ static result_t loader_get_dialog_block_from_cJSON(const cJSON* json, dialog_blo
 }
 
 /* Loading player data - requires build world to set initial room */
-result_t loader_load_player(world_t* world, player_t* player) {
+result_t loader_load_player(world_t* world, item_database_t* item_database, player_t* player) {
     debug_printf("Loading player\n");
 
     if(!world) {
@@ -365,6 +365,64 @@ result_t loader_load_player(world_t* world, player_t* player) {
         if(res != RESULT_OK) {
             error_printf("Error: player backpack init failed.\n");
             return res;
+        }
+
+        /* Iterate over backapck items data */
+        cJSON* backpack_items_json = cJSON_GetObjectItem(backpack_json, "items");
+        if(!backpack_items_json) {
+            error_printf("Error: player backpack missing items.\n");
+            return RESULT_ERROR;
+        }
+
+        cJSON* backpack_item_json = NULL;
+        cJSON_ArrayForEach(backpack_item_json, backpack_items_json) {
+            /* Get slot index in backapck */
+            int item_slot_index;
+            if(loader_get_int_from_cJSON(backpack_item_json, "slot", &item_slot_index) != RESULT_OK) {
+                error_printf("Error: player backpack item missing equipped.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Get item id */
+            int item_id;
+            if(loader_get_int_from_cJSON(backpack_item_json, "id", &item_id) != RESULT_OK) {
+                error_printf("Error: player backpack item missing id.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Get item count */
+            int item_count;
+            if(loader_get_int_from_cJSON(backpack_item_json, "count", &item_count) != RESULT_OK) {
+                error_printf("Error: player backpack item missing count.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Check with other data */
+             
+            /* Check if slot is valid */
+            if(item_slot_index < 0 || item_slot_index >= player->backpack.capacity) {
+                error_printf("Error: player backpack item slot invalid.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Check if items id is valid - is in database */
+            item_data_t* notused_item_data;
+            if(item_database_get_item_data_by_id(item_database, &notused_item_data, item_id) == OPTION_NONE) {
+                error_printf("Error: player backpack item id invalid.\n");
+                return RESULT_ERROR;
+            }
+
+            /* Check if there is item in backpack at this slot */
+            if(player->backpack.items[item_slot_index].id != INVALID_ID) {
+                error_printf("Error: player backpack item slot already taken.\n");
+                return RESULT_ERROR;
+            }
+            
+            /* Place item in players backpack */
+            player->backpack.items[item_slot_index].id = item_id;
+            player->backpack.items[item_slot_index].count = item_count;
+            player->backpack.item_count++;
+            debug_printf("Item %d placed in backpack at slot %d\n", item_id, item_slot_index);
         }
     }
 

@@ -9,6 +9,17 @@
         "capacity": 16,
         "items": [
             {
+                "slot": 0,
+                "id": 3,
+                "count": 2
+            },
+            {
+                "slot": 1,
+                "id": 4,
+                "count": 1
+            },
+            {
+                "slot": 2,
                 "id": 1,
                 "count": 5
             }
