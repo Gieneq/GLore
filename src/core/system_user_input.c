@@ -48,7 +48,7 @@ static option_t system_user_input_general(core_t* core, player_t* player, const 
 
     /* Who em I */
     if(keywords_list_match_any_ignorecase(&kws_whoemi, msg) == OPTION_SOME) {
-        info_printf("You are %s\n", player->name);
+        system_player_print_player(player, &core->item_database);
         return OPTION_SOME;
     }
 

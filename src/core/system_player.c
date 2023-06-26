@@ -1,5 +1,6 @@
 #include "system_player.h"
 #include "system_dialogs.h"
+#include "system_items.h"
 
 result_t system_player_change_room(world_t* world, player_t* player, int room_id) {
     if(!world || !player) {
@@ -76,4 +77,9 @@ option_t system_player_get_npc_in_conversation(world_t* world, player_t* player,
 
     *npc_data = npc_with_given_id;
     return OPTION_SOME;
+}
+
+void system_player_print_player(player_t* player, item_database_t* item_database) {
+    info_printf("You are %s\n", player->name);
+    system_items_container_print(item_database, &player->backpack, "\n");
 }

@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "quest.h"
 #include "room.h"
+#include "container.h"
 
 typedef struct room_t room_t;
 
@@ -22,6 +23,7 @@ typedef struct player_t {
     int current_room_id;
     int current_conversation_npc_id;
     questlog_t questlog;
+    container_t backpack;
 } player_t;
 
 void player_init(player_t* player);

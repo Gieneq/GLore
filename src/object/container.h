@@ -8,7 +8,7 @@
 typedef struct container_t {
     int capacity;
     item_t items[CONTAINER_MAX_CAPACITY];
-    int item_count;
+    int item_count;  //todo not very good name - not items, slots
 } container_t;
 
 result_t container_init(container_t* container, int capacity);

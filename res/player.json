@@ -5,12 +5,15 @@
         "exp": 0,
         "health": 100
     },
-    "inventory": [
-        {
-            "item_id": 1,
-            "quantity": 1
-        }
-    ],
+    "backpack": {
+        "capacity": 16,
+        "items": [
+            {
+                "id": 1,
+                "count": 5
+            }
+        ]
+    },
     "quests_log": [
         {
             "quest_id": 1,

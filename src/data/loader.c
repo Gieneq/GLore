@@ -339,6 +339,35 @@ result_t loader_load_player(world_t* world, player_t* player) {
         player->current_room_id = current_room_id;
     }
 
+    /* Get player questlog */
+    {
+
+    }
+
+    /* Get player backpack */
+    {
+        result_t res = RESULT_OK;
+
+        /* Get backapck json node */
+        cJSON* backpack_json = cJSON_GetObjectItem(json_player, "backpack");
+        if(!backpack_json) {
+            error_printf("Error: player missing backpack.\n");
+            return RESULT_ERROR;
+        }
+
+        int capacity;
+        if(loader_get_int_from_cJSON(backpack_json, "capacity", &capacity) != RESULT_OK) {
+            error_printf("Error: player backpack missing capacity.\n");
+            return RESULT_ERROR;
+        }
+        
+        res = container_init(&player->backpack, capacity);
+        if(res != RESULT_OK) {
+            error_printf("Error: player backpack init failed.\n");
+            return res;
+        }
+    }
+
     /* Conversation - no conversation */
     cJSON_Delete(json_player);
     player->current_conversation_npc_id = INVALID_ID;

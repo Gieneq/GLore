@@ -5,6 +5,7 @@ list(APPEND LIB_DEPENDENCIES
   entity
   world
   data
+  object
 )
 
 message(STATUS "   -> ${LIB_DEPENDENCIES}")

@@ -12,6 +12,7 @@ void player_init(player_t* player) {
     player->current_room_id = INVALID_ID;
     player->current_conversation_npc_id = INVALID_ID;
     questlog_init(&player->questlog);
+    container_init(&player->backpack, 1);
 }
 
 void player_set_name(player_t* player, const char * player_name) {
